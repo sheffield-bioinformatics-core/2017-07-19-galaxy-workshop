@@ -1,0 +1,694 @@
+<p><style> @import url('style.css'); </style></p>
+
+<p><img src="media/gvl_logo.jpg" height=100px align=right></p>
+
+<h1>RNA-Seq Differential Gene Expression in Galaxy and Degust</h1>
+
+<p><em>* Based on the RNA-Seq workshop by Melbourne Bioinformatics written by Mahtab Mirmomeni, Andrew Lonie, Jessica Chung *</em> <a href="http://vlsci.github.io/lscc_docs/tutorials/rna_seq_dge_advanced/rna_seq_advanced_tutorial/">Original</a></p>
+
+<p><em>* Modified by David Powell *</em></p>
+
+<hr />
+
+<h2>Tutorial Overview</h2>
+
+<p>This tutorial will cover the basics of RNA-seq using Galaxy and Degust.</p>
+
+<p>It is recommended you have some familiarity with Galaxy before using this <a href="http://vlsci.github.io/lscc_docs/tutorials/galaxy_101/galaxy_101/">Galaxy</a></p>
+
+<hr />
+
+<h2>Background [15 min]</h2>
+
+<h4>Where does the data in this tutorial come from?</h4>
+
+<p>The data for this tutorial is from the paper, <em>A comprehensive comparison of
+RNA-Seq-based transcriptome analysis from reads to differential gene expression
+and cross-comparison with microarrays: a case study in Saccharomyces
+cerevisiae</em> by Nookaew et al. [1] which studies S.cerevisiae strain CEN.PK
+113-7D (yeast) under two different metabolic conditions: glucose-excess (batch)
+or glucose-limited (chemostat).</p>
+
+<p>The RNA-Seq data has been uploaded in NCBI, short read archive (SRA), with
+accession SRS307298. There are 6 samples in total-- two treatments with
+three biological replicates each. The data is paired-end.  </p>
+
+<p>We have extracted chromosome I reads from the samples to make the
+tutorial a suitable length. This has implications, as discussed in section 8.</p>
+
+<hr />
+
+<h2>Section 1: Preparation [15 min]</h2>
+
+<h4>1.  Register as a new user on our Monash Galaxy server</h4>
+
+<ol>
+<li><p>Open a browser and go to a Galaxy server : <a href="http://galaxy.erc.monash.edu/galaxy/">galaxy.erc.monash.edu/galaxy</a></p></li>
+<li><p>Register as a new user by clicking <strong>User > Register</strong> on the top
+dark-grey bar. Alternatively, if you already have an account, login by
+clicking <strong>User > Login</strong>.</p></li>
+</ol>
+
+<h4>2.  Import the RNA-seq data for the workshop.</h4>
+
+<p>You can import the data by:</p>
+
+<ol>
+<li>In the tool panel located on the left, under Basic Tools select <strong>Get
+Data > Upload File</strong>. Click on the <strong>Paste/Fetch data</strong> button on the
+bottom section of the pop-up window.</li>
+<li><p>Upload the sequence data by pasting the following links into the text
+input area.
+These two files are single-end samples from the batch condition
+(glucose-excess). Make sure the type is specified as 'fastqsanger'
+when uploading.</p>
+
+<div class="code">
+https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/batch1_chrI_1.fastq
+<br>
+https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/batch2_chrI_1.fastq
+<br>
+</div>
+
+<p>These two files are single-end samples from the chem condition
+(glucose-limited). Make sure the type is specified as 'fastqsanger'
+when uploading.</p>
+
+<div class="code">
+https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/chem1_chrI_1.fastq
+<br>
+https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/chem2_chrI_1.fastq
+<br>
+</div>
+
+<p>Then, upload this file of gene definitions. You do not need to specify
+the type for this file as Galaxy will auto-detect the file as a GTF
+file.</p>
+
+<div class="code">
+https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/genes.gtf
+</div></li>
+<li><p>You should now have these 13 files in your history:</p>
+
+<ul>
+<li><code>batch1_chrI_1.fastq</code></li>
+<li><code>batch2_chrI_1.fastq</code></li>
+<li><code>chem1_chrI_1.fastq</code></li>
+<li><code>chem2_chrI_1.fastq</code></li>
+<li><code>genes.gtf</code></li>
+</ul>
+
+<p>These files can be renamed by clicking the <strong>pen icon</strong> if you wish.</p>
+
+<p><strong>Note:</strong> Low quality reads have already been trimmed.</p></li>
+</ol>
+
+<hr />
+
+<h2>Section 2: FastQC</h2>
+
+<ul>
+<li>From the left hand tool panel in Galaxy, under <em>NGS ANALYSIS</em>, select <em>NGS: QC and manipulation -> FastQC</em></li>
+<li>Select one of the FASTQ files as input and <em>Execute</em> the tool.</li>
+<li>When the tool finishes running, you should have an HTML file in your History. Click on the eye icon to view the various quality metrics.</li>
+</ul>
+
+<p>Look at the generated FastQC metrics. This data looks pretty good - high per-base quality scores (most above 30).</p>
+
+<h2>Section 3: Alignment [30 mins]</h2>
+
+<p>In this section we map the reads in our FASTQ files to a reference genome. As
+these reads originate from mRNA, we expect some of them will cross exon/intron
+boundaries when we align them to the reference genome. Tophat is a splice-aware
+mapper for RNA-seq reads that is based on Bowtie. It uses the mapping results
+from Bowtie to identify splice junctions between exons. More information on
+Tophat can be found <a href="https://ccb.jhu.edu/software/tophat/index.shtml">here</a>.</p>
+
+<h4>1.  Map/align the reads with Tophat to the S. cerevisiae reference</h4>
+
+<p>In the left tool panel menu, under NGS Analysis, select
+<strong>NGS: RNA Analysis > Tophat</strong> and set the parameters as follows:  </p>
+
+<ul>
+<li><strong>Is this single-end or paired-end data?</strong> Paired-end (as individual datasets)  </li>
+<li><p><strong>RNA-Seq FASTQ file, forward reads:</strong> <br />
+(Click on the <strong>multiple datasets icon</strong> and select all four of the
+FASTQ files)</p>
+
+<ul>
+<li><code>batch1_chrI_1.fastq</code></li>
+<li><code>batch2_chrI_1.fastq</code></li>
+<li><code>chem1_chrI_1.fastq</code></li>
+<li><code>chem2_chrI_1.fastq</code></li>
+</ul></li>
+<li><p><strong>Use a built in reference genome or own from your history:</strong> Use
+built-in genome</p></li>
+<li><strong>Select a reference genome:</strong> S. cerevisiae June 2008 (SGD/SacCer2)
+(sacCer2)</li>
+<li>Use defaults for the other fields</li>
+<li>Execute</li>
+</ul>
+
+<p><img src="media/rna_advanced_tophat.png" height=800px></p>
+
+<p>Note: This may take a few minutes, depending on how busy the server is.</p>
+
+<h4>2.  Rename the output files</h4>
+
+<p>You should have 5 output files for each of the FASTQ input files:</p>
+
+<ul>
+<li><strong>Tophat on data 2 and data 1: accepted_hits:</strong> This is a BAM file containing
+sequence alignment data of the reads. This file contains the location
+of where the reads mapped to in the reference genome. We will examine
+this file more closely in the next step.</li>
+<li><strong>Tophat on data 2 and data 1: splice junctions:</strong> This file lists all the places
+where TopHat had to split a read into two pieces to span an exon
+junction.</li>
+<li><strong>Tophat on data 2 and data 1 deletions</strong> and <strong>Tophat on data 2 and data 1: insertions:</strong>
+These files list small insertions or deletions found in the reads.
+Since we are working with synthetic reads we can ignore Tophat for
+Illumina data 1:insertions Tophat for Illumina data 1:deletions for now.</li>
+<li><strong>Tophat on data 2 and data 1: align_summary:</strong> This file gives some mapping
+statistics including the number of reads mapped and the mapping rate.</li>
+</ul>
+
+<p>You should have a total of 20 Tophat output files in your history.</p>
+
+<p>Rename the 4 accepted<em>hits files into a more meaningful name (e.g.
+'Tophat on data 2 and data 1: accepted</em>hits' to 'batch1-accepted_hits.bam')
+by using the <strong>pen icon</strong> next to the file.</p>
+
+<h4>3.  Visualise the aligned reads with Trackster</h4>
+
+<ol>
+<li>On the top bar of Galaxy, select <strong>Visualization > New Track Browser</strong>.</li>
+<li>Name your new visualization and select S. cerevisiae (sacCer2) as the
+reference genome build.</li>
+<li>Click the <strong>Add Datasets to Visualization</strong> button and select
+'batch1-accepted<em>hits.bam' and 'chem1-accepted</em>hits.bam' by using the
+checkboxes on the left.</li>
+<li>Select chrI from the dropdown box. You can zoom in and out using the
+buttons on the top toolbar.</li>
+<li>You can also add more tracks using the <strong>Add Tracks icon</strong> located on the
+top right. Load one of the splice junction files such as 'Tophat on data 2
+and data 1: splice junctions'.</li>
+<li>Explore the data and try to find a splice junction. Next to the
+drop down list, click on the chromosomal position number
+display and specify the location <strong>chrI:86985-87795</strong> to view an
+intron junction.  </li>
+</ol>
+
+<p>Ideally we would add a gene model to the visualisation; but the
+genes.gtf file for S. cerevisae (as downloaded from UCSC Table Browser)
+has a slightly different naming convention for one of the chromosomes
+than the reference genome used by Galaxy, which will cause an error to
+be thrown by Trackster if you try to add it. This is very typical of
+genomics currently! If you are interested, you can fiddle with the
+genes.gtf file to rename the chromosome '2-micron' to '2micron', which
+will fix the problem.</p>
+
+<p>Before starting the next section, leave the Trackster interface and return
+to the analysis view of Galaxy by clicking 'Analyze Data' on the top
+Galaxy toolbar.</p>
+
+<hr />
+
+<h2>Section 4. Count reads in features [30 min]</h2>
+
+<p>HTSeq-count creates a count matrix using the number of the reads from each bam
+file that map to the genomic features in the genes.gtf. For each feature (a
+gene for example) a count matrix shows how many reads were mapped to this
+feature.</p>
+
+<ol>
+<li><p>Use HTSeq-count to count the number of reads for each feature. <br />
+In the left tool panel menu, under NGS Analysis, select
+<strong>NGS: RNA Analysis > SAM/BAM to count matrix</strong> and set the parameters as follows:  </p>
+
+<ul>
+<li><strong>Gene model (GFF) file to count reads over from your current history:</strong> genes.gtf</li>
+<li><strong>bam/sam file from your history:</strong> <br />
+(Select all six bam files using the shift key.)
+<ul>
+<li><code>batch1-accepted_hits.bam</code></li>
+<li><code>batch2-accepted_hits.bam</code></li>
+<li><code>chem1-accepted_hits.bam</code></li>
+<li><code>chem2-accepted_hits.bam</code></li>
+</ul></li>
+<li>Use defaults for the other fields</li>
+<li>Execute</li>
+</ul></li>
+<li><p>Examine the outputted matrix by using the <strong>eye icon</strong>. <br />
+Each column corresponds to a sample and each row corresponds to a gene. By
+sight, see if you can find a gene you think is differentially expressed
+from looking at the counts.</p></li>
+</ol>
+
+<p>We now have a count matrix, with a count against each corresponding sample. We
+will use this matrix in later sections to calculate the differentially
+expressed genes.</p>
+
+<hr />
+
+<h2>Section 5: edgeR  [30 min]</h2>
+
+<p><a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html">edgeR</a>
+is an R package, that is used for analysing differential expression of
+RNA-Seq data and can either use exact statistical methods or generalised
+linear models.</p>
+
+<h4>1.  Generate a list of differentially expressed genes using edgeR</h4>
+
+<p>In the Galaxy tool panel, under NGS Analysis, select
+<strong>NGS: RNA > Differential_Count</strong> and set the parameters as follows:</p>
+
+<ul>
+<li><strong>Select an input matrix - rows are contigs, columns are counts for each
+sample:</strong> bams to DGE count matrix_htseqsams2mx.xls</li>
+<li><strong>Title for job outputs:</strong> Differential<em>Counts</em>edgeR</li>
+<li><strong>Treatment Name:</strong> Batch</li>
+<li><strong>Select columns containing treatment:</strong> <br />
+<ul>
+<li><code>batch1-accepted_hits.bam</code></li>
+<li><code>batch2-accepted_hits.bam</code></li>
+</ul></li>
+<li><strong>Control Name:</strong> Chem</li>
+<li><strong>Select columns containing control:</strong> <br />
+<ul>
+<li><code>chem1-accepted_hits.bam</code></li>
+<li><code>chem2-accepted_hits.bam</code></li>
+</ul></li>
+<li><strong>Run this model using edgeR:</strong> Run edgeR</li>
+<li>Use defaults for the other fields</li>
+<li>Execute</li>
+</ul>
+
+<h4>2.  Examine the outputs from the previous step</h4>
+
+<ol>
+<li>Examine the <code>Differential_Counts_edgeR_topTable_edgeR.xls</code> file by
+clicking on the <strong>eye icon</strong>.
+This file is a list of genes sorted by p-value from using EdgeR to
+perform differential expression analysis.</li>
+<li>Examine the <code>Differential_Counts_edgeR.htm</code>l file. This file has some
+output logs and plots from running edgeR. If you are familiar with R,
+you can examine the R code used for analysis by scrolling to the bottom
+of the file, and clicking <code>Differential_Counts.Rscript</code> to download the
+Rscript file. <br />
+If you are curious about the statistical methods edgeR uses, you can
+read the <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html">edgeR user's guide at
+Bioconductor</a>.</li>
+</ol>
+
+<h4>3.  Extract the significant differentially expressed genes.</h4>
+
+<p>Under Basic Tools, click on <strong>Filter and Sort > Filter</strong>:</p>
+
+<ul>
+<li><strong>Filter:</strong> <code>Differential_Counts_edgeR_topTable_edgeR.xls</code></li>
+<li><strong>With following condition:</strong> c6 &lt;= 0.05</li>
+<li>Execute</li>
+</ul>
+
+<p>This will keep the genes that have an adjusted p-value of less
+or equal to 0.05. There should be 55 genes in this file.
+Rename this file by clicking on the <strong>pencil icon</strong> of and change the name
+from "Filter on data x" to <code>edgeR_Significant_DE_Genes</code></p>
+
+<hr />
+
+<h2>Section 6: Degust</h2>
+
+<p>Degust is an interactive visualiser for analysing RNA-seq data. It runs as a
+web service and can be found at <a href="http://www.vicbioinformatics.com/degust/">vicbioinformatics.com/degust/</a>.</p>
+
+<p><img src="media/rna_advanced_degust_1.png" height=400px style="display:block; margin-left: auto; margin-right:auto;"></p>
+
+<h4>1. Load count data into Degust</h4>
+
+<ol>
+<li>In Galaxy, download the count data <code>bams to DGE count matrix_htseqsams2mx.xls</code>
+generated in Section 4 using the <strong>disk icon</strong>.</li>
+<li>Go to <a href="http://www.vicbioinformatics.com/degust/">vicbioinformatics.com/degust/</a>
+and click on "Upload your counts file".</li>
+<li>Click "Choose file" and upload the recently downloaded Galaxy tabular file
+containing your RNA-seq counts.</li>
+</ol>
+
+<h4>2. Configure your uploaded data</h4>
+
+<ol>
+<li>Give your visualisation a name.</li>
+<li>For the Info column, select Contig.</li>
+<li>Add two conditions: batch and chem. For each condition, select the three
+samples which correspond with the condition.</li>
+<li>Click <strong>Save changes</strong> and view your data.</li>
+</ol>
+
+<p>\showable{Show screenshot}{hint}</p>
+
+<p><img src="media/rna_advanced_degust_2.png" height=700px style="display:block; margin-left: auto; margin-right:auto;"></p>
+
+<p>\endshowable</p>
+
+<h4>3. Explore your data</h4>
+
+<p>Read through the Degust tour of features. Explore the parallel coordinates plot,
+MA plot, MDS plot, heatmap and gene list. Each is fully interactive and
+influences other portions on the display depending on what is selected.</p>
+
+<p><img src="media/rna_advanced_degust_3.png" height=400px style="display:block; margin-left: auto; margin-right:auto;"></p>
+
+<p>On the right side of the page is an options module which can set thresholds to
+filter genes using statistical significance or absolute-fold-change.</p>
+
+<p>On the left side is a dropdown box you can specify the method (Voom/Limma or
+edgeR) used to perform differential expression analysis on the data. You can
+also view the R code by clicking "Show R code" under the options module on
+the right.</p>
+
+<h4>4. Explore the demo data</h4>
+
+<p>Degust also provides an example dataset with 4 conditions and more genes. You
+can play with the demo dataset by clicking on the "Try the demo" button on the
+Degust homepage. The demo dataset includes a column with an EC number for each
+gene. This means genes can be displayed on Kegg pathways using the module on</p>
+
+<h2>the right.</h2>
+
+<h2>[OPTIONAL] Section. Cuffdiff [40 min]</h2>
+
+<p>The aim in this section is to statistically test for differential expression
+using Cuffdiff and obtain a list of significant genes.</p>
+
+<h4>1.  Run Cuffdiff to identify differentially expressed genes and transcripts</h4>
+
+<p>In the left tool panel menu, under NGS Analysis, select
+<strong>NGS: RNA Analysis > Cuffdiff</strong> and set the parameters as follows:</p>
+
+<ul>
+<li><strong>Transcripts:</strong> genes.gtf</li>
+<li><strong>Condition:</strong> <br />
+<ul>
+<li><strong>1: Condition</strong>
+<ul>
+<li><strong>name</strong> batch</li>
+<li><strong>Replicates:</strong>
+<ul>
+<li><code>batch1-accepted_hits.bam</code></li>
+<li><code>batch2-accepted_hits.bam</code>
+(Multiple datasets can be selected by holding down the shift key or
+the ctrl key (Windows) or the command key (OSX).)</li>
+</ul></li>
+</ul></li>
+<li><strong>2: Condition</strong>
+<ul>
+<li><strong>name</strong> chem</li>
+<li><strong>Replicates:</strong>
+<ul>
+<li><code>chem1-accepted_hits.bam</code></li>
+<li><code>chem2-accepted_hits.bam</code></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>Use defaults for the other fields</li>
+<li>Execute</li>
+</ul>
+
+<p><img src="media/rna_advanced_cuffdiff.png" height=700px></p>
+
+<p>Note: This step may take a while, depending on how busy the server is.</p>
+
+<h4>2.  Explore the Cuffdiff output files</h4>
+
+<p>There should be 11 output files from Cuffdiff. These files should all begin
+with something like "Cuffdiff on data 43, data 38, and others". We will
+mostly be interested in the file ending with "gene differential expression
+testing" which contains the statistical results from testing the level of
+gene expression between the batch condition and chem condition.</p>
+
+<p>Filter based on column 14 ("significant") - a binary assessment of
+q_value > 0.05, where q_value is p_value adjusted for multiple testing.
+Under Basic Tools, click on <strong>Filter and Sort > Filter</strong>:</p>
+
+<ul>
+<li><strong>Filter:</strong> "Cuffdiff on data....: gene differential expression testing"</li>
+<li><strong>With following condition:</strong> c14=='yes'</li>
+<li>Execute</li>
+</ul>
+
+<p>This will keep only those entries that Cuffdiff has marked as
+significantly differentially expressed. There should be 53 differentially
+expressed genes in this list.</p>
+
+<p>We can rename this file by clicking on the <strong>pencil icon</strong> of
+the outputted file and change the name from "Filter on data x" to
+<code>Cuffdiff_Significant_DE_Genes</code>.</p>
+
+<hr />
+
+<h2>[OPTIONAL] Section. DESeq2 [30 min]</h2>
+
+<p><a href="https://bioconductor.org/packages/release/bioc/html/DESeq2.html">DESeq2</a> is an
+R package that uses a negative binomial statistical model to find differentially
+expressed genes. It can work without replicates (unlike edgeR) but the author
+strongly advises against this for reasons of statistical validity.</p>
+
+<h4>1.  Generate a list of differentially expressed genes using DESeq2</h4>
+
+<p>In the Galaxy tool panel, under NGS Analysis, select
+<strong>NGS: RNA Analysis > Differential_Count</strong> and set the parameters as follows:  </p>
+
+<ul>
+<li><strong>Select an input matrix - rows are contigs, columns are counts for each
+sample:</strong> bams to DGE count <code>matrix_htseqsams2mx.xls</code></li>
+<li><strong>Title for job outputs:</strong> Differential_Counts_DESeq2</li>
+<li><strong>Treatment Name:</strong> Batch</li>
+<li><strong>Select columns containing treatment:</strong> <br />
+<ul>
+<li><code>batch1-accepted_hits.bam</code></li>
+<li><code>batch2-accepted_hits.bam</code></li>
+</ul></li>
+<li><strong>Control Name:</strong> Chem</li>
+<li><strong>Select columns containing control:</strong> <br />
+<ul>
+<li><code>chem1-accepted_hits.bam</code></li>
+<li><code>chem2-accepted_hits.bam</code></li>
+</ul></li>
+<li><strong>Run this model using edgeR:</strong> Do not run edgeR</li>
+<li><strong>Run the same model with DESeq2 and compare findings:</strong> Run DESeq2</li>
+</ul>
+
+<h4>2.  Examine the outputs the previous step</h4>
+
+<ol>
+<li>Examine the <code>Differential_Counts_DESeq2_topTable_DESeq2.xls</code> file.
+This file is a list of genes sorted by p-value from using DESeq2 to
+perform differential expression analysis.</li>
+<li>Examine the <code>Differential_Counts_DESeq2.html</code> file. This file has some
+output logs and plots from running DESeq2. Take a look at the PCA plot.</li>
+</ol>
+
+<p>\showable{More info on PCA plots}{hint}</p>
+
+<p>PCA plots are useful for exploratory data analysis. Samples which are more
+similar to each other are expected to cluster together. A count matrix often
+has thousands of dimensions (one for each feature) and our PCA plot generated in
+the previous step transforms the data so the most variability is represented in principal
+components 1 and 2 (PC1 and PC2 represented by the x-axis and y-axis respectively).</p>
+
+<p><img src="media/rna_advanced_deseq2_pca.png" height=400px></p>
+
+<p>Take note of the scales on the x-axis and the y-axis. The x-axis representing
+the first principal component accounts for 96% of the variance and ranges from
+approximately -6 to +6, while the y-axis ranges from approximately -1 to +1.</p>
+
+<p>For both conditions, the 3 replicates tend to be closer to each other than they are to replicates from the other condition.</p>
+
+<p>Additionally, within conditions, the lower glucose (chem) condition shows more
+variability between replicates than the higher glucose (batch) condition.</p>
+
+<p>\endshowable</p>
+
+<h4>3.  Filter out the significant differentially expressed genes.</h4>
+
+<p>Under Basic Tools, click on <strong>Filter and Sort > Filter</strong>:</p>
+
+<ul>
+<li><strong>Filter:</strong> <code>Differential_Counts_DESeq2_topTable_DESeq2.xls</code></li>
+<li><strong>With following condition:</strong> c7 &lt;= 0.05</li>
+<li>Execute</li>
+</ul>
+
+<p>This will keep the genes that have an adjusted p-value of less
+or equal to 0.05. There should be 53 genes in this file.
+Rename this file by clicking on the <strong>pencil icon</strong> of and change the name
+from "Filter on data x" to <code>DESeq2_Significant_DE_Genes</code>. You should see
+the first few differentially expressed genes are similar to the ones
+identified by EdgeR.</p>
+
+<hr />
+
+<h2>[OPTIONAL] Section: How much concordance is there between methods?</h2>
+
+<p>We are interested in how similar the identified genes are between the different
+statistial methods used by Cuffdiff, edgeR, and DESeq2. We can generate a
+Venn diagram to visualise the amount of overlap.</p>
+
+<ol>
+<li><p>Generate a Venn diagram of the output of the 3 differential expression tools. <br />
+Note that column index 2 (or c3) contains the gene name in the CuffDiff output.
+Similarly column index 0 (or c1) in EdgeR and DESeq2 contain the gene names. <br />
+In the Galaxy tool panel, under Statistics and Visualisation, select
+<strong>Graph/Display Data > proportional venn</strong> and set the parameters as follows:  </p>
+
+<ul>
+<li><strong>title:</strong> Common genes</li>
+<li><strong>input file 1:</strong> <code>Cuffdiff_Significant_DE_Genes</code></li>
+<li><strong>column index:</strong> 2</li>
+<li><strong>as name:</strong> Cuffdiff</li>
+<li><strong>input file 2:</strong> <code>edgeR_Significant_DE_Genes</code></li>
+<li><strong>column index file 2:</strong> 0</li>
+<li><strong>as name file 2:</strong> edgeR</li>
+<li><strong>two or three:</strong> three</li>
+<li><strong>input file 3:</strong> <code>DESeq2_Significant_DE_Genes</code></li>
+<li><strong>column index file 3:</strong> 0</li>
+<li><strong>as name file 3:</strong> DESeq2</li>
+<li>Execute</li>
+</ul></li>
+<li><p>View the generated Venn diagram.
+Agreement between the tools is good: there are 49 differentially expressed
+genes that all three tools agree upon, and only a handful that are
+exclusive to each tool.</p>
+
+<p><img src="media/rna_advanced_venn_diagram.png" height=400px style="display:block; margin-left: auto; margin-right:auto;"></p></li>
+<li><p>Generate the common list of significantly expressed genes identified by the
+three mentioned tools by extracting the respective gene list columns and
+intersecting:</p>
+
+<ol>
+<li><p>Under Basic Tools in the Galaxy tool panel, select
+<strong>Text Manipulation > cut</strong></p>
+
+<ul>
+<li><strong>Cut columns:</strong> c3</li>
+<li><strong>Delimited by:</strong> Tab</li>
+<li><strong>From:</strong> <code>Cuffdiff_Significant_DE_Genes</code></li>
+<li>Execute</li>
+</ul>
+
+<p>Rename the output to something like <code>Cuffdiff_gene_list</code></p></li>
+<li><p>Select <strong>Text Manipulation > cut</strong></p>
+
+<ul>
+<li><strong>Cut columns:</strong> c1</li>
+<li><strong>Delimited by:</strong> Tab</li>
+<li><strong>From:</strong> <code>edgeR_Significant_DE_Genes</code></li>
+<li>Execute</li>
+</ul>
+
+<p>Rename the output to something like <code>edgeR_gene_list</code></p></li>
+<li><p>Select <strong>Text Manipulation > cut</strong></p>
+
+<ul>
+<li><strong>Cut columns:</strong> c1</li>
+<li><strong>Delimited by:</strong> Tab</li>
+<li><strong>From:</strong> <code>DESeq2_Significant_DE_Genes</code></li>
+<li>Execute</li>
+</ul>
+
+<p>Rename the output to something like <code>DESeq2_gene_list</code></p></li>
+<li><p>Under Basic Tools in the Galaxy tool panel, select
+<strong>Join, Subtract and Group > Compare two Datasets</strong></p>
+
+<ul>
+<li><strong>Compare:</strong> <code>Cuffdiff_gene_list</code></li>
+<li><strong>against:</strong> <code>edgeR_gene_list</code></li>
+<li>Use defaults for the other fields</li>
+<li>Execute</li>
+</ul>
+
+<p>Rename the output to something like <code>Cuffdiff_edgeR_common_gene_list</code></p></li>
+<li><p>Select <strong>Join, Subtract and Group > Compare two Datasets</strong></p>
+
+<ul>
+<li><strong>Compare:</strong> <code>Cuffdiff_edgeR_common_gene_list</code></li>
+<li><strong>against:</strong> <code>DESeq2_gene_list</code></li>
+<li>Use defaults for the other fields</li>
+<li>Execute</li>
+</ul>
+
+<p>Rename the output to something like <code>Cuffdiff_edgeR_DESeq2_common_gene_list</code></p></li>
+</ol></li>
+</ol>
+
+<p>We now have a list of 49 genes that have been identified as significantly
+differentially expressed by all three tools.</p>
+
+<hr />
+
+<h2>Section 8: Gene set enrichment analysis</h2>
+
+<p>The biological question being asked in the original paper is essentially: <br />
+<em>"What is the global response of the yeast transcriptome in the shift from
+growth at glucose excess conditions (batch) to glucose-limited conditions
+(chemostat)?"</em>  </p>
+
+<p>We can address this question by attempting to interpret our differentially
+expressed gene list at a higher level, perhaps by examining the categories of
+gene and protein networks that change in response to glucose.</p>
+
+<p>For example, we can input our list of differentially expressed genes to a Gene
+Ontology (GO) enrichment analysis tool such as GOrilla to find out the GO
+enriched terms.</p>
+
+<p>NOTE: Because of time-constraints in this tutorial, the analysis was confined to
+a single chromosome (chromosome I) and as a consequence we don’t have
+sufficient information to look for groups of differentially expressed genes
+(simply because we don’t have enough genes identified from the one chromosome to
+look for statistically convincing over-representation of any particular gene
+group).</p>
+
+<ol>
+<li><p>Download the list of genes <a href="https://swift.rc.nectar.org.au:8888/v1/AUTH_377/public/RNASeq_ADVNCD/EdgeR-SignificantlyExpressedGenes-columnOne.tabular">here in a plain-text file</a>
+to your local computer by right clicking on the link and selecting Save Link As...</p>
+
+<p>Note that there are ~2500 significantly differentially expressed genes
+identified in the full analysis. Also note that the genes are ranked in
+order of statistical significance. This is critical for the next step.</p></li>
+<li><p>Explore the data using gene set enrichment analysis (GSEA) using the online
+tool GOrilla</p>
+
+<ol>
+<li>Go to <a href="http://cbl-gorilla.cs.technion.ac.il/">cbl-gorilla.cs.technion.ac.il</a>
+<ul>
+<li><strong>Choose Organism:</strong> Saccharomyces cerevisiae</li>
+<li><strong>Choose running mode:</strong> Single ranked list of genes</li>
+<li>Open the gene list you downloaded in the previous step in a text editor.
+Select the full list, then copy and paste the list into the text box.</li>
+<li><strong>Choose an Ontology:</strong> Process</li>
+<li><strong>Search Enriched GO terms</strong></li>
+</ul></li>
+<li><p>Once the analysis has finished running, you will be redirected to a
+page depicting the GO enriched biological processes and its significance
+(indicated by colour), based on the genes you listed.
+<img src="media/rna_advanced_gene_ontology.png" height=300px></p>
+
+<p>Scroll down to view a table of GO terms and their significance scores.
+In the last column, you can toggle the <strong>[+] Show genes</strong> to see the
+list of associated genes.</p></li>
+<li><p>Experiment with different ontology categories (Function, Component) in GOrilla.</p></li>
+</ol></li>
+</ol>
+
+<p>At this stage you are interpreting the experiment in different ways, potentially
+discovering information that will lead you to further lab experiments. This
+is driven by your biological knowledge of the problem space. There are an
+unlimited number of methods for further interpretation of which GSEA is just one.</p>
+
+<hr />
+
+<h2>References</h2>
+
+<p>[1] Nookaew I, Papini M, Pornputtpong N, Scalcinati G, Fagerberg L, Uhlén M, Nielsen J: A comprehensive comparison of RNA-Seq-based transcriptome analysis from reads to differential gene expression and cross-comparison with microarrays: a case study in Saccharomyces cerevisiae. Nucleic Acids Res 2012, 40 (20):10084 – 10097. doi:10.1093/nar/gks804. Epub 2012 Sep 10</p>
