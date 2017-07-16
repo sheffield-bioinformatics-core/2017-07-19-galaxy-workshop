@@ -5,9 +5,14 @@
 
 # RNA-Seq Differential Gene Expression in Galaxy and Degust
 
-** Based on the RNA-Seq workshop by Melbourne Bioinformatics written by Mahtab Mirmomeni, Andrew Lonie, Jessica Chung ** [Original](http://vlsci.github.io/lscc_docs/tutorials/rna_seq_dge_advanced/rna_seq_advanced_tutorial/)
+_Based on the RNA-Seq workshop by Melbourne Bioinformatics written by Mahtab Mirmomeni, Andrew Lonie, Jessica Chung_ [Original](http://vlsci.github.io/lscc_docs/tutorials/rna_seq_dge_advanced/rna_seq_advanced_tutorial/)
 
-** Modified by David Powell **
+_Modified by David Powell_
+
+### Monash Bioinformatics Platform
+web : [platforms.monash.edu/bioinformatics](https://platforms.monash.edu/bioinformatics/)  
+twitter: [@MonashBioinfo](https://twitter.com/MonashBioinfo)  
+email: [bioinformatics.platform@monash.edu](bioinformatics.platform@monash.edu)
 
 -----
 
@@ -31,7 +36,9 @@ or glucose-limited (chemostat).
 
 The RNA-Seq data has been uploaded in NCBI, short read archive (SRA), with
 accession SRS307298. There are 6 samples in total-- two treatments with
-three biological replicates each. The data is paired-end.  
+three biological replicates each sequenced paired-end.  We have selected only
+the first read, and only two replicates of each condition to keep the data small
+for this workshop.
 
 We have extracted chromosome I reads from the samples to make the
 tutorial a suitable length. This has implications, as discussed in section 8.
@@ -82,7 +89,7 @@ You can import the data by:
     <div class="code">
     https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/genes.gtf
     </div>
-3.  You should now have these 13 files in your history:
+3.  You should now have these 5 files in your history:
     - `batch1_chrI_1.fastq`
     - `batch2_chrI_1.fastq`
     - `chem1_chrI_1.fastq`
@@ -103,6 +110,9 @@ You can import the data by:
 
 Look at the generated FastQC metrics. This data looks pretty good - high per-base quality scores (most above 30).
 
+<img src="media/fastqc.png" height=700px>
+
+
 ## Section 3: Alignment [30 mins]
 
 In this section we map the reads in our FASTQ files to a reference genome. As
@@ -117,7 +127,7 @@ Tophat can be found [here](https://ccb.jhu.edu/software/tophat/index.shtml).
 In the left tool panel menu, under NGS Analysis, select
 **NGS: RNA Analysis > Tophat** and set the parameters as follows:  
 
-- **Is this single-end or paired-end data?** Paired-end (as individual datasets)  
+- **Is this single-end or paired-end data?** Single-end (as individual datasets)  
 - **RNA-Seq FASTQ file, forward reads:**  
 (Click on the **multiple datasets icon** and select all four of the
 FASTQ files)
@@ -156,7 +166,7 @@ You should have 5 output files for each of the FASTQ input files:
 
 You should have a total of 20 Tophat output files in your history.
 
-Rename the 4 accepted_hits files into a more meaningful name (e.g.
+Rename the 4 accepted\_hits files into a more meaningful name (e.g.
 'Tophat on data 2 and data 1: accepted_hits' to 'batch1-accepted_hits.bam')
 by using the **pen icon** next to the file.
 
@@ -165,7 +175,7 @@ by using the **pen icon** next to the file.
 2.  Name your new visualization and select S. cerevisiae (sacCer2) as the
     reference genome build.
 3.  Click the **Add Datasets to Visualization** button and select
-    'batch1-accepted_hits.bam' and 'chem1-accepted_hits.bam' by using the
+    `batch1-accepted_hits.bam` and `chem1-accepted_hits.bam` by using the
     checkboxes on the left.
 4.  Select chrI from the dropdown box. You can zoom in and out using the
     buttons on the top toolbar.
@@ -189,6 +199,9 @@ will fix the problem.
 Before starting the next section, leave the Trackster interface and return
 to the analysis view of Galaxy by clicking 'Analyze Data' on the top
 Galaxy toolbar.
+
+<img src="media/trackster.png">
+
 
 -----
 
@@ -232,11 +245,11 @@ linear models.
 
 #### 1.  Generate a list of differentially expressed genes using edgeR
 In the Galaxy tool panel, under NGS Analysis, select
-**NGS: RNA > Differential_Count** and set the parameters as follows:
+**NGS: RNA Analysis > Differential_Count** and set the parameters as follows:
 
 - **Select an input matrix - rows are contigs, columns are counts for each
   sample:** bams to DGE count matrix_htseqsams2mx.xls
-- **Title for job outputs:** Differential_Counts_edgeR
+- **Title for job outputs:** Differential\_Counts\_edgeR
 - **Treatment Name:** Batch
 - **Select columns containing treatment:**  
     - `batch1-accepted_hits.bam`
@@ -268,10 +281,11 @@ Under Basic Tools, click on **Filter and Sort > Filter**:
 
 - **Filter:** `Differential_Counts_edgeR_topTable_edgeR.xls`
 - **With following condition:** c6 <= 0.05
+- **Number of header lines to skip:** 1
 - Execute
 
-This will keep the genes that have an adjusted p-value of less
-or equal to 0.05. There should be 55 genes in this file.
+This will keep the genes that have an adjusted p-value (column 6 in the table) of less
+or equal to 0.05. There should be 47 genes in this file.
 Rename this file by clicking on the **pencil icon** of and change the name
 from "Filter on data x" to `edgeR_Significant_DE_Genes`
 
@@ -280,7 +294,7 @@ from "Filter on data x" to `edgeR_Significant_DE_Genes`
 ## Section 6: Degust
 
 Degust is an interactive visualiser for analysing RNA-seq data. It runs as a
-web service and can be found at [vicbioinformatics.com/degust/](http://www.vicbioinformatics.com/degust/).
+web service and can be found at [http://degust.erc.monash.edu/](http://degust.erc.monash.edu/).
 
 <img src="media/rna_advanced_degust_1.png" height=400px style="display:block; margin-left: auto; margin-right:auto;">
 
@@ -288,7 +302,7 @@ web service and can be found at [vicbioinformatics.com/degust/](http://www.vicbi
 
 1.  In Galaxy, download the count data `bams to DGE count matrix_htseqsams2mx.xls`
     generated in Section 4 using the **disk icon**.
-2.  Go to [vicbioinformatics.com/degust/](http://www.vicbioinformatics.com/degust/)
+2.  Go to [http://degust.erc.monash.edu/](http://degust.erc.monash.edu/)
     and click on "Upload your counts file".
 3.  Click "Choose file" and upload the recently downloaded Galaxy tabular file
     containing your RNA-seq counts.
@@ -297,15 +311,12 @@ web service and can be found at [vicbioinformatics.com/degust/](http://www.vicbi
 
 1.  Give your visualisation a name.
 2.  For the Info column, select Contig.
-3.  Add two conditions: batch and chem. For each condition, select the three
+3.  Add two conditions: batch and chem. For each condition, select the two
     samples which correspond with the condition.
 4.  Click **Save changes** and view your data.
 
-\showable{Show screenshot}{hint}
-
 <img src="media/rna_advanced_degust_2.png" height=700px style="display:block; margin-left: auto; margin-right:auto;">
 
-\endshowable
 
 #### 3. Explore your data
 
@@ -330,6 +341,63 @@ can play with the demo dataset by clicking on the "Try the demo" button on the
 Degust homepage. The demo dataset includes a column with an EC number for each
 gene. This means genes can be displayed on Kegg pathways using the module on
 the right.
+
+-----
+## Section 7: Gene set enrichment analysis
+
+The biological question being asked in the original paper is essentially:  
+*"What is the global response of the yeast transcriptome in the shift from
+growth at glucose excess conditions (batch) to glucose-limited conditions
+(chemostat)?"*  
+
+We can address this question by attempting to interpret our differentially
+expressed gene list at a higher level, perhaps by examining the categories of
+gene and protein networks that change in response to glucose.
+
+For example, we can input our list of differentially expressed genes to a Gene
+Ontology (GO) enrichment analysis tool such as GOrilla to find out the GO
+enriched terms.
+
+NOTE: Because of time-constraints in this tutorial, the analysis was confined to
+a single chromosome (chromosome I) and as a consequence we don’t have
+sufficient information to look for groups of differentially expressed genes
+(simply because we don’t have enough genes identified from the one chromosome to
+look for statistically convincing over-representation of any particular gene
+group).
+
+1.  Download the list of genes [here in a plain-text file](https://swift.rc.nectar.org.au:8888/v1/AUTH_377/public/RNASeq_ADVNCD/EdgeR-SignificantlyExpressedGenes-columnOne.tabular)
+    to your local computer by right clicking on the link and selecting Save Link As...
+
+    Note that there are ~2500 significantly differentially expressed genes
+    identified in the full analysis. Also note that the genes are ranked in
+    order of statistical significance. This is critical for the next step.
+
+2.  Explore the data using gene set enrichment analysis (GSEA) using the online
+    tool GOrilla
+    1.  Go to [cbl-gorilla.cs.technion.ac.il](http://cbl-gorilla.cs.technion.ac.il/)
+        - **Choose Organism:** Saccharomyces cerevisiae
+        - **Choose running mode:** Single ranked list of genes
+        - Open the gene list you downloaded in the previous step in a text editor.
+          Select the full list, then copy and paste the list into the text box.
+        - **Choose an Ontology:** Process
+        - **Search Enriched GO terms**
+    2.  Once the analysis has finished running, you will be redirected to a
+        page depicting the GO enriched biological processes and its significance
+        (indicated by colour), based on the genes you listed.
+<img src="media/rna_advanced_gene_ontology.png" height=300px>
+
+        Scroll down to view a table of GO terms and their significance scores.
+        In the last column, you can toggle the **[+] Show genes** to see the
+        list of associated genes.
+
+    3.  Experiment with different ontology categories (Function, Component) in GOrilla.
+
+
+At this stage you are interpreting the experiment in different ways, potentially
+discovering information that will lead you to further lab experiments. This
+is driven by your biological knowledge of the problem space. There are an
+unlimited number of methods for further interpretation of which GSEA is just one.
+
 -----
 
 ## [OPTIONAL] Section. Cuffdiff [40 min]
@@ -422,8 +490,6 @@ In the Galaxy tool panel, under NGS Analysis, select
 2.  Examine the `Differential_Counts_DESeq2.html` file. This file has some
     output logs and plots from running DESeq2. Take a look at the PCA plot.
 
-\showable{More info on PCA plots}{hint}
-
 PCA plots are useful for exploratory data analysis. Samples which are more
 similar to each other are expected to cluster together. A count matrix often
 has thousands of dimensions (one for each feature) and our PCA plot generated in
@@ -440,8 +506,6 @@ For both conditions, the 3 replicates tend to be closer to each other than they 
 
 Additionally, within conditions, the lower glucose (chem) condition shows more
 variability between replicates than the higher glucose (batch) condition.
-
-\endshowable
 
 
 #### 3.  Filter out the significant differentially expressed genes.  
@@ -542,63 +606,6 @@ differentially expressed by all three tools.
 
 -----
 
-## Section 8: Gene set enrichment analysis
-
-The biological question being asked in the original paper is essentially:  
-*"What is the global response of the yeast transcriptome in the shift from
-growth at glucose excess conditions (batch) to glucose-limited conditions
-(chemostat)?"*  
-
-We can address this question by attempting to interpret our differentially
-expressed gene list at a higher level, perhaps by examining the categories of
-gene and protein networks that change in response to glucose.
-
-For example, we can input our list of differentially expressed genes to a Gene
-Ontology (GO) enrichment analysis tool such as GOrilla to find out the GO
-enriched terms.
-
-NOTE: Because of time-constraints in this tutorial, the analysis was confined to
-a single chromosome (chromosome I) and as a consequence we don’t have
-sufficient information to look for groups of differentially expressed genes
-(simply because we don’t have enough genes identified from the one chromosome to
-look for statistically convincing over-representation of any particular gene
-group).
-
-1.  Download the list of genes [here in a plain-text file](https://swift.rc.nectar.org.au:8888/v1/AUTH_377/public/RNASeq_ADVNCD/EdgeR-SignificantlyExpressedGenes-columnOne.tabular)
-    to your local computer by right clicking on the link and selecting Save Link As...
-
-    Note that there are ~2500 significantly differentially expressed genes
-    identified in the full analysis. Also note that the genes are ranked in
-    order of statistical significance. This is critical for the next step.
-
-2.  Explore the data using gene set enrichment analysis (GSEA) using the online
-    tool GOrilla
-    1.  Go to [cbl-gorilla.cs.technion.ac.il](http://cbl-gorilla.cs.technion.ac.il/)
-        - **Choose Organism:** Saccharomyces cerevisiae
-        - **Choose running mode:** Single ranked list of genes
-        - Open the gene list you downloaded in the previous step in a text editor.
-          Select the full list, then copy and paste the list into the text box.
-        - **Choose an Ontology:** Process
-        - **Search Enriched GO terms**
-    2.  Once the analysis has finished running, you will be redirected to a
-        page depicting the GO enriched biological processes and its significance
-        (indicated by colour), based on the genes you listed.
-<img src="media/rna_advanced_gene_ontology.png" height=300px>
-
-        Scroll down to view a table of GO terms and their significance scores.
-        In the last column, you can toggle the **[+] Show genes** to see the
-        list of associated genes.
-
-    3.  Experiment with different ontology categories (Function, Component) in GOrilla.
-
-
-At this stage you are interpreting the experiment in different ways, potentially
-discovering information that will lead you to further lab experiments. This
-is driven by your biological knowledge of the problem space. There are an
-unlimited number of methods for further interpretation of which GSEA is just one.
-
-
------
 ## References
 
 [1] Nookaew I, Papini M, Pornputtpong N, Scalcinati G, Fagerberg L, Uhlén M, Nielsen J: A comprehensive comparison of RNA-Seq-based transcriptome analysis from reads to differential gene expression and cross-comparison with microarrays: a case study in Saccharomyces cerevisiae. Nucleic Acids Res 2012, 40 (20):10084 – 10097. doi:10.1093/nar/gks804. Epub 2012 Sep 10
