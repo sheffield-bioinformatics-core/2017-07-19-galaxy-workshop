@@ -168,25 +168,25 @@ built-in genome</p></li>
 <p>You should have 5 output files for each of the FASTQ input files:</p>
 
 <ul>
-<li><strong>Tophat on data 2 and data 1: accepted_hits:</strong> This is a BAM file containing
+<li><strong>Tophat on data 1: accepted_hits:</strong> This is a BAM file containing
 sequence alignment data of the reads. This file contains the location
 of where the reads mapped to in the reference genome. We will examine
 this file more closely in the next step.</li>
-<li><strong>Tophat on data 2 and data 1: splice junctions:</strong> This file lists all the places
+<li><strong>Tophat on data 1: splice junctions:</strong> This file lists all the places
 where TopHat had to split a read into two pieces to span an exon
 junction.</li>
-<li><strong>Tophat on data 2 and data 1 deletions</strong> and <strong>Tophat on data 2 and data 1: insertions:</strong>
+<li><strong>Tophat on data 1 deletions</strong> and <strong>Tophat on data 1: insertions:</strong>
 These files list small insertions or deletions found in the reads.
 Since we are working with synthetic reads we can ignore Tophat for
 Illumina data 1:insertions Tophat for Illumina data 1:deletions for now.</li>
-<li><strong>Tophat on data 2 and data 1: align_summary:</strong> This file gives some mapping
+<li><strong>Tophat on data 1: align_summary:</strong> This file gives some mapping
 statistics including the number of reads mapped and the mapping rate.</li>
 </ul>
 
 <p>You should have a total of 20 Tophat output files in your history.</p>
 
 <p>Rename the 4 accepted_hits files into a more meaningful name (e.g.
-'Tophat on data 2 and data 1: accepted<em>hits' to 'batch1-accepted</em>hits.bam')
+'Tophat on data 1: accepted<em>hits' to 'batch1-accepted</em>hits.bam')
 by using the <strong>pen icon</strong> next to the file.</p>
 
 <h4>3.  Visualise the aligned reads with Trackster</h4>
@@ -201,8 +201,7 @@ checkboxes on the left.</li>
 <li>Select chrI from the dropdown box. You can zoom in and out using the
 buttons on the top toolbar.</li>
 <li>You can also add more tracks using the <strong>Add Tracks icon</strong> located on the
-top right. Load one of the splice junction files such as 'Tophat on data 2
-and data 1: splice junctions'.</li>
+top right. Load one of the splice junction files such as 'Tophat on data 1: splice junctions'.</li>
 <li>Explore the data and try to find a splice junction. Next to the
 drop down list, click on the chromosomal position number
 display and specify the location <strong>chrI:86985-87795</strong> to view an
