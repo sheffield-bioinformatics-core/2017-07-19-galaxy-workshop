@@ -202,6 +202,14 @@ Galaxy toolbar.
 <img src="media/trackster.png">
 
 
+#### [Optional] Convert BAM to SAM
+
+It useful to understand the BAM/SAM format.  Convert one of your BAM files to SAM format, and
+view the text within Galaxy
+1.  **NGS: SAM Tools> BAM-to-SAM convert BAM to SAM** and select one of you BAM files
+2.  Click on the eye of the resulting file to view the SAM alignments.
+3.  Look through the alignments, which chromosome are the aligning to?  Can you see any indels in the CIGAR string?
+
 -----
 
 ## Section 4. Count reads in features [30 min]
@@ -345,7 +353,22 @@ the right.
 
 ## Section [Optional] : Advanced Degust
 
-Download count matrix [nhd13.csv](files/nhd13-ec.csv).
+The previous example was a straightforward comparison of two conditions.  Here we will look
+at an experiment with more conditions and consider how to ask interesting questions of the
+experimental data.  We will use the RNA-seq data from this paper : *PUMA promotes apoptosis of hematopoietic progenitors driving leukemic progression in a mouse model of myelodysplasia* by Guirgas et al. [2] which
+uses a mouse-model to study Myelodysplastic syndrome.  This uses a NUP98-HOXD13 (NHD13) transgenic mouse model,
+and a mouse model over-expression BCL2 which blocked apoptosis.  There are four mouse genotypes used in this
+experiement - wildtype (WT), BCL2 mutant (B), NHD13 mutant (N), combined mutant (NB).
+
+Download count matrix [nhd13.csv](files/nhd13-ec.csv).  And configure these four conditions, each with 3 replicates.  Also, set `Min gene CPM` to 1, and `in at least samples` to 3.
+
+Things to do:
+
+- On the MDS plot - is there good grouping of the replicates?
+- How many genes are need to maintain this grouping?
+- If you use just 5 genes for the MDS, what is driving the separation?  Is this a concern?
+- How many genes are DE between WT & BCL2 mutant?  between WT & NHD13 mutant?  between BCL2 & combined mutant?
+
 
 -----
 
@@ -615,3 +638,5 @@ differentially expressed by all three tools.
 ## References
 
 [1] Nookaew I, Papini M, Pornputtpong N, Scalcinati G, Fagerberg L, Uhlén M, Nielsen J: A comprehensive comparison of RNA-Seq-based transcriptome analysis from reads to differential gene expression and cross-comparison with microarrays: a case study in Saccharomyces cerevisiae. Nucleic Acids Res 2012, 40 (20):10084 – 10097. doi:10.1093/nar/gks804. Epub 2012 Sep 10
+
+[2] Guirguis A, Slape C, Failla L, Saw J, Tremblay C, Powell D, Rossello F, Wei A, Strasser A, Curtis D: PUMA promotes apoptosis of hematopoietic progenitors driving leukemic progression in a mouse model of myelodysplasia. Cell Death Differ. 2016 Jun;23(6)
