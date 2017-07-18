@@ -300,7 +300,7 @@ web service and can be found at [http://degust.erc.monash.edu/](http://degust.er
 #### 1. Load count data into Degust
 
 1.  In Galaxy, download the count data `bams to DGE count matrix_htseqsams2mx.xls`
-    generated in Section 4 using the **disk icon**.
+    generated in Section 4 using the **disk icon**.   You can also download this count matrix from [here](files/batch-chem.tsv)
 2.  Go to [http://degust.erc.monash.edu/](http://degust.erc.monash.edu/)
     and click on "Upload your counts file".
 3.  Click "Choose file" and upload the recently downloaded Galaxy tabular file
@@ -341,7 +341,14 @@ Degust homepage. The demo dataset includes a column with an EC number for each
 gene. This means genes can be displayed on Kegg pathways using the module on
 the right.
 
+---
+
+## Section [Optional] : Advanced Degust
+
+Download count matrix [nhd13.csv](files/nhd13-ec.csv).
+
 -----
+
 ## Section 7: Gene set enrichment analysis
 
 The biological question being asked in the original paper is essentially:  
