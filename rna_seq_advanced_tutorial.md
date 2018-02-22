@@ -183,7 +183,25 @@ Rename the 4 accepted\_hits files into a more meaningful name (e.g.
 'Tophat on data 1: accepted_hits' to 'batch1-accepted_hits.bam')
 by using the **pen icon** next to the file.
 
-#### 3.  Visualise the aligned reads with Trackster  
+#### 3.  Visualise the aligned reads with IGV
+
+Download the bam files you have created in the previous step by clicking the disk icon on the right-hand panel. Make sure to click both the **Download dataset** and **Download index** buttons. We will now visualise the alignments using the Integrative Genomics Viewer (IGV).
+
+<img src="media/download_bam.png" height=800px>
+
+
+<img src="media/igv_start.png" height=800px>
+
+- http://software.broadinstitute.org/software/igv/
+- Go to *Downloads*
+- Launch with 1.2Gb
+- Click on igv24_mm.jnlp file that is downloaded
+
+<img src="media/IGV2.png" height=800px>
+
+**TO DO**
+
+
 1.  On the top bar of Galaxy, select **Visualization > New Track Browser**.
 2.  Name your new visualization and select S. cerevisiae (sacCer2) as the
     reference genome build.
@@ -212,7 +230,7 @@ Before starting the next section, leave the Trackster interface and return
 to the analysis view of Galaxy by clicking 'Analyze Data' on the top
 Galaxy toolbar.
 
-<img src="media/trackster.png">
+
 
 
 #### [Optional] Convert BAM to SAM
