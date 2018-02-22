@@ -1,16 +1,18 @@
 <style> @import url('style.css'); </style>
 
 
-<img src="media/gvl_logo.jpg" height=100px align=right>
+<img src="media/TUOS_PRIMARY_LOGO_FULL COLOUR.png" height=100px align=right>
 
-# RNA-Seq Differential Gene Expression in Galaxy and Degust
+# Hands-on RNA-seq Analysis in Galaxy
+
+## Acknowledgement
 
 _Based on the RNA-Seq workshop by Melbourne Bioinformatics written by Mahtab Mirmomeni, Andrew Lonie, Jessica Chung_ [Original](http://vlsci.github.io/lscc_docs/tutorials/rna_seq_dge_advanced/rna_seq_advanced_tutorial/)
 
 _Modified by David Powell_
 
-### Monash Bioinformatics Platform
-web : [platforms.monash.edu/bioinformatics](https://platforms.monash.edu/bioinformatics/)  
+### Sheffield Bioinformatics Core
+web : [sbc.shef.ac.uk](https://sbc.shef.ac.uk)  
 twitter: [@MonashBioinfo](https://twitter.com/MonashBioinfo)  
 email: [bioinformatics.platform@monash.edu](bioinformatics.platform@monash.edu)
 
