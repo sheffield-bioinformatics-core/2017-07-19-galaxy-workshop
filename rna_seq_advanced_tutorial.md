@@ -11,6 +11,8 @@ _Based on the RNA-Seq workshop by Melbourne Bioinformatics written by Mahtab Mir
 
 _Modified by David Powell_
 
+_Exercise based on Galaxy Training materials at [https://galaxyproject.github.io/training-material/topics/transcriptomics/tutorials/ref-based/tutorial.html](https://galaxyproject.github.io/training-material/topics/transcriptomics/tutorials/ref-based/tutorial.html)
+
 ### Sheffield Bioinformatics Core
 web : [sbc.shef.ac.uk](https://sbc.shef.ac.uk)  
 twitter: [@SheffBioinfCore](https://twitter.com/SheffBioinfCore)  
@@ -187,15 +189,11 @@ Download the bam files you have created in the previous step by clicking the dis
 
 <img src="media/download_bam.png" height=800px>
 
-
-<img src="media/igv_start.png" height=800px>
-
 - http://software.broadinstitute.org/software/igv/
 - Go to *Downloads*
 - Launch with 1.2Gb
 - Click on igv24_mm.jnlp file that is downloaded
 
-<img src="media/IGV2.png" height=800px>
 
 **TO DO**
 
@@ -533,6 +531,54 @@ We now have a list of 49 genes that have been identified as significantly
 differentially expressed by all three tools.
 
 -----
+
+## Exercise
+
+
+
+> In the study of Brooks et al. 2011, the Pasilla (PS) gene, Drosophila homologue of the Human splicing regulators Nova-1 and Nova-2 Proteins, was depleted in Drosophila melanogaster by RNAi. The authors wanted to identify exons that are regulated by Pasilla gene using RNA sequencing data.
+
+Total RNA was isolated and used for preparing either single-end or paired-end RNA-seq libraries for treated (PS depleted) samples and untreated samples. These libraries were sequenced to obtain a collection of RNA sequencing reads for each sample. The effects of Pasilla gene depletion on splicing events can then be analyzed by comparison of RNA sequencing data of the treated (PS depleted) and the untreated samples.
+
+The genome of Drosophila melanogaster is known and assembled. It can be used as reference genome to ease this analysis. In a reference based RNA-seq data analysis, the reads are aligned (or mapped) against a reference genome, Drosophila melanogaster here, to significantly improve the ability to reconstruct transcripts and then identify differences of expression between several conditions.
+
+> The original data is available at NCBI Gene Expression Omnibus (GEO) under accession number GSE18508.
+
+We will look at the 7 first samples:
+
+- 3 treated samples with Pasilla (PS) gene depletion: GSM461179, GSM461180, GSM461181
+- 4 untreated samples: GSM461176, GSM461177, GSM461178, GSM461182
+Each sample constitutes a separate biological replicate of the corresponding condition (treated or untreated). Moreover, two of the treated and two of the untreated samples are from a paired-end sequencing assay, while the remaining samples are from a single-end sequencing experiment. **For this exercise, we will only consider the paired-end samples** (GSM461177, GSM461178, GSM461180, GSM461181).
+
+1. The fastq files for this experiment are available online at [https://zenodo.org/record/290221#.Wo7i_R9gLCI](https://zenodo.org/record/290221#.Wo7i_R9gLCI). Download the following files
+
+- Drosophila_melanogaster.BDGP5.78.gtf
+- GSM461177_untreat_paired_chr4_R1.fastq
+- GSM461177_untreat_paired_chr4_R2.fastq
+- GSM461178_untreat_paired_chr4_R1.fastq
+- GSM461178_untreat_paired_chr4_R2.fastq
+- GSM461180_treat_paired_chr4_R1.fastq
+- GSM461180_treat_paired_chr4_R2.fastq
+- GSM461181_treat_paired_chr4_R1.fastq
+- GSM461181_treat_paired_chr4_R2.fastq
+
+Make sure that the file type of `Drosophila_melanogaster.BDGP5.78.gtf` is set to `gtf` and the other files are `fastqsanger`
+
+If you wish, you can use fastQC to verify the quality assessment of these data
+
+2. Align each the four samples using TopHat. These are paired end samples, so you will need to select *Paired-End* in the **Is this single-end or paired-end data?** box. Make sure that the forward reads file is set to *XXX_R1.fastq* and *XXX_R2.fastq*. The genome version needs to be **dm3**.
+
+For convenience, rename the output files to  `GSM461181_accepted_hits`, `GSM461180_accepted_hits`, `GSM461177_accepted_hits` and `GSM461178_accepted_hits`. 
+
+3. Use HT-seq count to generate a count matrix with the parameters
+    - **Gene model (GFF) file to count reads over from your current history:** Drosophila_melanogaster.BDGP5.78.gtf
+    - **bam/sam file from your history:**  
+        - `GSM461181_accepted_hits.bam`
+        - `GSM461180_accepted_hits.bam`
+        - `GSM461177_accepted_hits.bam`
+        - `GSM461178_accepted_hits.bam`
+
+4. Perform the `edgeR` analysis
 
 ## References
 
