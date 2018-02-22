@@ -20,9 +20,7 @@ email: [bioinformatics-core@sheffield.ac.uk](bioinformatics-core@sheffield.ac.uk
 
 ## Tutorial Overview
 
-This tutorial will cover the basics of RNA-seq using Galaxy.
-
-It is recommended you have some familiarity with Galaxy before using this [Galaxy](http://vlsci.github.io/lscc_docs/tutorials/galaxy_101/galaxy_101/)
+This tutorial will cover the basics of RNA-seq using Galaxy; a open-source web-based platform for the analysis of biological data. You should gain an appreciation of the tasks involved in a typical RNA-seq analysis, starting from raw reads to generating a list of differentially-expressed genes.
 
 -----
 
