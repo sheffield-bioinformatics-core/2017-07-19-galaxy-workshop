@@ -2,6 +2,8 @@
 
 # Hands-on RNA-seq analysis using Galaxy
 
+https://sheffield-bioinformatics-core.github.io/rna-seq-in-galaxy
+
 ## Acknowledgement
 
 Based on materials from Monash Bioinformatics Platform
