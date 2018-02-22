@@ -1,6 +1,10 @@
 
 
-# Galaxy-based workshop : RNA-seq and Degust
+# Hands-on RNA-seq analysis using Galaxy
+
+## Acknowledgement
+
+Based on materials from Monash Bioinformatics Platform
 
 ## https://monashbioinformaticsplatform.github.io/2017-07-19-galaxy-workshop/
 
