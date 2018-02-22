@@ -13,14 +13,14 @@ _Modified by David Powell_
 
 ### Sheffield Bioinformatics Core
 web : [sbc.shef.ac.uk](https://sbc.shef.ac.uk)  
-twitter: [@MonashBioinfo](https://twitter.com/MonashBioinfo)  
-email: [bioinformatics.platform@monash.edu](bioinformatics.platform@monash.edu)
+twitter: [@SheffBioinfCore](https://twitter.com/SheffBioinfCore)  
+email: [bioinformatics-core@sheffield.ac.uk](bioinformatics-core@sheffield.ac.uk)
 
 -----
 
 ## Tutorial Overview
 
-This tutorial will cover the basics of RNA-seq using Galaxy and Degust.
+This tutorial will cover the basics of RNA-seq using Galaxy.
 
 It is recommended you have some familiarity with Galaxy before using this [Galaxy](http://vlsci.github.io/lscc_docs/tutorials/galaxy_101/galaxy_101/)
 
@@ -56,6 +56,15 @@ tutorial a suitable length. This has implications, as discussed in section 8.
     clicking **User > Login**.
 
 #### 2.  Import the RNA-seq data for the workshop.
+
+We can going to import the [*fastq* files](https://en.wikipedia.org/wiki/FASTQ_format) for this experiment. This is a standard format for storing raw sequencing reads and their associated quality scores. Each read is described by 4 lines in the file:-
+
+<img src="media/fastq-header.png">
+
+The quality scores are [ASCII](http://ascii-code.com/) representations of the base call probability. Different scales are possible (resulting in a different set of characters appearing in the file). We will need to tell Galaxy which scale has been used in order that we can process the data correctly.
+
+<img src="media/phred.png">
+
 
 You can import the data by:
 
@@ -105,6 +114,8 @@ You can import the data by:
 -----
 
 ## Section 2: FastQC
+
+[FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) is a popular tool from [Babraham Institute Bioinformatics Group](https://www.bioinformatics.babraham.ac.uk/index.html) used for *quality assessment* of sequencing data. The [documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) for FastQC will help you to interpret the plots and stats produced by the tool. A traffic light system is used to alert the user's attention to possible issues. However, it is worth bearing in mind that the tool is blind to the particular type of sequencing you are performing (i.e. whole-genome, ChIP-seq, RNA-seq), so some warnings might be expected due to the nature of your experiment.
 
 - From the left hand tool panel in Galaxy, under *NGS ANALYSIS*, select *NGS: QC and manipulation -> FastQC*
 - Select one of the FASTQ files as input and *Execute* the tool.
