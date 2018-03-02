@@ -348,6 +348,126 @@ from "Filter on data x" to `edgeR_Significant_DE_Genes`
 
 -----
 
+## Section 5 (alternative): DEseq2  [30 min]
+
+If you are not using the Monash galaxy server, you will have to use an alternative method. We will choose DESeq2. To use this tool, you will have to use the **htseq-count** tool to obtain counts from each aligned bam file.
+
+In the Galaxy tool panel, under NGS Analysis, select
+**NGS: RNA Analysis > DESeq2** and set the parameters as follows:
+
+
+- **1. Factor level** Batch
+- **Count files**  
+    - `batch1-htseq`
+    - `batch2-htseq`
+- **2. Factor level:** Chem
+- **Select columns containing control:**  
+    - `chem1-htseq`
+    - `chem2-htseq`
+- Use defaults for the other fields
+- Execute
+
+#### 2.  Examine the outputs from the previous step
+1.  Examine the `DeSeq2 result file`by
+    clicking on the **eye icon**.
+    This file is a list of genes sorted by p-value from using DESeq2 to
+    perform differential expression analysis.
+2.  Examine the `DeSeq2 plots` file. This file has some
+    plots from running DESeq2, including PCA and clustering showing relationships between samples
+
+#### 3.  Extract the significant differentially expressed genes.  
+Under Basic Tools, click on **Filter and Sort > Filter**:
+
+- **Filter:** `DESeq2 results file`
+- **With following condition:** c7 <= 0.05
+- **Number of header lines to skip:** 1
+- Execute
+
+This will keep the genes that have an adjusted p-value (column 7 in the table) of less
+or equal to 0.05. There should be 47 genes in this file.
+Rename this file by clicking on the **pencil icon** of and change the name
+from "Filter on data x" to `DESeq2_Significant_DE_Genes`
+
+
+## Exercise: Cuffdiff and comparison of results to another method
+
+
+The aim in this section is to statistically test for differential expression
+using Cuffdiff and obtain a list of significant genes.
+
+#### 1.  Run Cuffdiff to identify differentially expressed genes and transcripts
+In the left tool panel menu, under NGS Analysis, select
+**NGS: RNA Analysis > Cuffdiff** and set the parameters as follows:
+
+- **Transcripts:** genes.gtf
+- **Condition:**  
+    - **1: Condition**
+        - **name** batch
+        - **Replicates:**
+            - `batch1-accepted_hits.bam`
+            - `batch2-accepted_hits.bam`
+            (Multiple datasets can be selected by holding down the shift key or
+            the ctrl key (Windows) or the command key (OSX).)
+    - **2: Condition**
+        - **name** chem
+        - **Replicates:**
+            - `chem1-accepted_hits.bam`
+            - `chem2-accepted_hits.bam`
+- Use defaults for the other fields
+- Execute
+
+
+
+<img src="media/rna_advanced_cuffdiff.png" height=700px>
+
+Note: This step may take a while, depending on how busy the server is.
+
+#### 2.  Explore the Cuffdiff output files
+
+There should be 11 output files from Cuffdiff. These files should all begin
+with something like "Cuffdiff on data 43, data 38, and others". We will
+mostly be interested in the file ending with "gene differential expression
+testing" which contains the statistical results from testing the level of
+gene expression between the batch condition and chem condition.
+
+Filter based on column 14 ("significant") - a binary assessment of
+q\_value > 0.05, where q\_value is p\_value adjusted for multiple testing.
+Under Basic Tools, click on **Filter and Sort > Filter**:
+
+- **Filter:** "Cuffdiff on data....: gene differential expression testing"
+- **With following condition:** c14=='yes'
+- Execute
+
+This will keep only those entries that Cuffdiff has marked as
+significantly differentially expressed. There should be 43 differentially
+expressed genes in this list.
+
+We can rename this file by clicking on the **pencil icon** of
+the outputted file and change the name from "Filter on data x" to
+`Cuffdiff_Significant_DE_Genes`.
+
+
+## 3.: How much concordance is there between methods?
+
+We are interested in how similar the identified genes are between the different
+statistial methods used by Cuffdiff, edgeR, and DESeq2 (depending on which tools you ran in the previous steps). We can generate a Venn diagram to visualise the amount of overlap.
+
+Use the tool **Graph/Display Data > Venn Diagram** and set the parameters as follows:  
+    - **Plot title:** Common genes
+    - **Implicit or explicit full ID list?:** `Explicit`
+    - **Full dataset (with all identifiers):** `DESeq2 result file`
+    - **1.Sets** - Members of set: `Cuffdiff_significant_genes`
+    - **Press + insert Sets**
+    - **2. Sets** - Members of set: `DEseq2_significant_genes` or `edgeR_significant_genes`
+     - Execute
+
+**Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2) **
+**Question: What are the names of the genes that are identified by the two methods? **
+
+Use the tool **Join, Subtract and Group > Compare two Datasets** and **Text Manipulation > Cut** to answer this
+        
+
+
 ## References
 
 [1] Nookaew I, Papini M, Pornputtpong N, Scalcinati G, Fagerberg L, Uhlén M, Nielsen J: A comprehensive comparison of RNA-Seq-based transcriptome analysis from reads to differential gene expression and cross-comparison with microarrays: a case study in Saccharomyces cerevisiae. Nucleic Acids Res 2012, 40 (20):10084 – 10097. doi:10.1093/nar/gks804. Epub 2012 Sep 10
