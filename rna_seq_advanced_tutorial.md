@@ -463,6 +463,7 @@ We are interested in how similar the identified genes are between the different
 statistial methods used by Cuffdiff, edgeR, and DESeq2 (depending on which tools you ran in the previous steps). We can generate a Venn diagram to visualise the amount of overlap.
 
 Use the tool **Graph/Display Data > Venn Diagram** and set the parameters as follows:  
+
     - **Plot title:** Common genes
     - **Implicit or explicit full ID list?:** `Explicit`
     - **Full dataset (with all identifiers):** `DESeq2 result file`
@@ -472,9 +473,9 @@ Use the tool **Graph/Display Data > Venn Diagram** and set the parameters as fol
      - Execute
 
 **Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2) **
-**Question: What are the names of the genes that are identified by the two methods? **
+**Question: What are the names of the genes that are identified by the two methods? ** 
 
-Use the tool **Join, Subtract and Group > Compare two Datasets** and **Text Manipulation > Cut** to answer this
+- (Use the tool **Join, Subtract and Group > Compare two Datasets** and **Text Manipulation > Cut** to answer this)
         
 
 
