@@ -41,7 +41,7 @@ email: <a href="bioinformatics-core@sheffield.ac.uk">bioinformatics-core@sheffie
 
 <h2>Background [15 min]</h2>
 
-<h4>Where does the data in this tutorial come from?</h4>
+<h4>Where do the data in this tutorial come from?</h4>
 
 <p>The data for this tutorial is from the paper, <em>A comprehensive comparison of
 RNA-Seq-based transcriptome analysis from reads to differential gene expression
@@ -71,19 +71,19 @@ tutorial a suitable length. </p>
   <p>To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of. </p>
 </blockquote>
 
-<p>Preferably speak to a statistician in advance of performing your experiments</p>
+<p>Preferably speak to a statistician in advance of performing your experiments!</p>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Hz1fyhVOjr4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 <hr />
 
-<h3>Analysis workflow</h3>
+<h3>Reminder of analysis workflow</h3>
 
 <p>Image from https://ycl6.gitbooks.io/rna-seq-data-analysis/</p>
 
 <p><img src="https://ycl6.gitbooks.io/rna-seq-data-analysis/Workflow.png" alt="" title="" /></p>
 
-<p>For this tutorial, we will assume that the <em>wet-lab</em> stages of the experiment have been performed and we are now in the right-hand branch of the workflow. We will demonstrate the steps of <strong>Quality assessment</strong>, <strong>alignment</strong>, <strong>quantification</strong> and <strong>differential expression testing</strong>.</p>
+<p>For this tutorial, we will assume that the <em>wet-lab</em> stages of the experiment have been performed and we are now in the right-hand branch of the workflow. In this tutorial we will demonstrate the steps of <strong>Quality assessment</strong>, <strong>alignment</strong>, <strong>quantification</strong> and <strong>differential expression testing</strong>.</p>
 
 <h2>Section 1: Preparation [15 min]</h2>
 
@@ -112,7 +112,7 @@ clicking <strong>User > Login</strong>.</p></li>
 
 <p><img src="media/fastq-header.png"></p>
 
-<p>The quality scores are <a href="http://ascii-code.com/">ASCII</a> representations of how confident we are that a particular base has been called correctly. Letters that are further along the alphabet indicate higher confidence. This is important when trying to identify types of genome variation such as single base changes, but is also indicative of the overall quality of the sequencing. Different scales are possible (resulting in a different set of characters appearing in the file). We will need to tell Galaxy which scale has been used in order that we can process the data correctly.</p>
+<p>The quality scores are <a href="http://ascii-code.com/">ASCII</a> representations of how confident we are that a particular base has been called correctly. Letters that are further along the alphabet indicate higher confidence. This is important when trying to identify types of genome variation such as single base changes, but is also indicative of the overall quality of the sequencing. Different scales have been employed over time (resulting in a different set of characters appearing in the file). We will need to tell Galaxy which scale has been used in order that we can process the data correctly.</p>
 
 <p><img src="media/phred.png"></p>
 
@@ -454,7 +454,7 @@ plots from running DESeq2, including PCA and clustering showing relationships be
 </ul>
 
 <p>This will keep the genes that have an adjusted p-value (column 7 in the table) of less
-or equal to 0.05. There should be 47 genes in this file.
+or equal to 0.05. There should be 40 genes in this file.
 Rename this file by clicking on the <strong>pencil icon</strong> of and change the name
 from "Filter on data x" to <code>DESeq2_Significant_DE_Genes</code></p>
 
@@ -505,13 +505,14 @@ the ctrl key (Windows) or the command key (OSX).)</li>
 
 <p>There should be 11 output files from Cuffdiff. These files should all begin
 with something like "Cuffdiff on data 43, data 38, and others". We will
-mostly be interested in the file ending with "gene differential expression
-testing" which contains the statistical results from testing the level of
+mostly be interested in the file ending with "<code>gene differential expression
+testing</code>" which contains the statistical results from testing the level of
 gene expression between the batch condition and chem condition.</p>
 
 <p>Filter based on column 14 ("significant") - a binary assessment of
-q_value > 0.05, where q_value is p_value adjusted for multiple testing.
-Under Basic Tools, click on <strong>Filter and Sort > Filter</strong>:</p>
+q_value > 0.05, where q_value is p_value adjusted for multiple testing.</p>
+
+<p>Under Basic Tools, click on <strong>Filter and Sort > Filter</strong>:</p>
 
 <ul>
 <li><strong>Filter:</strong> "Cuffdiff on data....: gene differential expression testing"</li>
@@ -520,8 +521,9 @@ Under Basic Tools, click on <strong>Filter and Sort > Filter</strong>:</p>
 </ul>
 
 <p>This will keep only those entries that Cuffdiff has marked as
-significantly differentially expressed. There should be 43 differentially
-expressed genes in this list.</p>
+significantly differentially expressed. </p>
+
+<p><strong>Question: How many genes has Cuffdiff identified as being differentially expressed?</strong></p>
 
 <p>We can rename this file by clicking on the <strong>pencil icon</strong> of
 the outputted file and change the name from "Filter on data x" to
@@ -546,7 +548,7 @@ statistial methods used by Cuffdiff, edgeR, and DESeq2 (depending on which tools
 
 <p><strong>Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2)</strong></p>
 
-<p><strong>Question: What are the names of the genes that are identified by the two methods?</strong> </p>
+<p><strong>Question: What are the names of the genes identified by Cuffdiff that are also identifited by edgeR / DESeq2?</strong> </p>
 
 <ul>
 <li>(Use the tool <strong>Join, Subtract and Group > Compare two Datasets</strong> and <strong>Text Manipulation > Cut</strong> to answer this)</li>
