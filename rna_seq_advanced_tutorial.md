@@ -288,15 +288,17 @@ expressed genes.
 ### Alternative tool
 
 **If "SAM/BAM to count matrix" is not available on the Galaxy server you are using**, **NGS Analysis > htseq-count** may be used an alternative
-    - **GFF file:** genes.gtf
-    - **Aligned SAM/BAM file:**  
-      (Select all six bam files using the shift key.)
-        - `batch1-accepted_hits.bam`
-        - `batch2-accepted_hits.bam`
-        - `chem1-accepted_hits.bam`
-        - `chem2-accepted_hits.bam`
-    - Use defaults for the other fields
-    - Execute
+
+- **GFF file:** genes.gtf
+ - **Aligned SAM/BAM file:**  
+ (Select all six bam files using the shift key.)
+    - `batch1-accepted_hits.bam`
+    - `batch2-accepted_hits.bam`
+    - `chem1-accepted_hits.bam`
+    - `chem2-accepted_hits.bam`
+- Use defaults for the other fields
+- Execute
+
 Rename the 4 accepted\_hits files into a more meaningful name (e.g.
 'htseq-count on data ...' to 'batch1-htseq')
 by using the **pen icon** next to the file.
