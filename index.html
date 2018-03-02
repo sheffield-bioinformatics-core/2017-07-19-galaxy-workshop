@@ -96,13 +96,23 @@ dark-grey bar. Alternatively, if you already have an account, login by
 clicking <strong>User > Login</strong>.</p></li>
 </ol>
 
+<h3>Other Galaxy servers</h3>
+
+<p><strong>If the Monash server is down, you may need to find an alternative</strong></p>
+
+<ul>
+<li>https://galaxy.hidelab.org/</li>
+<li>http://services.cbib.u-bordeaux.fr/galaxy/</li>
+<li>http://usegalaxy.org </li>
+</ul>
+
 <h4>2.  Import the RNA-seq data for the workshop.</h4>
 
 <p>We can going to import the <a href="https://en.wikipedia.org/wiki/FASTQ_format"><em>fastq</em> files</a> for this experiment. This is a standard format for storing raw sequencing reads and their associated quality scores. Each read is described by 4 lines in the file:-</p>
 
 <p><img src="media/fastq-header.png"></p>
 
-<p>The quality scores are <a href="http://ascii-code.com/">ASCII</a> representations of the base call probability. Different scales are possible (resulting in a different set of characters appearing in the file). We will need to tell Galaxy which scale has been used in order that we can process the data correctly.</p>
+<p>The quality scores are <a href="http://ascii-code.com/">ASCII</a> representations of how confident we are that a particular base has been called correctly. Letters that are further along the alphabet indicate higher confidence. This is important when trying to identify types of genome variation such as single base changes, but is also indicative of the overall quality of the sequencing. Different scales are possible (resulting in a different set of characters appearing in the file). We will need to tell Galaxy which scale has been used in order that we can process the data correctly.</p>
 
 <p><img src="media/phred.png"></p>
 
@@ -238,7 +248,7 @@ statistics including the number of reads mapped and the mapping rate.</li>
 'Tophat on data 1: accepted<em>hits' to 'batch1-accepted</em>hits.bam')
 by using the <strong>pen icon</strong> next to the file.</p>
 
-<h4>3.  Visualise the aligned reads with IGV</h4>
+<h4>3 [Optional].  Visualise the aligned reads with IGV</h4>
 
 <p>Download the bam files you have created in the previous step by clicking the disk icon on the right-hand panel. Make sure to click both the <strong>Download dataset</strong> and <strong>Download index</strong> buttons. We will now visualise the alignments using the Integrative Genomics Viewer (IGV).</p>
 
@@ -248,40 +258,17 @@ by using the <strong>pen icon</strong> next to the file.</p>
 <li>http://software.broadinstitute.org/software/igv/</li>
 <li>Go to <em>Downloads</em></li>
 <li>Launch with 1.2Gb</li>
-<li>Click on igv24_mm.jnlp file that is downloaded</li>
+<li><p>Click on igv24_mm.jnlp file that is downloaded</p></li>
+<li><p>File -> Load from File</p>
+
+<ul>
+<li>select any bam file you aligned with tophat</li>
+</ul></li>
+<li>Type chrI in the text box in the top of the screen
+<ul>
+<li>use the <code>+</code> and <code>-</code> buttons to zoom into an area displaying reads</li>
+</ul></li>
 </ul>
-
-<p><strong>TO DO</strong></p>
-
-<ol>
-<li>On the top bar of Galaxy, select <strong>Visualization > New Track Browser</strong>.</li>
-<li>Name your new visualization and select S. cerevisiae (sacCer2) as the
-reference genome build.</li>
-<li>Click the <strong>Add Datasets to Visualization</strong> button and select
-<code>batch1-accepted_hits.bam</code> and <code>chem1-accepted_hits.bam</code> by using the
-checkboxes on the left.</li>
-<li>Select chrI from the dropdown box. You can zoom in and out using the
-buttons on the top toolbar.</li>
-<li>You can also add more tracks using the <strong>Add Tracks icon</strong> located on the
-top right. Load one of the splice junction files such as 'Tophat on data 1: splice junctions'.</li>
-<li>Explore the data and try to find a splice junction. Next to the
-drop down list, click on the chromosomal position number
-display and specify the location <strong>chrI:86985-87795</strong> to view an
-intron junction.  </li>
-</ol>
-
-<p>Ideally we would add a gene model to the visualisation; but the
-genes.gtf file for S. cerevisae (as downloaded from UCSC Table Browser)
-has a slightly different naming convention for one of the chromosomes
-than the reference genome used by Galaxy, which will cause an error to
-be thrown by Trackster if you try to add it. This is very typical of
-genomics currently! If you are interested, you can fiddle with the
-genes.gtf file to rename the chromosome '2-micron' to '2micron', which
-will fix the problem.</p>
-
-<p>Before starting the next section, leave the Trackster interface and return
-to the analysis view of Galaxy by clicking 'Analyze Data' on the top
-Galaxy toolbar.</p>
 
 <h4>[Optional] Convert BAM to SAM</h4>
 
@@ -327,6 +314,12 @@ from looking at the counts.</p></li>
 <p>We now have a count matrix, with a count against each corresponding sample. We
 will use this matrix in later sections to calculate the differentially
 expressed genes.</p>
+
+<h3>Alternative tool</h3>
+
+<p><strong>If "SAM/BAM to count matrix" is not available on the Galaxy server you are using</strong></p>
+
+<p><strong>NGS Analysis > htseq-count</strong> may be used an alternative</p>
 
 <hr />
 
