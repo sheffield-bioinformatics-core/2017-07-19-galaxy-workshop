@@ -474,9 +474,9 @@ Use the tool **Graph/Display Data > Venn Diagram** and set the parameters as fol
 - **2. Sets** - Members of set: `DEseq2_significant_genes` or `edgeR_significant_genes`
 - Execute
 
-**Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2) **
+**Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2)**
 
-**Question: What are the names of the genes that are identified by the two methods? ** 
+**Question: What are the names of the genes that are identified by the two methods?** 
 
 - (Use the tool **Join, Subtract and Group > Compare two Datasets** and **Text Manipulation > Cut** to answer this)
         
