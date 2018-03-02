@@ -288,15 +288,17 @@ expressed genes.
 ### Alternative tool
 
 **If "SAM/BAM to count matrix" is not available on the Galaxy server you are using**, **NGS Analysis > htseq-count** may be used an alternative
-    - **GFF file:** genes.gtf
-    - **Aligned SAM/BAM file:**  
-      (Select all six bam files using the shift key.)
-        - `batch1-accepted_hits.bam`
-        - `batch2-accepted_hits.bam`
-        - `chem1-accepted_hits.bam`
-        - `chem2-accepted_hits.bam`
-    - Use defaults for the other fields
-    - Execute
+
+- **GFF file:** genes.gtf
+ - **Aligned SAM/BAM file:**  
+ (Select all six bam files using the shift key.)
+    - `batch1-accepted_hits.bam`
+    - `batch2-accepted_hits.bam`
+    - `chem1-accepted_hits.bam`
+    - `chem2-accepted_hits.bam`
+- Use defaults for the other fields
+- Execute
+
 Rename the 4 accepted\_hits files into a more meaningful name (e.g.
 'htseq-count on data ...' to 'batch1-htseq')
 by using the **pen icon** next to the file.
@@ -463,18 +465,20 @@ We are interested in how similar the identified genes are between the different
 statistial methods used by Cuffdiff, edgeR, and DESeq2 (depending on which tools you ran in the previous steps). We can generate a Venn diagram to visualise the amount of overlap.
 
 Use the tool **Graph/Display Data > Venn Diagram** and set the parameters as follows:  
-    - **Plot title:** Common genes
-    - **Implicit or explicit full ID list?:** `Explicit`
-    - **Full dataset (with all identifiers):** `DESeq2 result file`
-    - **1.Sets** - Members of set: `Cuffdiff_significant_genes`
-    - **Press + insert Sets**
-    - **2. Sets** - Members of set: `DEseq2_significant_genes` or `edgeR_significant_genes`
-     - Execute
 
-**Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2) **
-**Question: What are the names of the genes that are identified by the two methods? **
+- **Plot title:** Common genes
+- **Implicit or explicit full ID list?:** `Explicit`
+- **Full dataset (with all identifiers):** `DESeq2 result file`
+- **1.Sets** - Members of set: `Cuffdiff_significant_genes`
+- **Press "+" insert Sets**
+- **2. Sets** - Members of set: `DEseq2_significant_genes` or `edgeR_significant_genes`
+- Execute
 
-Use the tool **Join, Subtract and Group > Compare two Datasets** and **Text Manipulation > Cut** to answer this
+**Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2)**
+
+**Question: What are the names of the genes that are identified by the two methods?** 
+
+- (Use the tool **Join, Subtract and Group > Compare two Datasets** and **Text Manipulation > Cut** to answer this)
         
 
 
