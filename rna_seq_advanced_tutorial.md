@@ -42,7 +42,7 @@ Those eventually wanted to perform their own RNA-seq analysis (for example in R)
 
 ## Background [15 min]
 
-#### Where does the data in this tutorial come from?
+#### Where do the data in this tutorial come from?
 The data for this tutorial is from the paper, *A comprehensive comparison of
 RNA-Seq-based transcriptome analysis from reads to differential gene expression
 and cross-comparison with microarrays: a case study in Saccharomyces
@@ -70,19 +70,19 @@ R.A. Fisher
 
 > To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of. 
 
-Preferably speak to a statistician in advance of performing your experiments
+Preferably speak to a statistician in advance of performing your experiments!
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Hz1fyhVOjr4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 -----
 
-### Analysis workflow
+### Reminder of analysis workflow
 
 Image from https://ycl6.gitbooks.io/rna-seq-data-analysis/
 
 ![](https://ycl6.gitbooks.io/rna-seq-data-analysis/Workflow.png)
 
-For this tutorial, we will assume that the *wet-lab* stages of the experiment have been performed and we are now in the right-hand branch of the workflow. We will demonstrate the steps of **Quality assessment**, **alignment**, **quantification** and **differential expression testing**.
+For this tutorial, we will assume that the *wet-lab* stages of the experiment have been performed and we are now in the right-hand branch of the workflow. In this tutorial we will demonstrate the steps of **Quality assessment**, **alignment**, **quantification** and **differential expression testing**.
 
 
 ## Section 1: Preparation [15 min]
@@ -107,7 +107,7 @@ We can going to import the [*fastq* files](https://en.wikipedia.org/wiki/FASTQ_f
 
 <img src="media/fastq-header.png">
 
-The quality scores are [ASCII](http://ascii-code.com/) representations of how confident we are that a particular base has been called correctly. Letters that are further along the alphabet indicate higher confidence. This is important when trying to identify types of genome variation such as single base changes, but is also indicative of the overall quality of the sequencing. Different scales are possible (resulting in a different set of characters appearing in the file). We will need to tell Galaxy which scale has been used in order that we can process the data correctly.
+The quality scores are [ASCII](http://ascii-code.com/) representations of how confident we are that a particular base has been called correctly. Letters that are further along the alphabet indicate higher confidence. This is important when trying to identify types of genome variation such as single base changes, but is also indicative of the overall quality of the sequencing. Different scales have been employed over time (resulting in a different set of characters appearing in the file). We will need to tell Galaxy which scale has been used in order that we can process the data correctly.
 
 <img src="media/phred.png">
 
@@ -396,7 +396,7 @@ Under Basic Tools, click on **Filter and Sort > Filter**:
 - Execute
 
 This will keep the genes that have an adjusted p-value (column 7 in the table) of less
-or equal to 0.05. There should be 47 genes in this file.
+or equal to 0.05. There should be 40 genes in this file.
 Rename this file by clicking on the **pencil icon** of and change the name
 from "Filter on data x" to `DESeq2_Significant_DE_Genes`
 
@@ -438,12 +438,14 @@ Note: This step may take a while, depending on how busy the server is.
 
 There should be 11 output files from Cuffdiff. These files should all begin
 with something like "Cuffdiff on data 43, data 38, and others". We will
-mostly be interested in the file ending with "gene differential expression
-testing" which contains the statistical results from testing the level of
+mostly be interested in the file ending with "`gene differential expression
+testing`" which contains the statistical results from testing the level of
 gene expression between the batch condition and chem condition.
 
 Filter based on column 14 ("significant") - a binary assessment of
 q\_value > 0.05, where q\_value is p\_value adjusted for multiple testing.
+
+
 Under Basic Tools, click on **Filter and Sort > Filter**:
 
 - **Filter:** "Cuffdiff on data....: gene differential expression testing"
@@ -451,8 +453,9 @@ Under Basic Tools, click on **Filter and Sort > Filter**:
 - Execute
 
 This will keep only those entries that Cuffdiff has marked as
-significantly differentially expressed. There should be 43 differentially
-expressed genes in this list.
+significantly differentially expressed. 
+
+**Question: How many genes has Cuffdiff identified as being differentially expressed?**
 
 We can rename this file by clicking on the **pencil icon** of
 the outputted file and change the name from "Filter on data x" to
@@ -476,7 +479,7 @@ Use the tool **Graph/Display Data > Venn Diagram** and set the parameters as fol
 
 **Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2)**
 
-**Question: What are the names of the genes that are identified by the two methods?** 
+**Question: What are the names of the genes identified by Cuffdiff that are also identifited by edgeR / DESeq2?** 
 
 - (Use the tool **Join, Subtract and Group > Compare two Datasets** and **Text Manipulation > Cut** to answer this)
         
