@@ -466,13 +466,13 @@ statistial methods used by Cuffdiff, edgeR, and DESeq2 (depending on which tools
 
 Use the tool **Graph/Display Data > Venn Diagram** and set the parameters as follows:  
 
-    - **Plot title:** Common genes
-    - **Implicit or explicit full ID list?:** `Explicit`
-    - **Full dataset (with all identifiers):** `DESeq2 result file`
-    - **1.Sets** - Members of set: `Cuffdiff_significant_genes`
-    - **Press + insert Sets**
-    - **2. Sets** - Members of set: `DEseq2_significant_genes` or `edgeR_significant_genes`
-     - Execute
+- **Plot title:** Common genes
+- **Implicit or explicit full ID list?:** `Explicit`
+- **Full dataset (with all identifiers):** `DESeq2 result file`
+- **1.Sets** - Members of set: `Cuffdiff_significant_genes`
+- **Press "+" insert Sets**
+- **2. Sets** - Members of set: `DEseq2_significant_genes` or `edgeR_significant_genes`
+- Execute
 
 **Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2) **
 **Question: What are the names of the genes that are identified by the two methods? ** 
