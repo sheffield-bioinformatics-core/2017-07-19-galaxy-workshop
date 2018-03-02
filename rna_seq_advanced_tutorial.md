@@ -287,9 +287,19 @@ expressed genes.
 
 ### Alternative tool
 
-**If "SAM/BAM to count matrix" is not available on the Galaxy server you are using**
-
-**NGS Analysis > htseq-count** may be used an alternative
+**If "SAM/BAM to count matrix" is not available on the Galaxy server you are using**, **NGS Analysis > htseq-count** may be used an alternative
+    - **GFF file:** genes.gtf
+    - **Aligned SAM/BAM file:**  
+      (Select all six bam files using the shift key.)
+        - `batch1-accepted_hits.bam`
+        - `batch2-accepted_hits.bam`
+        - `chem1-accepted_hits.bam`
+        - `chem2-accepted_hits.bam`
+    - Use defaults for the other fields
+    - Execute
+Rename the 4 accepted\_hits files into a more meaningful name (e.g.
+'htseq-count on data ...' to 'batch1-htseq')
+by using the **pen icon** next to the file.
 
 -----
 
@@ -350,7 +360,7 @@ from "Filter on data x" to `edgeR_Significant_DE_Genes`
 
 ## Section 5 (alternative): DEseq2  [30 min]
 
-If you are not using the Monash galaxy server, you will have to use an alternative method. We will choose DESeq2. To use this tool, you will have to use the **htseq-count** tool to obtain counts from each aligned bam file.
+If you are not using the Monash galaxy server, you will have to use an alternative method. We will choose DESeq2. To use this tool, you will have to use the **htseq-count** tool to obtain counts from each aligned bam file (**Section 4 - alternative tool**).
 
 In the Galaxy tool panel, under NGS Analysis, select
 **NGS: RNA Analysis > DESeq2** and set the parameters as follows:
