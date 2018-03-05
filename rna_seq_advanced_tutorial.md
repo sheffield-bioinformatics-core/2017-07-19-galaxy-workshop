@@ -97,9 +97,10 @@ For this tutorial, we will assume that the *wet-lab* stages of the experiment ha
 
 **If the Monash server is down, you may need to find an alternative**
 
+- http://usegalaxy.org (Prefered)
 - https://galaxy.hidelab.org/
 - http://services.cbib.u-bordeaux.fr/galaxy/
-- http://usegalaxy.org 
+
 
 #### 2.  Import the RNA-seq data for the workshop.
 
