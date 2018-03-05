@@ -207,6 +207,11 @@ built-in genome
 
 Note: This may take a few minutes, depending on how busy the server is.
 
+**If your Galaxy server does not have the yeast genome available from the built-in genome menu, you will need to download it**
+
+The yeast genome in question can be download from Illumina's iGenome page [using this link](ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Saccharomyces_cerevisiae/UCSC/sacCer2/Saccharomyces_cerevisiae_UCSC_sacCer2.tar.gz). The whole genome fasta file is located in the folder `Saccharomyces_cerevisiae/UCSC/sacCer2/Sequences/WholeGenomeFasta`
+
+
 #### 2.  Rename the output files
 You should have 5 output files for each of the FASTQ input files:
 
