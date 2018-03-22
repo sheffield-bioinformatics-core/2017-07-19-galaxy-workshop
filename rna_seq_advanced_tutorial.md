@@ -538,62 +538,6 @@ We now have a count matrix, with a count against each corresponding sample. We
 will use this matrix in later sections to calculate the differentially
 expressed genes.
 
-
-## Section 5: edgeR  [30 min]
-
-[edgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
-is an R package, that is used for analysing differential expression of
-RNA-Seq data and can either use exact statistical methods or generalised
-linear models.
-
-#### 1.  Generate a list of differentially expressed genes using edgeR
-In the Galaxy tool panel, under NGS Analysis, select
-**NGS: RNA Analysis > Differential_Count** and set the parameters as follows:
-
-- **Select an input matrix - rows are contigs, columns are counts for each
-  sample:** bams to DGE count matrix_htseqsams2mx.xls
-- **Title for job outputs:** Differential\_Counts\_edgeR
-- **Treatment Name:** Batch
-- **Select columns containing treatment:**  
-    - `batch1-accepted_hits.bam`
-    - `batch2-accepted_hits.bam`
-- **Control Name:** Chem
-- **Select columns containing control:**  
-    - `chem1-accepted_hits.bam`
-    - `chem2-accepted_hits.bam`
-- **Run this model using edgeR:** Run edgeR
-- Use defaults for the other fields
-- Execute
-
-#### 2.  Examine the outputs from the previous step
-1.  Examine the `Differential_Counts_edgeR_topTable_edgeR.xls` file by
-    clicking on the **eye icon**.
-    This file is a list of genes sorted by p-value from using EdgeR to
-    perform differential expression analysis.
-2.  Examine the `Differential_Counts_edgeR.htm`l file. This file has some
-    output logs and plots from running edgeR. If you are familiar with R,
-    you can examine the R code used for analysis by scrolling to the bottom
-    of the file, and clicking `Differential_Counts.Rscript` to download the
-    Rscript file.  
-    If you are curious about the statistical methods edgeR uses, you can
-    read the [edgeR user's guide at
-    Bioconductor](https://bioconductor.org/packages/release/bioc/html/edgeR.html).
-
-#### 3.  Extract the significant differentially expressed genes.  
-Under Basic Tools, click on **Filter and Sort > Filter**:
-
-- **Filter:** `Differential_Counts_edgeR_topTable_edgeR.xls`
-- **With following condition:** c6 <= 0.05
-- **Number of header lines to skip:** 1
-- Execute
-
-This will keep the genes that have an adjusted p-value (column 6 in the table) of less
-or equal to 0.05. There should be 47 genes in this file.
-Rename this file by clicking on the **pencil icon** of and change the name
-from "Filter on data x" to `edgeR_Significant_DE_Genes`
-
------
-
 ## Section 5: DEseq2  [30 min]
 
 [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html
