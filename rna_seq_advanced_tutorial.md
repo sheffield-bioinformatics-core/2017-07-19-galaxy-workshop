@@ -399,7 +399,7 @@ view the text within Galaxy
 
 -----
 
-#### 3 [Optional].  Visualise the aligned reads with IGV
+#### 3  Visualise the aligned reads with IGV
 
 Download the bam files you have created in the previous step by clicking the disk icon on the right-hand panel. Make sure to click both the **Download dataset** and **Download index** buttons. We will now visualise the alignments using the Integrative Genomics Viewer (IGV).
 
@@ -456,10 +456,8 @@ For more details
     
 ## Example
 
-Go to ***File*** -> ***Load from file*** and select `/data/test/paired.bam`. Note that the file `paired.bam.bai` needs to be present in the same directory. However, you only need to click on the `.bam`
+Go to ***File*** -> ***Load from file*** and select the aligned `bam` files from `Tophat`. Note that the index files `.bai` need to be present in the same directory. However, you only need to click on the `.bam`
 
-- Make sure that `hg19` is selected from the Genome drop-down menu (top left)
-- Type `chr1:9,939-10,224` in the Genome Navigation panel (***2***) to navigate to the start of chromosome 1; 
 
 ![](images/igv_start.png)
 
@@ -474,22 +472,7 @@ Go to ***File*** -> ***Load from file*** and select `/data/test/paired.bam`. Not
 ![](images/read-select.png)
 
 
-- What do the coloured rectangles inside the read represent?
-    + zoom-in to the base resolution
-    + zoom using the `+` symbol in the to-right corner
-    + perhaps right-click on the sequencing data track and un-tick `Shade base by quality`
-
-- You can also right-click on a read of interest and select "Go to Mate".
-
-
 The view in IGV is not static and we can scroll-along the genome by holding-down the left mouse in the data panel and dragging left and right
-
-## Things to practice
-
-- Scrolling left and right along the genome
-    + what is the name of the first gene you come across?
-- Zooming-in and out
-- Also try jumping to your favourite gene by typing its name in the location box
 
 ## Viewing preferences
 
@@ -538,14 +521,11 @@ feature.
 
 1.  Use HTSeq-count to count the number of reads for each feature.  
     In the left tool panel menu, under NGS Analysis, select
-    **NGS: RNA Analysis > SAM/BAM to count matrix** and set the parameters as follows:  
+    **NGS Analysis > htseq-count*** and set the parameters as follows:  
     - **Gene model (GFF) file to count reads over from your current history:** genes.gtf
     - **bam/sam file from your history:**  
       (Select all six bam files using the shift key.)
         - `batch1-accepted_hits.bam`
-        - `batch2-accepted_hits.bam`
-        - `chem1-accepted_hits.bam`
-        - `chem2-accepted_hits.bam`
     - Use defaults for the other fields
     - Execute
 
@@ -558,25 +538,6 @@ We now have a count matrix, with a count against each corresponding sample. We
 will use this matrix in later sections to calculate the differentially
 expressed genes.
 
-### Alternative tool
-
-**If "SAM/BAM to count matrix" is not available on the Galaxy server you are using**, **NGS Analysis > htseq-count** may be used an alternative
-
-- **GFF file:** genes.gtf
- - **Aligned SAM/BAM file:**  
- (Select all six bam files using the shift key.)
-    - `batch1-accepted_hits.bam`
-    - `batch2-accepted_hits.bam`
-    - `chem1-accepted_hits.bam`
-    - `chem2-accepted_hits.bam`
-- Use defaults for the other fields
-- Execute
-
-Rename the 4 accepted\_hits files into a more meaningful name (e.g.
-'htseq-count on data ...' to 'batch1-htseq')
-by using the **pen icon** next to the file.
-
------
 
 ## Section 5: edgeR  [30 min]
 
@@ -633,9 +594,14 @@ from "Filter on data x" to `edgeR_Significant_DE_Genes`
 
 -----
 
-## Section 5 (alternative): DEseq2  [30 min]
+## Section 5: DEseq2  [30 min]
 
-If you are not using the Monash galaxy server, you will have to use an alternative method. We will choose DESeq2. To use this tool, you will have to use the **htseq-count** tool to obtain counts from each aligned bam file (**Section 4 - alternative tool**).
+[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html
+is an R package, that is used for analysing differential expression of
+RNA-Seq data and can either use exact statistical methods or generalised
+linear models.
+
+To use this tool, you will have to use the **htseq-count** tool to obtain counts from each aligned bam file (**Section 4 - alternative tool**).
 
 In the Galaxy tool panel, under NGS Analysis, select
 **NGS: RNA Analysis > DESeq2** and set the parameters as follows:
@@ -672,90 +638,6 @@ This will keep the genes that have an adjusted p-value (column 7 in the table) o
 or equal to 0.05. There should be 40 genes in this file.
 Rename this file by clicking on the **pencil icon** of and change the name
 from "Filter on data x" to `DESeq2_Significant_DE_Genes`
-
-
-## Exercise: Cuffdiff and comparison of results to another method
-
-
-The aim in this section is to statistically test for differential expression
-using Cuffdiff and obtain a list of significant genes.
-
-#### 1.  Run Cuffdiff to identify differentially expressed genes and transcripts
-In the left tool panel menu, under NGS Analysis, select
-**NGS: RNA Analysis > Cuffdiff** and set the parameters as follows:
-
-- **Transcripts:** genes.gtf
-- **Condition:**  
-    - **1: Condition**
-        - **name** batch
-        - **Replicates:**
-            - `batch1-accepted_hits.bam`
-            - `batch2-accepted_hits.bam`
-            (Multiple datasets can be selected by holding down the shift key or
-            the ctrl key (Windows) or the command key (OSX).)
-    - **2: Condition**
-        - **name** chem
-        - **Replicates:**
-            - `chem1-accepted_hits.bam`
-            - `chem2-accepted_hits.bam`
-- Use defaults for the other fields
-- Execute
-
-
-
-<img src="media/rna_advanced_cuffdiff.png" height=700px>
-
-Note: This step may take a while, depending on how busy the server is.
-
-#### 2.  Explore the Cuffdiff output files
-
-There should be 11 output files from Cuffdiff. These files should all begin
-with something like "Cuffdiff on data 43, data 38, and others". We will
-mostly be interested in the file ending with "`gene differential expression
-testing`" which contains the statistical results from testing the level of
-gene expression between the batch condition and chem condition.
-
-Filter based on column 14 ("significant") - a binary assessment of
-q\_value > 0.05, where q\_value is p\_value adjusted for multiple testing.
-
-
-Under Basic Tools, click on **Filter and Sort > Filter**:
-
-- **Filter:** "Cuffdiff on data....: gene differential expression testing"
-- **With following condition:** c14=='yes'
-- Execute
-
-This will keep only those entries that Cuffdiff has marked as
-significantly differentially expressed. 
-
-**Question: How many genes has Cuffdiff identified as being differentially expressed?**
-
-We can rename this file by clicking on the **pencil icon** of
-the outputted file and change the name from "Filter on data x" to
-`Cuffdiff_Significant_DE_Genes`.
-
-
-## 3.: How much concordance is there between methods?
-
-We are interested in how similar the identified genes are between the different
-statistial methods used by Cuffdiff, edgeR, and DESeq2 (depending on which tools you ran in the previous steps). We can generate a Venn diagram to visualise the amount of overlap.
-
-Use the tool **Graph/Display Data > Venn Diagram** and set the parameters as follows:  
-
-- **Plot title:** Common genes
-- **Implicit or explicit full ID list?:** `Explicit`
-- **Full dataset (with all identifiers):** `DESeq2 result file`
-- **1.Sets** - Members of set: `Cuffdiff_significant_genes`
-- **Press "+" insert Sets**
-- **2. Sets** - Members of set: `DEseq2_significant_genes` or `edgeR_significant_genes`
-- Execute
-
-**Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2)**
-
-**Question: What are the names of the genes identified by Cuffdiff that are also identifited by edgeR / DESeq2?** 
-
-- (Use the tool **Join, Subtract and Group > Compare two Datasets** and **Text Manipulation > Cut** to answer this)
-        
 
 
 ## References
