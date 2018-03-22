@@ -86,21 +86,14 @@ For this tutorial, we will assume that the *wet-lab* stages of the experiment ha
 
 
 ## Section 1: Preparation [15 min]
-#### 1.  Register as a new user on our Monash Galaxy server
-1.  Open a browser and go to a Galaxy server : [galaxy.erc.monash.edu/galaxy](http://galaxy.erc.monash.edu/galaxy/)
+#### 1.  Register as a new user on one of the public Galaxy servers
 
-2.  Register as a new user by clicking **User > Register** on the top
-    dark-grey bar. Alternatively, if you already have an account, login by
-    clicking **User > Login**.
-
-### Other Galaxy servers
-
-**If the Monash server is down, you may need to find an alternative**
-
-- http://usegalaxy.org (Prefered)
+- https://galaxy-mel.genome.edu.au/galaxy/
+- http://galaxy-tut.genome.edu.au/galaxy/
+- https://galaxy-qld.genome.edu.au/galaxy
 - https://galaxy.hidelab.org/
-- http://services.cbib.u-bordeaux.fr/galaxy/
 
+**Make sure you check your email to activate your account**
 
 #### 2.  Import the RNA-seq data for the workshop.
 
@@ -208,9 +201,6 @@ built-in genome
 
 Note: This may take a few minutes, depending on how busy the server is.
 
-**If your Galaxy server does not have the yeast genome available from the built-in genome menu, you will need to download it**
-
-The yeast genome in question can be download from Illumina's iGenome page [using this link](ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Saccharomyces_cerevisiae/UCSC/sacCer2/Saccharomyces_cerevisiae_UCSC_sacCer2.tar.gz). The whole genome fasta file is located in the folder `Saccharomyces_cerevisiae/UCSC/sacCer2/Sequences/WholeGenomeFasta`
 
 
 #### 2.  Rename the output files
