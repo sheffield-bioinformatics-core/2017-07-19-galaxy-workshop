@@ -324,13 +324,6 @@ The *"flags"* in the sam file can represent useful QC information
 
 The combination of any of these properties is used to derive a numeric value
 
-```{r echo=FALSE,message=FALSE,warning=FALSE}
-library(GenomicAlignments)
-mybam <- "paired.bam"
-gr <- GRanges("1", IRanges(10000,15000))
-bam.extra <- readGAlignments(file=mybam,param=ScanBamParam(what=c("flag"),which=gr),use.names = TRUE)
-```
-
 
 For instance, a particular read has a flag of 163
 
@@ -341,17 +334,26 @@ For instance, a particular read has a flag of 163
 
 There is a set of properties that a read can possess. If a particular property is observed, a corresponding power of 2 is added multiplied by 1. The final value is derived by summing all the powers of 2.
 
-```{r echo=FALSE,warning=FALSE,message=FALSE}
-suppressPackageStartupMessages(library(GenomicAlignments))
-mybam <- "paired.bam"
-bam.extra <- readGAlignments(file=mybam,param=ScanBamParam(what=c("flag"),which=gr),use.names = TRUE)
-flags <- mcols(bam.extra)$flag
-flagMat <- bamFlagAsBitMatrix(flags)
-df <- data.frame(ReadHasProperty = as.logical(flagMat[1,]),Binary=flagMat[1,] ,MultiplyBy=2^(0:10))
-knitr::kable(df)
-```
 
-Value of flag is given by `r paste(df$Binary,df$MultiplyBy,sep="x",collapse=" + ")` = `r sum(df$Binary * t(df$MultiplyBy))`
+```
+ 	ReadHasProperty 	Binary 	MultiplyBy
+isPaired 	TRUE 	1 	1
+isProperPair 	TRUE 	1 	2
+isUnmappedQuery 	FALSE 	0 	4
+hasUnmappedMate 	FALSE 	0 	8
+isMinusStrand 	FALSE 	0 	16
+isMateMinusStrand 	TRUE 	1 	32
+isFirstMateRead 	FALSE 	0 	64
+isSecondMateRead 	TRUE 	1 	128
+isSecondaryAlignment 	FALSE 	0 	256
+isNotPassingQualityControls 	FALSE 	0 	512
+isDuplicate 	FALSE 	0 	1024
+
+```
+Value of flag is given by 
+```
+1x1 + 1x2 + 0x4 + 0x8 + 0x16 + 1x32 + 0x64 + 1x128 + 0x256 + 0x512 + 0x1024 = 163
+```
 
 See also
 
