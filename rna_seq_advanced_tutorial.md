@@ -434,7 +434,7 @@ For more details
 - Full set of slides from [MRC Clinical Sciences Centre](http://mrccsc.github.io/IGV_course/igv.html#/)
 - IGV tutorial from the [Griffth lab - WashU](https://github.com/griffithlab/rnaseq_tutorial/wiki/IGV-Tutorial)
 
-![](images/IGV2.png)
+![](media/IGV2.png)
 
 1) Sample information panel
     - Information about samples you have loaded
