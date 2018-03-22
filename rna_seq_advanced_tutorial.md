@@ -459,7 +459,7 @@ For more details
 Go to ***File*** -> ***Load from file*** and select the aligned `bam` files from `Tophat`. Note that the index files `.bai` need to be present in the same directory. However, you only need to click on the `.bam`
 
 
-![](images/igv_start.png)
+![](media/igv_start.png)
 
 
 - The black dotted vertical lines indicates the centre of the view
@@ -469,7 +469,7 @@ Go to ***File*** -> ***Load from file*** and select the aligned `bam` files from
 - You should see the read that we described in detail in the previous section by *hover*ing over the reads to display the information from the `.bam` file
 
 
-![](images/read-select.png)
+![](media/read-select.png)
 
 
 The view in IGV is not static and we can scroll-along the genome by holding-down the left mouse in the data panel and dragging left and right
@@ -480,7 +480,7 @@ IGV allows us to configure many aspects of the data display
 
 ***Menu:-*** ***View -> Alignments***
 
-![](images/alignment-prefs.png)
+![](media/alignment-prefs.png)
 
 It's worth noting that the display settings may be showing fewer reads than you have (*downsampling*) in order to conserve memory. Also, some QC-fail or PCR duplicates may be filtered.
 
