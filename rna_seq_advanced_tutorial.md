@@ -232,7 +232,7 @@ by using the **pen icon** next to the file.
 
 Unlike most of Bioinfomatics, a *single standard* file format has emerged for aligned reads. Moreoever, this file format is consistent regardless of whether you have DNA-seq, RNA-seq, ChIP-seq... data. 
 
-
+The `bam` file is a compressed, binary, version of a `sam` file.
 
 ## The `.sam` file
 
@@ -403,7 +403,7 @@ view the text within Galaxy
 
 Download the bam files you have created in the previous step by clicking the disk icon on the right-hand panel. Make sure to click both the **Download dataset** and **Download index** buttons. We will now visualise the alignments using the Integrative Genomics Viewer (IGV).
 
-<img src="media/download_bam.png" height=800px>
+<img src="media/download_bam.png">
 
 - http://software.broadinstitute.org/software/igv/
 - Go to *Downloads*
@@ -414,10 +414,6 @@ Download the bam files you have created in the previous step by clicking the dis
 ## Introducing the IGV Browser
 
 Arguably the most-important tool you will learn about in this course is [IGV](https://www.broadinstitute.org/igv/). Whilst tools like R are very powerful and allow you to perform statistical analyses and test hypotheses, there is no substitute for ***looking at the data***. A trained-eye can quite quickly get a sense of the data quality before any computational analyses have been run. Futhermore, as the person requesting the sequencing, you probably know a lot about the biological context of the samples and what to expect. 
-
-Many of the exercises in the course will use IGV, so you will have plenty of time to practice.
-
-## Introduction
 
 - IGV has been developed by the Broad Institute and is able to display most kinds of genomic data
     + expression
@@ -524,15 +520,14 @@ feature.
     **NGS Analysis > htseq-count*** and set the parameters as follows:  
     - **Gene model (GFF) file to count reads over from your current history:** genes.gtf
     - **bam/sam file from your history:**  
-      (Select all six bam files using the shift key.)
+      (Select one of six bam files)
         - `batch1-accepted_hits.bam`
     - Use defaults for the other fields
     - Execute
 
-2.  Examine the outputted matrix by using the **eye icon**.  
-    Each column corresponds to a sample and each row corresponds to a gene. By
-    sight, see if you can find a gene you think is differentially expressed
-    from looking at the counts.
+2.  Repeat for the remaining bam files
+
+
 
 We now have a count matrix, with a count against each corresponding sample. We
 will use this matrix in later sections to calculate the differentially
@@ -583,6 +578,7 @@ or equal to 0.05. There should be 40 genes in this file.
 Rename this file by clicking on the **pencil icon** of and change the name
 from "Filter on data x" to `DESeq2_Significant_DE_Genes`
 
+## Exploring the DESeq2 plots
 
 ## References
 
