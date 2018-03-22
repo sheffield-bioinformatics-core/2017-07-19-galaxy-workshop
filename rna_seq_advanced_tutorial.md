@@ -569,12 +569,12 @@ In the Galaxy tool panel, under NGS Analysis, select
 Under Basic Tools, click on **Filter and Sort > Filter**:
 
 - **Filter:** `DESeq2 results file`
-- **With following condition:** c7 <= 0.05
+- **With following condition:** `c7 < 0.05 and (c3 > 1.0 or c3 < -1.0)`
 - **Number of header lines to skip:** 1
 - Execute
 
 This will keep the genes that have an adjusted p-value (column 7 in the table) of less
-or equal to 0.05. There should be 40 genes in this file.
+or equal to 0.05 and have a fold change of greater than 1 or less than -1. There should be 22 genes in this file.
 Rename this file by clicking on the **pencil icon** of and change the name
 from "Filter on data x" to `DESeq2_Significant_DE_Genes`
 
