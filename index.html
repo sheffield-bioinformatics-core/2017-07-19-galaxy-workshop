@@ -59,52 +59,20 @@ for this workshop.</p>
 <p>We have extracted chromosome I reads from the samples to make the
 tutorial a suitable length. </p>
 
-<h3>Reminder about Experimental Design</h3>
-
-<p>Modern sequencing technologies are extremely sophisticated and give an accurate picture of an individuals genome or transcriptome. However, if the experiment has not been design appropriately to address the biological question of interest, then the data generated may be useless. </p>
-
-<p>R.A. Fisher</p>
-
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/4/46/R._A._Fischer.jpg" alt="" title="" /></p>
-
-<blockquote>
-  <p>To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of. </p>
-</blockquote>
-
-<p>Preferably speak to a statistician in advance of performing your experiments!</p>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Hz1fyhVOjr4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
-<hr />
-
-<h3>Reminder of analysis workflow</h3>
-
-<p>Image from https://ycl6.gitbooks.io/rna-seq-data-analysis/</p>
-
-<p><img src="https://ycl6.gitbooks.io/rna-seq-data-analysis/Workflow.png" alt="" title="" /></p>
-
 <p>For this tutorial, we will assume that the <em>wet-lab</em> stages of the experiment have been performed and we are now in the right-hand branch of the workflow. In this tutorial we will demonstrate the steps of <strong>Quality assessment</strong>, <strong>alignment</strong>, <strong>quantification</strong> and <strong>differential expression testing</strong>.</p>
 
 <h2>Section 1: Preparation [15 min]</h2>
 
-<h4>1.  Register as a new user on our Monash Galaxy server</h4>
-
-<ol>
-<li><p>Open a browser and go to a Galaxy server : <a href="http://galaxy.erc.monash.edu/galaxy/">galaxy.erc.monash.edu/galaxy</a></p></li>
-<li><p>Register as a new user by clicking <strong>User > Register</strong> on the top
-dark-grey bar. Alternatively, if you already have an account, login by
-clicking <strong>User > Login</strong>.</p></li>
-</ol>
-
-<h3>Other Galaxy servers</h3>
-
-<p><strong>If the Monash server is down, you may need to find an alternative</strong></p>
+<h4>1.  Register as a new user on one of the public Galaxy servers</h4>
 
 <ul>
-<li>http://usegalaxy.org (Prefered)</li>
+<li>https://galaxy-mel.genome.edu.au/galaxy/</li>
+<li>http://galaxy-tut.genome.edu.au/galaxy/</li>
+<li>https://galaxy-qld.genome.edu.au/galaxy</li>
 <li>https://galaxy.hidelab.org/</li>
-<li>http://services.cbib.u-bordeaux.fr/galaxy/</li>
 </ul>
+
+<p><strong>Make sure you check your email to activate your account</strong></p>
 
 <h4>2.  Import the RNA-seq data for the workshop.</h4>
 
@@ -222,10 +190,6 @@ built-in genome</p></li>
 
 <p>Note: This may take a few minutes, depending on how busy the server is.</p>
 
-<p><strong>If your Galaxy server does not have the yeast genome available from the built-in genome menu, you will need to download it</strong></p>
-
-<p>The yeast genome in question can be download from Illumina's iGenome page <a href="ftp://igenome:G3nom3s4u@ussd-ftp.illumina.com/Saccharomyces_cerevisiae/UCSC/sacCer2/Saccharomyces_cerevisiae_UCSC_sacCer2.tar.gz">using this link</a>. The whole genome fasta file is located in the folder <code>Saccharomyces_cerevisiae/UCSC/sacCer2/Sequences/WholeGenomeFasta</code></p>
-
 <h4>2.  Rename the output files</h4>
 
 <p>You should have 5 output files for each of the FASTQ input files:</p>
@@ -252,27 +216,174 @@ statistics including the number of reads mapped and the mapping rate.</li>
 'Tophat on data 1: accepted<em>hits' to 'batch1-accepted</em>hits.bam')
 by using the <strong>pen icon</strong> next to the file.</p>
 
-<h4>3 [Optional].  Visualise the aligned reads with IGV</h4>
+<h3>About the <code>bam</code> file format</h3>
 
-<p>Download the bam files you have created in the previous step by clicking the disk icon on the right-hand panel. Make sure to click both the <strong>Download dataset</strong> and <strong>Download index</strong> buttons. We will now visualise the alignments using the Integrative Genomics Viewer (IGV).</p>
+<p>Unlike most of Bioinfomatics, a <em>single standard</em> file format has emerged for aligned reads. Moreoever, this file format is consistent regardless of whether you have DNA-seq, RNA-seq, ChIP-seq... data. </p>
 
-<p><img src="media/download_bam.png" height=800px></p>
+<p>The <code>bam</code> file is a compressed, binary, version of a <code>sam</code> file.</p>
 
-<ul>
-<li>http://software.broadinstitute.org/software/igv/</li>
-<li>Go to <em>Downloads</em></li>
-<li>Launch with 1.2Gb</li>
-<li><p>Click on igv24_mm.jnlp file that is downloaded</p></li>
-<li><p>File -> Load from File</p>
+<h2>The <code>.sam</code> file</h2>
 
 <ul>
-<li>select any bam file you aligned with tophat</li>
+<li><strong>S</strong>equence <strong>A</strong>lignment/<strong>M</strong>ap (sam) </li>
+<li>The output from an aligner such as <code>bwa</code></li>
+<li>Same format regardless of sequencing protocol (i.e. RNA-seq, ChIP-seq, DNA-seq etc)</li>
+<li>May contain un-mapped reads</li>
+<li>Potentially large size on disk; ~100s of Gb
+<ul>
+<li>Can be manipulated with standard unix tools; e.g. <em>cat</em>, <em>head</em>, <em>grep</em>, <em>more</em>, <em>less</em>....</li>
 </ul></li>
-<li>Type chrI in the text box in the top of the screen
+<li>Official specification can be <a href="http://samtools.github.io/hts-specs/SAMv1.pdf">obtained online</a>: -</li>
+<li>We normally work on a compressed version called a <code>.bam</code> file. See later.</li>
+<li><em>Header</em> lines starting with an <code>@</code> character, followed by tab-delimited lines
 <ul>
-<li>use the <code>+</code> and <code>-</code> buttons to zoom into an area displaying reads</li>
+<li>Header gives information about the alignment and references sequences used</li>
 </ul></li>
 </ul>
+
+<p>The first part of the header lists the names (<code>SN</code>) of the sequences (chromosomes) used in alignment, their length (<code>LN</code>) and a <em>md5sum</em> "<a href="https://en.wikipedia.org/wiki/Md5sum">digital fingerprint</a>" of the <code>.fasta</code> file used for alignment (<code>M5</code>).</p>
+
+<p>```
+@HD VN:1.5  SO:coordinate   GO:none
+@SQ SN:1    LN:249250621    M5:1b22b98cdeb4a9304cb5d48026a85128
+@SQ SN:2    LN:243199373    M5:a0d9851da00400dec1098a9255ac712e
+@SQ SN:3    LN:198022430    M5:fdfd811849cc2fadebc929bb925902e5
+@SQ SN:4    LN:191154276    M5:23dccd106897542ad87d2765d28a19a1
+.....
+.....</p>
+
+<p>```</p>
+
+<p>Next we can define the <em>read groups</em> present in the file which we can use to identify which sequencing library, sequencing centre, Lane, sample name etc.</p>
+
+<p>```
+@RG ID:SRR077850    CN:bi   LB:Solexa-42057 PL:illumina PU:ILLUMINA SM:NA06984
+@RG ID:SRR081675    CN:bi   LB:Solexa-42316 PL:illumina PU:ILLUMINA SM:NA06984
+@RG ID:SRR080818    CN:bi   LB:Solexa-44770 PL:illumina PU:ILLUMINA SM:NA06984
+@RG ID:SRR084838    CN:bi   LB:Solexa-42316 PL:illumina PU:ILLUMINA SM:NA06984
+@RG ID:SRR081730    CN:bi   LB:Solexa-42316 PL:illumina PU:ILLUMINA SM:NA06984
+.....
+.....</p>
+
+<p>```</p>
+
+<p>Finally, we have a section where we can record the processing steps used to derive the file
+```
+@PG ID:MosaikAligner    CL:/share/home/wardag/programs/MOSAIK/bin/MosaikAligner -in /scratch/wardag/NA06984.SRR077850.mapped.illumina.mosaik.CEU.SINGLE.20111114/NA06984.SRR077850.mapped.illumina.mosaik.CEU.SINGLE.20111114.mkb -out
+....
+....</p>
+
+<p>```</p>
+
+<p>Next is a <em>tab-delimited</em> section that describes the alignment of each sequence in detail. </p>
+
+<p>```
+SRR081708.237649    163 1   10003   6   1S67M   =   10041   105 GACCCTGACCCTAACCCTGACCCTGACCCTAACCCTGACCCTGACCCTAACCCTGACCCTAACCCTAA    S=&lt;====&lt;&lt;>=><?=?=?>==@??;?>@@@=??@@????@??@?>?@@&lt;@>@'@=?=??=&lt;=>?>?=Q    ZA:Z:&lt;&amp;;0;0;;308;68M;68>&lt;@;0;0;;27;;>MD:Z:5A11A5A11A5A11A13 RG:Z:SRR081708  NM:i:6  OQ:Z:GEGFFFEGGGDGDGGGDGA?DCDD:GGGDGDCFGFDDFFFCCCBEBFDABDD-D:EEEE=D=DDDDC:</p>
+
+<p>```</p>
+
+<p><img src="media/sam-entry-explained.png" alt="" title="" /></p>
+
+<p>Column | Official Name | Brief
+------ | -------------- | -----------
+1      | QNAME          | Sequence ID
+2      | FLAG           | Sequence quality expressed as a bitwise flag
+3      | RNAME          | Chromosome
+4      | POS            | Start Position
+5      | MAPQ           | Mapping Quality
+6      | CIGAR          | Describes positions of matches, insertions, deletions w.r.t reference
+7      | RNEXT          | Ref. name of mate / next read
+8      | PNEXT          | Postion of mate / next read
+9      | TLEN           | Observed Template length
+10     | SEQ            | Sequence
+11     | QUAL           | Base Qualities</p>
+
+<p>There can also be all manner of optional tags as extra columns introduce by an aligner or downstream analysis tool. A common use is the <code>RG</code> tag which refers back to the read groups in the header.</p>
+
+<p>Unlike the <code>.fastq</code> files, where we had a separate file for forward and reverse reads, the <code>.sam</code> file contains all reads. Reads that are paired with each other should appear in consecutive lines in the <code>.sam</code> file generated by an aligner. Otherwise it is more common for the file to be sorted according to genomic coordinates. The paired reads should share the same sequence ID in the first column (sometimes with a <code>/1</code> or <code>/2</code> to indicate which is which).</p>
+
+<p><img src="media/pairs-explained.png" alt="" title="" /></p>
+
+<h2>Dr Mark Dunning presents....Fun with flags!</h2>
+
+<p>The <em>"flags"</em> in the sam file can represent useful QC information</p>
+
+<ul>
+<li>Read is unmapped</li>
+<li>Read is paired / unpaired</li>
+<li>Read failed QC</li>
+<li>Read is a PCR duplicate (see later)</li>
+</ul>
+
+<p>The combination of any of these properties is used to derive a numeric value</p>
+
+<p>For instance, a particular read has a flag of 163</p>
+
+<p><img src="media/flag-highlight.png" alt="" title="" /></p>
+
+<h3>Derivation</h3>
+
+<p>There is a set of properties that a read can possess. If a particular property is observed, a corresponding power of 2 is added multiplied by 1. The final value is derived by summing all the powers of 2.</p>
+
+<p>```
+    ReadHasProperty     Binary  MultiplyBy
+isPaired    TRUE    1   1
+isProperPair    TRUE    1   2
+isUnmappedQuery     FALSE   0   4
+hasUnmappedMate     FALSE   0   8
+isMinusStrand   FALSE   0   16
+isMateMinusStrand   TRUE    1   32
+isFirstMateRead     FALSE   0   64
+isSecondMateRead    TRUE    1   128
+isSecondaryAlignment    FALSE   0   256
+isNotPassingQualityControls     FALSE   0   512
+isDuplicate     FALSE   0   1024</p>
+
+<p><code>
+Value of flag is given by
+</code>
+1x1 + 1x2 + 0x4 + 0x8 + 0x16 + 1x32 + 0x64 + 1x128 + 0x256 + 0x512 + 0x1024 = 163
+```</p>
+
+<p>See also</p>
+
+<ul>
+<li>https://broadinstitute.github.io/picard/explain-flags.html</li>
+</ul>
+
+<h2>Have a CIGAR!</h2>
+
+<p><img src="images/cigar-highlight.png" alt="" title="" /></p>
+
+<p>The <strong><em>CIGAR</em></strong> (<strong>C</strong>ompact <strong>I</strong>diosyncratic <strong>G</strong>apped <strong>Alignment</strong> <strong>R</strong>eport) string is a way of encoding the match between a given sequence and the position it has been assigned in the genome. It is comprised by a series of letters and numbers to indicate how many consecutive bases have that mapping.</p>
+
+<p>Code  | Description
+------------- | -------------
+M  | alignment match
+I  | insertion
+D  | deletion
+N  | skipped
+S  | soft-clipping
+H  | hard-clipping</p>
+
+<p>e.g.</p>
+
+<ul>
+<li><code>68M</code>
+<ul>
+<li>68 bases matching the reference</li>
+</ul></li>
+<li><code>1S67M</code>
+<ul>
+<li>1 soft-clipped read followed by 67 matches</li>
+</ul></li>
+<li><code>15M87N70M90N16M</code>
+<ul>
+<li>15 matches following by 87 bases skipped followed by 70 matches etc.</li>
+</ul></li>
+</ul>
+
+<p>Rather than dealing with <code>.sam</code> files, we usually analyse a <code>.bam</code> file.</p>
 
 <h4>[Optional] Convert BAM to SAM</h4>
 
@@ -284,136 +395,175 @@ view the text within Galaxy
 
 <hr />
 
+<h4>3  Visualise the aligned reads with IGV</h4>
+
+<p>Download the bam files you have created in the previous step by clicking the disk icon on the right-hand panel. Make sure to click both the <strong>Download dataset</strong> and <strong>Download index</strong> buttons. We will now visualise the alignments using the Integrative Genomics Viewer (IGV).</p>
+
+<p><img src="media/download_bam.png"></p>
+
+<ul>
+<li>http://software.broadinstitute.org/software/igv/</li>
+<li>Go to <em>Downloads</em></li>
+<li>Launch with 1.2Gb</li>
+<li>Click on igv24_mm.jnlp file that is downloaded</li>
+</ul>
+
+<h2>Introducing the IGV Browser</h2>
+
+<p><img src="media/igv.png" alt="" title="" /></p>
+
+<p>Whilst tools like R are very powerful and allow you to perform statistical analyses and test hypotheses, there is no substitute for <strong><em>looking at the data</em></strong>. A trained-eye can quite quickly get a sense of the data quality before any computational analyses have been run. Futhermore, as the person requesting the sequencing, you probably know a lot about the biological context of the samples and what to expect. </p>
+
+<ul>
+<li>IGV has been developed by the Broad Institute and is able to display most kinds of genomic data
+<ul>
+<li>expression</li>
+<li>ChIP</li>
+<li>whole-genome resequencing</li>
+<li>shRNA</li>
+</ul></li>
+<li>It is a <em>Java</em> desktop application and can be run either locally of from the Broad website
+<ul>
+<li>You have a link to IGV on the taskbar on the left the screen in-front of you</li>
+</ul></li>
+<li>To run IGV yourself you will need to agree to the license and <a href="http://www.broadinstitute.org/software/igv/download">download the version for your OS</a></li>
+</ul>
+
+<h2>A quick tour of IGV</h2>
+
+<p>For more details</p>
+
+<ul>
+<li>Full set of slides from <a href="http://mrccsc.github.io/IGV_course/igv.html#/">MRC Clinical Sciences Centre</a></li>
+<li>IGV tutorial from the <a href="https://github.com/griffithlab/rnaseq_tutorial/wiki/IGV-Tutorial">Griffth lab - WashU</a></li>
+</ul>
+
+<p><img src="media/IGV2.png" alt="" title="" /></p>
+
+<p>1) Sample information panel
+    - Information about samples you have loaded
+    - e.g. Sample ID, Gender, Age, Tumour / Normal</p>
+
+<p>2) Genome Navigation panel
+    - Jump to a genomic region in <code>Chr:Start-End</code> format
+    - Jump to a gene symbol of interest</p>
+
+<p>3) Data panel
+    - Your sequencing reads will be displayed here
+    - Or whatever data you have loaded
+        + see information on <a href="http://www.broadinstitute.org/software/igv/RecommendedFileFormats">accepted file formats</a></p>
+
+<p>4) Attribute panel
+    - Gene locations
+    - Genome sequence (if zoomed-in at appropriate level)
+    - Proteins</p>
+
+<h2>Example</h2>
+
+<p>Go to <strong><em>File</em></strong> -> <strong><em>Load from file</em></strong> and select the aligned <code>bam</code> files from <code>Tophat</code>. Note that the index files <code>.bai</code> need to be present in the same directory. However, you only need to click on the <code>.bam</code></p>
+
+<ul>
+<li>The black dotted vertical lines indicates the centre of the view</li>
+<li>Each of the grey pointed rectangles represents a sequencing reads
+<ul>
+<li>whether the pointed bit is on the left or right indicates if the read is forward or reverse.</li>
+</ul></li>
+<li>A coverage track is also generated</li>
+<li>You should see the read that we described in detail in the previous section by <em>hover</em>ing over the reads to display the information from the <code>.bam</code> file</li>
+</ul>
+
+<p><img src="media/read-select.png" alt="" title="" /></p>
+
+<p>The view in IGV is not static and we can scroll-along the genome by holding-down the left mouse in the data panel and dragging left and right</p>
+
+<h2>Viewing preferences</h2>
+
+<p>IGV allows us to configure many aspects of the data display</p>
+
+<p><strong><em>Menu:-</em></strong> <strong><em>View -> Alignments</em></strong></p>
+
+<p><img src="media/alignment-prefs.png" alt="" title="" /></p>
+
+<p>It's worth noting that the display settings may be showing fewer reads than you have (<em>downsampling</em>) in order to conserve memory. Also, some QC-fail or PCR duplicates may be filtered.</p>
+
+<p>We also have some options on how to display the reads themselves, which we can acccess by right-clicking on the bam track</p>
+
+<p>Sorting alignments by:-</p>
+
+<ul>
+<li>start</li>
+<li>strand</li>
+<li>base</li>
+<li>mapping quality</li>
+<li>insert size</li>
+</ul>
+
+<p>The reads themselves can also be coloured according to</p>
+
+<ul>
+<li>insert size</li>
+<li>read strand</li>
+<li>sample</li>
+</ul>
+
+<p>Experiment with the various settings by right clicking the read alignment track and toggling the options. Think about which would be best for specific tasks (e.g. quality control, SNP calling, CNV finding). We will re-visit these options later when we come to examine particular variant calls</p>
+
+<h2>Additional data tracks</h2>
+
+<p>Additional data tracks are also available on the IGV server. These include useful genome annotation tracks, such as:-</p>
+
+<ul>
+<li>GC percentage</li>
+<li>CpG islands</li>
+<li>Repeat regions</li>
+<li>dbSNP calls</li>
+</ul>
+
 <h2>Section 4. Quantification (Counting reads in features) [30 min]</h2>
+
+<p>In order to test for differential expression, we need to count up how many times each "feature" is observed is each sample. We can then apply statistical tests to these data</p>
+
+<p><img src="media/counts.png" alt="" title="" /></p>
 
 <p>HTSeq-count creates a count matrix using the number of the reads from each bam
 file that map to the genomic features in the genes.gtf. For each feature (a
 gene for example) a count matrix shows how many reads were mapped to this
 feature.</p>
 
+<p>Various rules are used to assign counts to features</p>
+
+<p><img src="media/htseq.png" alt="" title="" /></p>
+
 <ol>
 <li><p>Use HTSeq-count to count the number of reads for each feature. <br />
 In the left tool panel menu, under NGS Analysis, select
-<strong>NGS: RNA Analysis > SAM/BAM to count matrix</strong> and set the parameters as follows:  </p>
+<strong>NGS Analysis > htseq-count*</strong> and set the parameters as follows:  </p>
 
 <ul>
 <li><strong>Gene model (GFF) file to count reads over from your current history:</strong> genes.gtf</li>
 <li><strong>bam/sam file from your history:</strong> <br />
-(Select all six bam files using the shift key.)
+(Select one of six bam files)
 <ul>
 <li><code>batch1-accepted_hits.bam</code></li>
-<li><code>batch2-accepted_hits.bam</code></li>
-<li><code>chem1-accepted_hits.bam</code></li>
-<li><code>chem2-accepted_hits.bam</code></li>
 </ul></li>
 <li>Use defaults for the other fields</li>
 <li>Execute</li>
 </ul></li>
-<li><p>Examine the outputted matrix by using the <strong>eye icon</strong>. <br />
-Each column corresponds to a sample and each row corresponds to a gene. By
-sight, see if you can find a gene you think is differentially expressed
-from looking at the counts.</p></li>
+<li><p>Repeat for the remaining bam files</p></li>
 </ol>
 
 <p>We now have a count matrix, with a count against each corresponding sample. We
 will use this matrix in later sections to calculate the differentially
 expressed genes.</p>
 
-<h3>Alternative tool</h3>
+<h2>Section 5: DEseq2  [30 min]</h2>
 
-<p><strong>If "SAM/BAM to count matrix" is not available on the Galaxy server you are using</strong>, <strong>NGS Analysis > htseq-count</strong> may be used an alternative</p>
-
-<ul>
-<li><strong>GFF file:</strong> genes.gtf
-<ul>
-<li><strong>Aligned SAM/BAM file:</strong> <br />
-(Select all six bam files using the shift key.)</li>
-<li><code>batch1-accepted_hits.bam</code></li>
-<li><code>batch2-accepted_hits.bam</code></li>
-<li><code>chem1-accepted_hits.bam</code></li>
-<li><code>chem2-accepted_hits.bam</code></li>
-</ul></li>
-<li>Use defaults for the other fields</li>
-<li>Execute</li>
-</ul>
-
-<p>Rename the 4 accepted_hits files into a more meaningful name (e.g.
-'htseq-count on data ...' to 'batch1-htseq')
-by using the <strong>pen icon</strong> next to the file.</p>
-
-<hr />
-
-<h2>Section 5: edgeR  [30 min]</h2>
-
-<p><a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html">edgeR</a>
+<p>[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html
 is an R package, that is used for analysing differential expression of
 RNA-Seq data and can either use exact statistical methods or generalised
 linear models.</p>
 
-<h4>1.  Generate a list of differentially expressed genes using edgeR</h4>
-
-<p>In the Galaxy tool panel, under NGS Analysis, select
-<strong>NGS: RNA Analysis > Differential_Count</strong> and set the parameters as follows:</p>
-
-<ul>
-<li><strong>Select an input matrix - rows are contigs, columns are counts for each
-sample:</strong> bams to DGE count matrix_htseqsams2mx.xls</li>
-<li><strong>Title for job outputs:</strong> Differential_Counts_edgeR</li>
-<li><strong>Treatment Name:</strong> Batch</li>
-<li><strong>Select columns containing treatment:</strong> <br />
-<ul>
-<li><code>batch1-accepted_hits.bam</code></li>
-<li><code>batch2-accepted_hits.bam</code></li>
-</ul></li>
-<li><strong>Control Name:</strong> Chem</li>
-<li><strong>Select columns containing control:</strong> <br />
-<ul>
-<li><code>chem1-accepted_hits.bam</code></li>
-<li><code>chem2-accepted_hits.bam</code></li>
-</ul></li>
-<li><strong>Run this model using edgeR:</strong> Run edgeR</li>
-<li>Use defaults for the other fields</li>
-<li>Execute</li>
-</ul>
-
-<h4>2.  Examine the outputs from the previous step</h4>
-
-<ol>
-<li>Examine the <code>Differential_Counts_edgeR_topTable_edgeR.xls</code> file by
-clicking on the <strong>eye icon</strong>.
-This file is a list of genes sorted by p-value from using EdgeR to
-perform differential expression analysis.</li>
-<li>Examine the <code>Differential_Counts_edgeR.htm</code>l file. This file has some
-output logs and plots from running edgeR. If you are familiar with R,
-you can examine the R code used for analysis by scrolling to the bottom
-of the file, and clicking <code>Differential_Counts.Rscript</code> to download the
-Rscript file. <br />
-If you are curious about the statistical methods edgeR uses, you can
-read the <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html">edgeR user's guide at
-Bioconductor</a>.</li>
-</ol>
-
-<h4>3.  Extract the significant differentially expressed genes.</h4>
-
-<p>Under Basic Tools, click on <strong>Filter and Sort > Filter</strong>:</p>
-
-<ul>
-<li><strong>Filter:</strong> <code>Differential_Counts_edgeR_topTable_edgeR.xls</code></li>
-<li><strong>With following condition:</strong> c6 &lt;= 0.05</li>
-<li><strong>Number of header lines to skip:</strong> 1</li>
-<li>Execute</li>
-</ul>
-
-<p>This will keep the genes that have an adjusted p-value (column 6 in the table) of less
-or equal to 0.05. There should be 47 genes in this file.
-Rename this file by clicking on the <strong>pencil icon</strong> of and change the name
-from "Filter on data x" to <code>edgeR_Significant_DE_Genes</code></p>
-
-<hr />
-
-<h2>Section 5 (alternative): DEseq2  [30 min]</h2>
-
-<p>If you are not using the Monash galaxy server, you will have to use an alternative method. We will choose DESeq2. To use this tool, you will have to use the <strong>htseq-count</strong> tool to obtain counts from each aligned bam file (<strong>Section 4 - alternative tool</strong>).</p>
+<p>To use this tool, you will have to use the <strong>htseq-count</strong> tool to obtain counts from each aligned bam file (<strong>Section 4 - alternative tool</strong>).</p>
 
 <p>In the Galaxy tool panel, under NGS Analysis, select
 <strong>NGS: RNA Analysis > DESeq2</strong> and set the parameters as follows:</p>
@@ -452,111 +602,17 @@ plots from running DESeq2, including PCA and clustering showing relationships be
 
 <ul>
 <li><strong>Filter:</strong> <code>DESeq2 results file</code></li>
-<li><strong>With following condition:</strong> c7 &lt;= 0.05</li>
+<li><strong>With following condition:</strong> <code>c7 &lt; 0.05 and (c3 &gt; 1.0 or c3 &lt; -1.0)</code></li>
 <li><strong>Number of header lines to skip:</strong> 1</li>
 <li>Execute</li>
 </ul>
 
 <p>This will keep the genes that have an adjusted p-value (column 7 in the table) of less
-or equal to 0.05. There should be 40 genes in this file.
+or equal to 0.05 and have a fold change of greater than 1 or less than -1. There should be 22 genes in this file.
 Rename this file by clicking on the <strong>pencil icon</strong> of and change the name
 from "Filter on data x" to <code>DESeq2_Significant_DE_Genes</code></p>
 
-<h2>Exercise: Cuffdiff and comparison of results to another method</h2>
-
-<p>The aim in this section is to statistically test for differential expression
-using Cuffdiff and obtain a list of significant genes.</p>
-
-<h4>1.  Run Cuffdiff to identify differentially expressed genes and transcripts</h4>
-
-<p>In the left tool panel menu, under NGS Analysis, select
-<strong>NGS: RNA Analysis > Cuffdiff</strong> and set the parameters as follows:</p>
-
-<ul>
-<li><strong>Transcripts:</strong> genes.gtf</li>
-<li><strong>Condition:</strong> <br />
-<ul>
-<li><strong>1: Condition</strong>
-<ul>
-<li><strong>name</strong> batch</li>
-<li><strong>Replicates:</strong>
-<ul>
-<li><code>batch1-accepted_hits.bam</code></li>
-<li><code>batch2-accepted_hits.bam</code>
-(Multiple datasets can be selected by holding down the shift key or
-the ctrl key (Windows) or the command key (OSX).)</li>
-</ul></li>
-</ul></li>
-<li><strong>2: Condition</strong>
-<ul>
-<li><strong>name</strong> chem</li>
-<li><strong>Replicates:</strong>
-<ul>
-<li><code>chem1-accepted_hits.bam</code></li>
-<li><code>chem2-accepted_hits.bam</code></li>
-</ul></li>
-</ul></li>
-</ul></li>
-<li>Use defaults for the other fields</li>
-<li>Execute</li>
-</ul>
-
-<p><img src="media/rna_advanced_cuffdiff.png" height=700px></p>
-
-<p>Note: This step may take a while, depending on how busy the server is.</p>
-
-<h4>2.  Explore the Cuffdiff output files</h4>
-
-<p>There should be 11 output files from Cuffdiff. These files should all begin
-with something like "Cuffdiff on data 43, data 38, and others". We will
-mostly be interested in the file ending with "<code>gene differential expression
-testing</code>" which contains the statistical results from testing the level of
-gene expression between the batch condition and chem condition.</p>
-
-<p>Filter based on column 14 ("significant") - a binary assessment of
-q_value > 0.05, where q_value is p_value adjusted for multiple testing.</p>
-
-<p>Under Basic Tools, click on <strong>Filter and Sort > Filter</strong>:</p>
-
-<ul>
-<li><strong>Filter:</strong> "Cuffdiff on data....: gene differential expression testing"</li>
-<li><strong>With following condition:</strong> c14=='yes'</li>
-<li>Execute</li>
-</ul>
-
-<p>This will keep only those entries that Cuffdiff has marked as
-significantly differentially expressed. </p>
-
-<p><strong>Question: How many genes has Cuffdiff identified as being differentially expressed?</strong></p>
-
-<p>We can rename this file by clicking on the <strong>pencil icon</strong> of
-the outputted file and change the name from "Filter on data x" to
-<code>Cuffdiff_Significant_DE_Genes</code>.</p>
-
-<h2>3.: How much concordance is there between methods?</h2>
-
-<p>We are interested in how similar the identified genes are between the different
-statistial methods used by Cuffdiff, edgeR, and DESeq2 (depending on which tools you ran in the previous steps). We can generate a Venn diagram to visualise the amount of overlap.</p>
-
-<p>Use the tool <strong>Graph/Display Data > Venn Diagram</strong> and set the parameters as follows:  </p>
-
-<ul>
-<li><strong>Plot title:</strong> Common genes</li>
-<li><strong>Implicit or explicit full ID list?:</strong> <code>Explicit</code></li>
-<li><strong>Full dataset (with all identifiers):</strong> <code>DESeq2 result file</code></li>
-<li><strong>1.Sets</strong> - Members of set: <code>Cuffdiff_significant_genes</code></li>
-<li><strong>Press "+" insert Sets</strong></li>
-<li><strong>2. Sets</strong> - Members of set: <code>DEseq2_significant_genes</code> or <code>edgeR_significant_genes</code></li>
-<li>Execute</li>
-</ul>
-
-<p><strong>Question: What is the overlap between the two methods (Cuffdiff and edgeR / DESeq2)</strong></p>
-
-<p><strong>Question: What are the names of the genes identified by Cuffdiff that are also identifited by edgeR / DESeq2?</strong> </p>
-
-<ul>
-<li>(Use the tool <strong>Join, Subtract and Group > Compare two Datasets</strong> and <strong>Text Manipulation > Cut</strong> to answer this)</li>
-</ul>
+<h2>Exploring the DESeq2 plots</h2>
 
 <h2>References</h2>
 
