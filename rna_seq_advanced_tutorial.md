@@ -59,28 +59,6 @@ for this workshop.
 We have extracted chromosome I reads from the samples to make the
 tutorial a suitable length. 
 
-### Reminder about Experimental Design
-
-Modern sequencing technologies are extremely sophisticated and give an accurate picture of an individuals genome or transcriptome. However, if the experiment has not been design appropriately to address the biological question of interest, then the data generated may be useless. 
-
-
-R.A. Fisher
-
-![](https://upload.wikimedia.org/wikipedia/commons/4/46/R._A._Fischer.jpg)
-
-> To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of. 
-
-Preferably speak to a statistician in advance of performing your experiments!
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Hz1fyhVOjr4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
------
-
-### Reminder of analysis workflow
-
-Image from https://ycl6.gitbooks.io/rna-seq-data-analysis/
-
-![](https://ycl6.gitbooks.io/rna-seq-data-analysis/Workflow.png)
 
 For this tutorial, we will assume that the *wet-lab* stages of the experiment have been performed and we are now in the right-hand branch of the workflow. In this tutorial we will demonstrate the steps of **Quality assessment**, **alignment**, **quantification** and **differential expression testing**.
 
