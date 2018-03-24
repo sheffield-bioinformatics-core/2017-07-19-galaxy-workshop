@@ -391,7 +391,9 @@ Download the bam files you have created in the previous step by clicking the dis
 
 ## Introducing the IGV Browser
 
-Arguably the most-important tool you will learn about in this course is [IGV](https://www.broadinstitute.org/igv/). Whilst tools like R are very powerful and allow you to perform statistical analyses and test hypotheses, there is no substitute for ***looking at the data***. A trained-eye can quite quickly get a sense of the data quality before any computational analyses have been run. Futhermore, as the person requesting the sequencing, you probably know a lot about the biological context of the samples and what to expect. 
+![](media/igv.png)
+
+Whilst tools like R are very powerful and allow you to perform statistical analyses and test hypotheses, there is no substitute for ***looking at the data***. A trained-eye can quite quickly get a sense of the data quality before any computational analyses have been run. Futhermore, as the person requesting the sequencing, you probably know a lot about the biological context of the samples and what to expect. 
 
 - IGV has been developed by the Broad Institute and is able to display most kinds of genomic data
     + expression
@@ -431,10 +433,6 @@ For more details
 ## Example
 
 Go to ***File*** -> ***Load from file*** and select the aligned `bam` files from `Tophat`. Note that the index files `.bai` need to be present in the same directory. However, you only need to click on the `.bam`
-
-
-![](media/igv_start.png)
-
 
 - The black dotted vertical lines indicates the centre of the view
 - Each of the grey pointed rectangles represents a sequencing reads
@@ -488,10 +486,19 @@ Additional data tracks are also available on the IGV server. These include usefu
 
 ## Section 4. Quantification (Counting reads in features) [30 min]
 
+In order to test for differential expression, we need to count up how many times each "feature" is observed is each sample. We can then apply statistical tests to these data
+
+![](media/counts.png)
+
 HTSeq-count creates a count matrix using the number of the reads from each bam
 file that map to the genomic features in the genes.gtf. For each feature (a
 gene for example) a count matrix shows how many reads were mapped to this
 feature.
+
+Various rules are used to assign counts to features
+
+![](media/htseq.png)
+
 
 1.  Use HTSeq-count to count the number of reads for each feature.  
     In the left tool panel menu, under NGS Analysis, select
