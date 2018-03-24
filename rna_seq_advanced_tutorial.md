@@ -340,7 +340,7 @@ See also
 ## Have a CIGAR!
 
 
-![](images/cigar-highlight.png)
+![](media/cigar-highlight.png)
 
 The ***CIGAR*** (**C**ompact **I**diosyncratic **G**apped **Alignment** **R**eport) string is a way of encoding the match between a given sequence and the position it has been assigned in the genome. It is comprised by a series of letters and numbers to indicate how many consecutive bases have that mapping.
 
@@ -446,14 +446,6 @@ Go to ***File*** -> ***Load from file*** and select the aligned `bam` files from
 
 The view in IGV is not static and we can scroll-along the genome by holding-down the left mouse in the data panel and dragging left and right
 
-## Viewing preferences
-
-IGV allows us to configure many aspects of the data display
-
-***Menu:-*** ***View -> Alignments***
-
-![](media/alignment-prefs.png)
-
 It's worth noting that the display settings may be showing fewer reads than you have (*downsampling*) in order to conserve memory. Also, some QC-fail or PCR duplicates may be filtered.
 
 We also have some options on how to display the reads themselves, which we can acccess by right-clicking on the bam track
@@ -471,9 +463,7 @@ The reads themselves can also be coloured according to
   - insert size
   - read strand
   - sample
-
-Experiment with the various settings by right clicking the read alignment track and toggling the options. Think about which would be best for specific tasks (e.g. quality control, SNP calling, CNV finding). We will re-visit these options later when we come to examine particular variant calls
-
+  
 ## Additional data tracks
 
 Additional data tracks are also available on the IGV server. These include useful genome annotation tracks, such as:-
@@ -513,11 +503,6 @@ Various rules are used to assign counts to features
 2.  Repeat for the remaining bam files
 
 
-
-We now have a count matrix, with a count against each corresponding sample. We
-will use this matrix in later sections to calculate the differentially
-expressed genes.
-
 ## Section 5: DEseq2  [30 min]
 
 [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html
@@ -525,7 +510,6 @@ is an R package, that is used for analysing differential expression of
 RNA-Seq data and can either use exact statistical methods or generalised
 linear models.
 
-To use this tool, you will have to use the **htseq-count** tool to obtain counts from each aligned bam file (**Section 4 - alternative tool**).
 
 In the Galaxy tool panel, under NGS Analysis, select
 **NGS: RNA Analysis > DESeq2** and set the parameters as follows:
