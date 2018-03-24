@@ -1,7 +1,18 @@
-<style> @import url('style.css'); </style>
+---
+title: ""
+author: "Mark Dunning"
+output:
+  html_notebook:
+    toc: yes
+    toc_float: yes
+  html_document:
+    df_print: paged
+    toc: yes
+editor_options:
+  chunk_output_type: inline
+---
 
 
-<img src="media/TUOS_PRIMARY_LOGO_FULL COLOUR.png" height=100px align=right>
 
 # Hands-on RNA-seq Analysis in Galaxy
 
@@ -15,6 +26,8 @@ _Further Modified by Mark Dunning of Sheffield Bioinformatics Core_
 
 
 ### Sheffield Bioinformatics Core
+<img src="media/site-logo.png" width=75 height=75 align=right>
+
 web : [sbc.shef.ac.uk](https://sbc.shef.ac.uk)  
 twitter: [@SheffBioinfCore](https://twitter.com/SheffBioinfCore)  
 email: [bioinformatics-core@sheffield.ac.uk](bioinformatics-core@sheffield.ac.uk)
@@ -206,13 +219,13 @@ by using the **pen icon** next to the file.
 
 
 
-### About the `bam` file format
+## About the `bam` file format
 
 Unlike most of Bioinfomatics, a *single standard* file format has emerged for aligned reads. Moreoever, this file format is consistent regardless of whether you have DNA-seq, RNA-seq, ChIP-seq... data. 
 
 The `bam` file is a compressed, binary, version of a `sam` file.
 
-## The `.sam` file
+### The `.sam` file
 
 - **S**equence **A**lignment/**M**ap (sam) 
 - The output from an aligner such as `bwa`
@@ -291,7 +304,7 @@ Unlike the `.fastq` files, where we had a separate file for forward and reverse 
 
 
 
-## Dr Mark Dunning presents....Fun with flags!
+### Dr Mark Dunning presents....Fun with flags!
 
 The *"flags"* in the sam file can represent useful QC information
 
@@ -337,7 +350,7 @@ See also
 
 - https://broadinstitute.github.io/picard/explain-flags.html
 
-## Have a CIGAR!
+### Have a CIGAR!
 
 
 ![](media/cigar-highlight.png)
@@ -377,7 +390,7 @@ view the text within Galaxy
 
 -----
 
-#### 3  Visualise the aligned reads with IGV
+## Section 4.  Visualise the aligned reads with IGV
 
 Download the bam files you have created in the previous step by clicking the disk icon on the right-hand panel. Make sure to click both the **Download dataset** and **Download index** buttons. We will now visualise the alignments using the Integrative Genomics Viewer (IGV).
 
@@ -389,7 +402,7 @@ Download the bam files you have created in the previous step by clicking the dis
 - Click on igv24_mm.jnlp file that is downloaded
 
 
-## Introducing the IGV Browser
+### Introducing the IGV Browser
 
 ![](media/igv.png)
 
@@ -404,7 +417,7 @@ Whilst tools like R are very powerful and allow you to perform statistical analy
     + You have a link to IGV on the taskbar on the left the screen in-front of you
 - To run IGV yourself you will need to agree to the license and [download the version for your OS](http://www.broadinstitute.org/software/igv/download)
 
-## A quick tour of IGV
+### A quick tour of IGV
 For more details
 
 - Full set of slides from [MRC Clinical Sciences Centre](http://mrccsc.github.io/IGV_course/igv.html#/)
@@ -430,7 +443,7 @@ For more details
     - Genome sequence (if zoomed-in at appropriate level)
     - Proteins
     
-## Example
+### Example
 
 Go to ***File*** -> ***Load from file*** and select the aligned `bam` files from `Tophat`. Note that the index files `.bai` need to be present in the same directory. However, you only need to click on the `.bam`
 
@@ -474,7 +487,7 @@ Additional data tracks are also available on the IGV server. These include usefu
 - dbSNP calls
 
 
-## Section 4. Quantification (Counting reads in features) [30 min]
+## Section 5. Quantification (Counting reads in features) [30 min]
 
 In order to test for differential expression, we need to count up how many times each "feature" is observed is each sample. We can then apply statistical tests to these data
 
@@ -503,7 +516,7 @@ Various rules are used to assign counts to features
 2.  Repeat for the remaining bam files
 
 
-## Section 5: DEseq2  [30 min]
+## Section 6: DEseq2  [30 min]
 
 [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html
 is an R package, that is used for analysing differential expression of
@@ -547,7 +560,6 @@ or equal to 0.05 and have a fold change of greater than 1 or less than -1. There
 Rename this file by clicking on the **pencil icon** of and change the name
 from "Filter on data x" to `DESeq2_Significant_DE_Genes`
 
-## Exploring the DESeq2 plots
 
 ## References
 
