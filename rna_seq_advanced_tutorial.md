@@ -79,16 +79,24 @@ For this tutorial, we will assume that the *wet-lab* stages of the experiment ha
 ## Section 1: Preparation
 #### 1.  Register as a new user on one of the public Galaxy servers
 
-- https://galaxy-mel.genome.edu.au/galaxy/
-- http://galaxy-tut.genome.edu.au/galaxy/
-- https://galaxy-qld.genome.edu.au/galaxy
-- https://galaxy.hidelab.org/
+
+- https://usegalaxy.org/
+- https://usegalaxy.eu
+- https://usegalaxy.org.au
+
 
 **Make sure you check your email to activate your account**
 
 #### 2.  Import the RNA-seq data for the workshop.
 
 We can going to import the [*fastq* files](https://en.wikipedia.org/wiki/FASTQ_format) for this experiment. This is a standard format for storing raw sequencing reads and their associated quality scores. 
+
+
+<div class="alert alert-info">
+
+#### **Get Data -> Upload File ** 
+
+</div>
 
 You can import the data by:
 
@@ -180,14 +188,58 @@ In practice, we don't have to convert the values as we have software that will d
 
 [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) is a popular tool from [Babraham Institute Bioinformatics Group](https://www.bioinformatics.babraham.ac.uk/index.html) used for *quality assessment* of sequencing data. Most Bioinformatics pipelines will use FastQC, or similar tools in the first stage of the analysis. The [documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) for FastQC will help you to interpret the plots and stats produced by the tool. A traffic light system is used to alert the user's attention to possible issues. However, it is worth bearing in mind that the tool is blind to the particular type of sequencing you are performing (i.e. whole-genome, ChIP-seq, RNA-seq), so some warnings might be expected due to the nature of your experiment.
 
-- From the left hand tool panel in Galaxy, under *NGS ANALYSIS*, select *NGS: QC and manipulation -> FastQC*
+<div class="alert alert-info">
+
+#### *NGS ANALYSIS* > *NGS: QC and manipulation* -> *FastQC*
+
+</div>
+
 - Select one of the FASTQ files as input and *Execute* the tool.
 - When the tool finishes running, you should have an HTML file in your History. Click on the eye icon to view the various quality metrics.
-
-Look at the generated FastQC metrics. This data looks pretty good - high per-base quality scores (most above 30).
+- Run Fastqc on the remaing fastq files, but don't examine the results just yet.
 
 <img src="media/fastqc.png" height=700px>
 
+<div class="alert alert-warning">
+
+**Question: Do the data seem to be of reasonable quality? **
+
+You can use the [documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/) to help interpret the plots
+
+</div>
+
+If poor quality reads towards the ends of reads are considered to be a problem, or there is considerable adapter contamination, we can employ various tools to *trim* our data.
+
+<div class="alert alert-warning">
+Search for the text *trim* and *adapter* in the Galaxy tool search box (top-right)
+
+How many tools are available for the task of trimming and removing adapter contamination?
+
+If time allows, use the trim galore tool
+</div>
+
+
+
+## Combining QC reports
+
+It can be quite tiresome to click through multiple QC reports and compare the results for different samples. It is useful to have all the QC plots on the same page so that we can more easily spot trends in the data.
+
+The [multiqc](https://multiqc.info/) tool has been designed for the tasks of aggregating qc reports and combining into a single report that is easy to digest.
+
+
+<div class="alert alert-info">
+
+#### *NGS ANALYSIS* > *NGS: QC and manipulation* -> *Multiqc*
+
+</div>
+
+Under *Which tool was used generate logs?* Choose *fastqc* and select the RawData output from the fastqc run on each of your bam files.
+
+
+<div class="alert alert-warning">
+
+Question: do the fastq files seem to have consistently high-quality?
+</div>
 
 
 ## Section 3: Alignment [30 mins]
@@ -200,9 +252,15 @@ from Bowtie to identify splice junctions between exons. More information on
 Tophat can be found [here](https://ccb.jhu.edu/software/tophat/index.shtml).
 
 
+<div class="alert alert-info">
+
+NGS: RNA Analysis > HISAT2
+
+</div>
+
 #### 1.  Map/align the reads with Tophat to the S. cerevisiae reference
 In the left tool panel menu, under NGS Analysis, select
-**NGS: RNA Analysis > Tophat** and set the parameters as follows:  
+**NGS: RNA Analysis > HISAT2** and set the parameters as follows:  
 
 - **Is this single-end or paired-end data?** Single-end (as individual datasets)  
 - **RNA-Seq FASTQ file, forward reads:**  
@@ -215,12 +273,11 @@ FASTQ files)
 
 - **Use a built in reference genome or own from your history:** Use
 built-in genome
-- **Select a reference genome:** S. cerevisiae June 2008 (SGD/SacCer2)
-(sacCer2)
+- **Select a reference genome:** S. cerevisiae June 2008 (SGD/SacCer3)
+(sacCer3)
 - Use defaults for the other fields
 - Execute
 
-<img src="media/rna_advanced_tophat.png" height=800px>
 
 Note: This may take a few minutes, depending on how busy the server is.
 
@@ -229,30 +286,7 @@ Note: This may take a few minutes, depending on how busy the server is.
 #### 2.  Rename the output files
 You should have 5 output files for each of the FASTQ input files:
 
-- **Tophat on data 1: accepted_hits:** This is a BAM file containing
-  sequence alignment data of the reads. This file contains the location
-  of where the reads mapped to in the reference genome. We will examine
-  this file more closely in the next step.
-- **Tophat on data 1: splice junctions:** This file lists all the places
-  where TopHat had to split a read into two pieces to span an exon
-  junction.
-- **Tophat on data 1 deletions** and **Tophat on data 1: insertions:**
-  These files list small insertions or deletions found in the reads.
-  Since we are working with synthetic reads we can ignore Tophat for
-  Illumina data 1:insertions Tophat for Illumina data 1:deletions for now.
-- **Tophat on data 1: align_summary:** This file gives some mapping
-  statistics including the number of reads mapped and the mapping rate.
 
-You should have a total of 20 Tophat output files in your history.
-
-Rename the 4 accepted\_hits files into a more meaningful name (e.g.
-'Tophat on data 1: accepted_hits' to 'batch1-accepted_hits.bam')
-by using the **pen icon** next to the file.
-
-**Exercise**
-
-- What percentage of reads are aligned for each fastq file?
-    + use the *align_summary* output to find out
 
 
 ## About the `bam` file format
@@ -421,6 +455,20 @@ view the text within Galaxy
 
 -----
 
+## Quality assessment of the aligned reads
+
+*flagstat* will calculate the *flag* for each read in the bam file and tabulate the results.
+
+<div class="alert alert-info">
+*Sam Tools -> Flagstat*
+</div>
+
+*idxstats* will report the number of reads mapping to each reference sequence (i.e. chromosome)
+<div class="alert alert-info"
+*Sam Tools -> IdxStats*
+</div>
+
+
 ## Section 4.  Visualise the aligned reads with IGV
 
 Download the bam files you have created in the previous step by clicking the disk icon on the right-hand panel. Make sure to click both the **Download dataset** and **Download index** buttons. We will now visualise the alignments using the Integrative Genomics Viewer (IGV).
@@ -529,7 +577,7 @@ file that map to the genomic features in the genes.gtf. For each feature (a
 gene for example) a count matrix shows how many reads were mapped to this
 feature.
 
-Various rules are used to assign counts to features
+Various rules can be used to assign counts to features
 
 ![](media/htseq.png)
 
@@ -549,7 +597,7 @@ Various rules are used to assign counts to features
 
 ## Section 6: DEseq2 
 
-[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html
+[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
 is an R package, that is used for analysing differential expression of
 RNA-Seq data and can either use exact statistical methods or generalised
 linear models.
@@ -595,6 +643,25 @@ from "Filter on data x" to `DESeq2_Significant_DE_Genes`
 **Exercise**:
 
 Why do you think it is important to use the *adjusted* p-value to select which genes are differentially-expressed. Why might you also want to specify a fold-change cutoff? Discuss with your neighbours
+
+
+## Create a count matrix
+
+The htseq tool is designed to produce a separate table of counts for each sample. This is not particularly useful for other tools which require the counts to be displayed in a data matrix where each row is a gene and each column is a particular sample in the dataset.tmp 
+
+<div class="alert alert-info">
+*RNA Analysis -> Generate count matrix*
+</div>
+
+- Select the count files from your history *batch1.htseq*, *batch2.htseq*, etc...
+- Keep *Column containing gene IDs* and *Column containing gene counts* to 1 and 2 respectively. 
+- Rename the output to `raw counts` and Download to your computer
+
+## Interactive exploration of the results with *DEGUST*
+
+
+
+
 
 ## References
 
