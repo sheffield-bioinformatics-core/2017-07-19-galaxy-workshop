@@ -1,13 +1,9 @@
 ---
-title: ""
+title: "RNA-seq Analysis in Galaxy"
 author: "Mark Dunning"
-output:  
-html_document:
+output:  html_document
 ---
 
-
-
-# Hands-on RNA-seq Analysis in Galaxy
 
 ## Acknowledgement
 
@@ -22,7 +18,7 @@ _Further Modified by Mark Dunning of Sheffield Bioinformatics Core_
 <img src="media/logo-sm.png" align=right>
 
 web : [sbc.shef.ac.uk](https://sbc.shef.ac.uk)  
-twitter: [@SheffBioinfCore](https://twitter.com/SheffBioinfCore)  
+twitter: [SheffBioinfCore](https://twitter.com/SheffBioinfCore)  
 email: [bioinformatics-core@sheffield.ac.uk](bioinformatics-core@sheffield.ac.uk)
 
 -----
