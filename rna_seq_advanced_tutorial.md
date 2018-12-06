@@ -46,7 +46,7 @@ Those eventually wanted to perform their own RNA-seq analysis (for example in R)
 
 ### Courses on analysing RNA-seq data in R
 
-- [Cancer Research Uk Bioinformatics Core](https://bioinformatics-core-shared-training.github.io/RNAseq-R/)
+- [Sheffield Bioinformatics Core](http://sbc.shef.ac.uk/training/rna-seq-in-r-2019-01-14/)
 - [Monash Bioinformatics Platform](http://monashbioinformaticsplatform.github.io/RNAseq-DE-analysis-with-R/)
 
 
@@ -215,7 +215,9 @@ Search for the text *trim* and *adapter* in the Galaxy tool search box (top-righ
 
 How many tools are available for the task of trimming and removing adapter contamination?
 
-If time allows, use the trim galore tool
+If time allows, use the trim galore tool to trim one of the `fastq` files and repeat the QC.
+
+N.B. the `fastq` files that we are starting from have already undergone some processing, so you may not see much effect.
 </div>
 
 
@@ -242,14 +244,14 @@ Question: do the fastq files seem to have consistently high-quality?
 </div>
 
 
-## Section 3: Alignment [30 mins]
+## Section 3: Alignment
 
 In this section we map the reads in our FASTQ files to a reference genome. As
 these reads originate from mRNA, we expect some of them will cross exon/intron
-boundaries when we align them to the reference genome. Tophat is a splice-aware
+boundaries when we align them to the reference genome. `HISAT2` is a splice-aware
 mapper for RNA-seq reads that is based on Bowtie. It uses the mapping results
 from Bowtie to identify splice junctions between exons. More information on
-Tophat can be found [here](https://ccb.jhu.edu/software/tophat/index.shtml).
+HISAT2 can be found [here](https://ccb.jhu.edu/software/hisat2/index.shtml).
 
 
 <div class="alert alert-info">
@@ -258,7 +260,7 @@ NGS: RNA Analysis > HISAT2
 
 </div>
 
-#### 1.  Map/align the reads with Tophat to the S. cerevisiae reference
+#### 1.  Map/align the reads with HISAT2 to the S. cerevisiae reference
 In the left tool panel menu, under NGS Analysis, select
 **NGS: RNA Analysis > HISAT2** and set the parameters as follows:  
 
@@ -286,7 +288,14 @@ Note: This may take a few minutes, depending on how busy the server is.
 #### 2.  Rename the output files
 You should have 5 output files for each of the FASTQ input files:
 
+`HISAT2 on data.. aligned reads (BAM)`
 
+It will be helpful to rename these to something shorter for the next steps.
+
+- `batch1.bam`
+- `batch2.bam`
+- `chem1.bam`
+- `chem2.bam`
 
 
 ## About the `bam` file format
@@ -445,13 +454,6 @@ e.g.
 
 Rather than dealing with `.sam` files, we usually analyse a `.bam` file.
 
-#### [Optional] Convert BAM to SAM
-
-It useful to understand the BAM/SAM format.  Convert one of your BAM files to SAM format, and
-view the text within Galaxy
-
-1.  **NGS: SAM Tools> BAM-to-SAM convert BAM to SAM** and select one of you BAM files
-2.  Click on the eye of the resulting file to view the SAM alignments.
 
 -----
 
@@ -464,7 +466,7 @@ view the text within Galaxy
 </div>
 
 *idxstats* will report the number of reads mapping to each reference sequence (i.e. chromosome)
-<div class="alert alert-info"
+<div class="alert alert-info">
 *Sam Tools -> IdxStats*
 </div>
 
@@ -524,7 +526,7 @@ For more details
     
 ### Example
 
-Go to ***File*** -> ***Load from file*** and select the aligned `bam` files from `Tophat`. Note that the index files `.bai` need to be present in the same directory. However, you only need to click on the `.bam`
+Go to ***File*** -> ***Load from file*** and select the aligned `bam` files from `HISAT2`. Note that the index files `.bai` need to be present in the same directory. However, you only need to click on the `.bam`
 
 - The black dotted vertical lines indicates the centre of the view
 - Each of the grey pointed rectangles represents a sequencing reads
@@ -568,7 +570,7 @@ Additional data tracks are also available on the IGV server. These include usefu
 
 ## Section 5. Quantification (Counting reads in features)
 
-In order to test for differential expression, we need to count up how many times each "feature" is observed is each sample. We can then apply statistical tests to these data
+In order to test for differential expression, we need to count up how many times each "feature" is observed is each sample. The goal of such operations is to produce a *count table* such as that shown below. We can then apply statistical tests to these data
 
 ![](media/counts.png)
 
