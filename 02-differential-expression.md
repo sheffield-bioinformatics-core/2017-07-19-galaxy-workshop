@@ -53,10 +53,10 @@ Those eventually wanted to perform their own RNA-seq analysis (for example in R)
 
 Previous sections have illustrated how to
 
-- perform quality assessment on our fastq files
-- align fastq files to the reference genome
-- visualise the reads in IGV
-- count against a set of reference transcripts
+- [perform quality assessment on our fastq files](01-pre-processing.nb.html#section_2:_quality_assessment_with_fastqc)
+- [align fastq files to the reference genome](01-pre-processing.nb.html#section_3:_alignment)
+- [visualise the reads in IGV](01-pre-processing.nb.html#section_4_visualise_the_aligned_reads_with_igv)
+- [count against a set of reference transcripts](01-pre-processing.nb.html#section_5_quantification_(counting_reads_in_features))
 
 We will now use the counts as the input for a differential expression analysis.
 
