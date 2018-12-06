@@ -586,87 +586,23 @@ Various rules can be used to assign counts to features
 
 ![](media/htseq.png)
 
+<div class="alert alert-info">
+**NGS Analysis > htseq-count**
+</div>
 
 1.  Use HTSeq-count to count the number of reads for each feature.  
     In the left tool panel menu, under NGS Analysis, select
-    **NGS Analysis > htseq-count*** and set the parameters as follows:  
+    **NGS Analysis > htseq-count** and set the parameters as follows:  
     - **Gene model (GFF) file to count reads over from your current history:** genes.gtf
     - **bam/sam file from your history:**  
       (Select one of six bam files)
-        - `batch1-accepted_hits.bam`
+        - `batch1.bam`
     - Use defaults for the other fields
     - Execute
 
 2.  Repeat for the remaining bam files
 
-
-## Section 6: DEseq2 
-
-[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
-is an R package, that is used for analysing differential expression of
-RNA-Seq data and can either use exact statistical methods or generalised
-linear models.
-
-
-In the Galaxy tool panel, under NGS Analysis, select
-**NGS: RNA Analysis > DESeq2** and set the parameters as follows:
-
-
-- **1. Factor level** Batch
-- **Count files**  
-    - `batch1-htseq`
-    - `batch2-htseq`
-- **2. Factor level:** Chem
-- **Select columns containing control:**  
-    - `chem1-htseq`
-    - `chem2-htseq`
-- Use defaults for the other fields
-- Execute
-
-#### 2.  Examine the outputs from the previous step
-1.  Examine the `DeSeq2 result file`by
-    clicking on the **eye icon**.
-    This file is a list of genes sorted by p-value from using DESeq2 to
-    perform differential expression analysis.
-2.  Examine the `DeSeq2 plots` file. This file has some
-    plots from running DESeq2, including PCA and clustering showing relationships between samples
-    
-
-#### 3.  Extract the significant differentially expressed genes.  
-Under Basic Tools, click on **Filter and Sort > Filter**:
-
-- **Filter:** `DESeq2 results file`
-- **With following condition:** `c7 < 0.05 and (c3 > 1.0 or c3 < -1.0)`
-- **Number of header lines to skip:** 1
-- Execute
-
-This will keep the genes that have an adjusted p-value (column 7 in the table) of less
-or equal to 0.05 and have a fold change of greater than 1 or less than -1. There should be 22 genes in this file.
-Rename this file by clicking on the **pencil icon** of and change the name
-from "Filter on data x" to `DESeq2_Significant_DE_Genes`
-
-**Exercise**:
-
-Why do you think it is important to use the *adjusted* p-value to select which genes are differentially-expressed. Why might you also want to specify a fold-change cutoff? Discuss with your neighbours
-
-
-## Create a count matrix
-
-The htseq tool is designed to produce a separate table of counts for each sample. This is not particularly useful for other tools which require the counts to be displayed in a data matrix where each row is a gene and each column is a particular sample in the dataset.tmp 
-
-<div class="alert alert-info">
-*RNA Analysis -> Generate count matrix*
-</div>
-
-- Select the count files from your history *batch1.htseq*, *batch2.htseq*, etc...
-- Keep *Column containing gene IDs* and *Column containing gene counts* to 1 and 2 respectively. 
-- Rename the output to `raw counts` and Download to your computer
-
-## Interactive exploration of the results with *DEGUST*
-
-
-
-
+**You are now ready to follow the next tutorial on [Differential Expression](02-differential-expression.nb.html)**
 
 ## References
 
