@@ -60,13 +60,32 @@ Previous sections have illustrated how to
 
 We will now use the counts as the input for a differential expression analysis.
 
-## DEseq2 
+## Differential expression
 
-[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
-is an R package, that is used for analysing differential expression of
-RNA-Seq data and can either use exact statistical methods or generalised
+The term *differential expression* was first used to refer to the process of finding statistically significant genes from a *microarray* gene expression study.
+
+![](media/de_boxplot.png)
+![](media/de_histogram.png)
+
+Such methods were developed on the premise that microarray expression values are approximately *normally-distributed* when appropriately transformed (e.g. by using a log$_2$ transformation) so that a modified version of the standard *t-test* can be used. The same test is applied to each gene under investigation yielding a *test statistic*, *fold-change* and *p-value*. Similar methods have been adapted to RNA-seq data to account for the fact that the data are *count-based* and do not follow a normal distribution.
+
+There are several sensible and respected choices for performing a differential expression analysis on RNA-seq data. We will concentrate initally on the `DESeq2` method because it is readily available through Galaxy. [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
+is an R package, that is used for analysing differential expression of RNA-Seq data and can either use exact statistical methods or generalised 
 linear models.
 
+The counts have to be normalised first prior to differential expression testing. There are two main biases that need to be accounted for:-
+
+- size of gene
+  + *longer* genes will have more reads assigned to them
+- library size
+  + a sample that is sequenced to a higher depth will receive more reads
+  
+[This blog](https://www.rna-seqblog.com/rpkm-fpkm-and-tpm-clearly-explained/) provides a nice explanation of the current thinking 
+
+<div class="alert alert-info">
+
+**NGS: RNA Analysis > DESeq2**
+</div>
 
 In the Galaxy tool panel, under NGS Analysis, select
 **NGS: RNA Analysis > DESeq2** and set the parameters as follows:
@@ -89,8 +108,11 @@ In the Galaxy tool panel, under NGS Analysis, select
     This file is a list of genes sorted by p-value from using DESeq2 to
     perform differential expression analysis.
 2.  Examine the `DeSeq2 plots` file. This file has some
-    plots from running DESeq2, including PCA and clustering showing relationships between samples
+    plots from running DESeq2, including PCA and clusteing.
     
+*PCA* and hierachical clustering are two common methods for visualising relationships between samples in a high-throughput experiment.
+
+
 
 #### 3.  Extract the significant differentially expressed genes.  
 Under Basic Tools, click on **Filter and Sort > Filter**:
@@ -105,12 +127,22 @@ or equal to 0.05 and have a fold change of greater than 1 or less than -1. There
 Rename this file by clicking on the **pencil icon** of and change the name
 from "Filter on data x" to `DESeq2_Significant_DE_Genes`
 
-**Exercise**:
+<div class="alert alert-warning">
+Question: 
 
 Why do you think it is important to use the *adjusted* p-value to select which genes are differentially-expressed. Why might you also want to specify a fold-change cutoff? Discuss with your neighbours
 
+</div>
 
-## Create a count matrix
+## Interactive exploration of the results with *DEGUST*
+
+- [Degust](http://degust.erc.monash.edu/)
+
+`Degust` is a web tool that can analyse the counts files produced in the step above, to test for differential gene expression. It offers and interactive view of the differential expression results
+
+The input file is a count matrix where each row is a measured gene, and each column is a different biological sample. Within the tool we can configure which samples belong to the different biological groups of interest.
+
+### Create a count matrix
 
 The htseq tool is designed to produce a separate table of counts for each sample. This is not particularly useful for other tools which require the counts to be displayed in a data matrix where each row is a gene and each column is a particular sample in the dataset.tmp 
 
@@ -122,11 +154,20 @@ The htseq tool is designed to produce a separate table of counts for each sample
 - Keep *Column containing gene IDs* and *Column containing gene counts* to 1 and 2 respectively. 
 - Rename the output to `raw counts` and Download to your computer
 
-## Interactive exploration of the results with *DEGUST*
+### Uploading the count matrix to Degust
 
+Click on Choose File.
+Select the htseq output file. tabular (that you previously downloaded to your computer from Galaxy) and click Open.
+Click Upload.
+A Configuation page will appear.
 
-
-
+For Name type DGE in E coli
+For Info columns select Contig
+For Analyze server side leave box checked.
+For Min read count put 10.
+Click Add condition
+Add a condition called “Control” and select the LB columns.
+Add a condition called “Treament” and select the MG columns.
 
 ## References
 
