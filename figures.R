@@ -1,5 +1,6 @@
 library(ggplot2)
 library(dplyr)
+library(gridExtra)
 
 A <- rnorm(5,mean = 5, sd = 1)
 B <- rnorm(5, mean=3, sd=1)
@@ -13,4 +14,6 @@ ggsave(p1, file="media/de_boxplot.png")
 p2 <- data.frame(A,B) %>% 
   tidyr::gather() %>% 
   ggplot(aes(x=value,fill=key)) + geom_density(alpha=0.7) + scale_fill_manual(values=my_pal)
-ggsave(p2, file="media/de_histogram.png")
+grid.arrange(p1,p2)
+
+ggsave(grid.arrange(p1,p2), file="media/de_explained.png")
