@@ -24,6 +24,7 @@ _Modified by David Powell (Monash Bioinformatics Platform)_
 
 _Further Modified by Mark Dunning of Sheffield Bioinformatics Core_
 
+The Degust part of this session is based on the tutorial [Differential gene expression using Galaxy and Degust](http://sepsis-omics.github.io/tutorials/modules/dge/) from Antibiotic Resistant Pathogens Initiative (ARPI)
 
 ### Sheffield Bioinformatics Core
 <img src="media/logo-sm.png" align=right>
@@ -64,28 +65,32 @@ We will now use the counts as the input for a differential expression analysis.
 
 The term *differential expression* was first used to refer to the process of finding statistically significant genes from a *microarray* gene expression study.
 
-![](media/de_boxplot.png)
-![](media/de_histogram.png)
+![](media/de_explained.png)
+
 
 Such methods were developed on the premise that microarray expression values are approximately *normally-distributed* when appropriately transformed (e.g. by using a log$_2$ transformation) so that a modified version of the standard *t-test* can be used. The same test is applied to each gene under investigation yielding a *test statistic*, *fold-change* and *p-value*. Similar methods have been adapted to RNA-seq data to account for the fact that the data are *count-based* and do not follow a normal distribution.
 
-There are several sensible and respected choices for performing a differential expression analysis on RNA-seq data. We will concentrate initally on the `DESeq2` method because it is readily available through Galaxy. [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
-is an R package, that is used for analysing differential expression of RNA-Seq data and can either use exact statistical methods or generalised 
-linear models.
-
-The counts have to be normalised first prior to differential expression testing. There are two main biases that need to be accounted for:-
-
-- size of gene
-  + *longer* genes will have more reads assigned to them
-- library size
-  + a sample that is sequenced to a higher depth will receive more reads
-  
-[This blog](https://www.rna-seqblog.com/rpkm-fpkm-and-tpm-clearly-explained/) provides a nice explanation of the current thinking 
+There are several sensible and respected choices for performing a differential expression analysis on RNA-seq data. We will concentrate initally on the `DESeq2` method because it is readily available through Galaxy. 
 
 <div class="alert alert-info">
 
 **NGS: RNA Analysis > DESeq2**
 </div>
+
+
+[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
+is an R package, that is used for analysing differential expression of RNA-Seq data and can either use exact statistical methods or generalised 
+linear models.
+
+`DESeq2` takes an input the counts that we generated in the previous step. Reads counts have to be normalised first prior to differential expression testing. There are two main biases that need to be accounted for:-
+
+- size of gene
+    + *longer* genes will have more reads assigned to them
+- library size
+    + a sample that is sequenced to a higher depth will receive more reads
+  
+`DESeq2` has its' own method of normalising counts. You will probably encounter other methods of normalising RNA-seq reads such as *RPKM*, *CPM*, *TPM* etc. [This blog](https://www.rna-seqblog.com/rpkm-fpkm-and-tpm-clearly-explained/) provides a nice explanation of the current thinking. `
+
 
 In the Galaxy tool panel, under NGS Analysis, select
 **NGS: RNA Analysis > DESeq2** and set the parameters as follows:
@@ -108,11 +113,10 @@ In the Galaxy tool panel, under NGS Analysis, select
     This file is a list of genes sorted by p-value from using DESeq2 to
     perform differential expression analysis.
 2.  Examine the `DeSeq2 plots` file. This file has some
-    plots from running DESeq2, including PCA and clusteing.
+    plots from running DESeq2, including [PCA](http://setosa.io/ev/principal-component-analysis/) and clustering.
     
-*PCA* and hierachical clustering are two common methods for visualising relationships between samples in a high-throughput experiment.
 
-
+`DESeq2` reports, for each gene that is being tested, some information that we can use to determine if the gene is different between our conditions of interest. We will do more exploration of differential expression analysis in the next section using a tool that is not included in Galaxy. For now we will concentrate on the task on finding out which genes have *sufficient statistical evidence* for being differentially expressed between our two conditions.
 
 #### 3.  Extract the significant differentially expressed genes.  
 Under Basic Tools, click on **Filter and Sort > Filter**:
@@ -136,6 +140,8 @@ Why do you think it is important to use the *adjusted* p-value to select which g
 
 ## Interactive exploration of the results with *DEGUST*
 
+![](media/rna_advanced_degust_1.png)
+
 - [Degust](http://degust.erc.monash.edu/)
 
 `Degust` is a web tool that can analyse the counts files produced in the step above, to test for differential gene expression. It offers and interactive view of the differential expression results
@@ -144,7 +150,7 @@ The input file is a count matrix where each row is a measured gene, and each col
 
 ### Create a count matrix
 
-The htseq tool is designed to produce a separate table of counts for each sample. This is not particularly useful for other tools which require the counts to be displayed in a data matrix where each row is a gene and each column is a particular sample in the dataset.tmp 
+The htseq tool is designed to produce a separate table of counts for each sample. This is not particularly useful for other tools such as Degust which require the counts to be presented in a data matrix where each row is a gene and each column is a particular sample in the dataset.
 
 <div class="alert alert-info">
 *RNA Analysis -> Generate count matrix*
@@ -152,22 +158,138 @@ The htseq tool is designed to produce a separate table of counts for each sample
 
 - Select the count files from your history *batch1.htseq*, *batch2.htseq*, etc...
 - Keep *Column containing gene IDs* and *Column containing gene counts* to 1 and 2 respectively. 
-- Rename the output to `raw counts` and Download to your computer
+
+The output should look something like this...
+![](media/count_matrix.png)
+
+- Download to your computer
 
 ### Uploading the count matrix to Degust
 
-Click on Choose File.
-Select the htseq output file. tabular (that you previously downloaded to your computer from Galaxy) and click Open.
-Click Upload.
-A Configuation page will appear.
+N.B. Degust claims to accept a *csv* (comma-separated) file, but is in fact happy with a tabular file like the one we have just created.
 
-For Name type DGE in E coli
-For Info columns select Contig
-For Analyze server side leave box checked.
-For Min read count put 10.
-Click Add condition
-Add a condition called “Control” and select the LB columns.
-Add a condition called “Treament” and select the MG columns.
+- From the main degust page, click *Upload your counts file*
+- Click on Browse
+- Select the *count matrix* that you previously downloaded to your computer from Galaxy, and click *Open*.
+- Click *Upload*
+- A Configuation page will appear.
+
+![](media/degust_config.png)
+
+- For Name type "*DGE in SaCer3*" (or whatever you want to call the analysis)
+- For Info columns select "gene_id"
+- For Analyze server side leave box checked.
+- Click Add condition
+    + Add a condition called “Batch” and select the `batch` columns.
+    + Add a condition called “Chem” and select the `chem` columns.
+    
+## Overview of Degust sections
+- Top black panel with Configure settings at right.
+- Left: Conditions: Control and Treatment.
+- Left: Method selection for DGE.
+- Top centre: Plots, with options at right.
+- When either of the expression plots are selected, a heatmap appears below.
+- A table of genes (or features); expression in treatment relative to control (Treatment column); and significance (FDR column).
+
+(screenshot from the example at ARPI)
+
+![](http://sepsis-omics.github.io/tutorials/modules/dge/images/image12.png)
+
+## MDS plot
+
+![](media/degust_mds.png)
+
+This is a multidimensional scaling plot which represents the variation between samples.
+Ideally:
+- All the batch samples would be close to each other
+- All the chem samples would be close to each other
+- The batch and chem groups would be far apart
+
+The x-axis is the dimension with the highest magnitude. The control/treatment samples should be split along this axis.
+
+Here, our batch samples are on the left and the chem samples are on the right, which means they are well separated on their major MDS dimension, which looks correct. It is important to retain as much metadata about the samples as possible (e.g. batch, date of sequencing, gender, age etc). This can help diagnose situations when the first dimension is not associated with your main contrast of interest.
+
+## MA-plot
+
+![](media/degust_ma.png)
+
+Each dot shows the change in expression in one gene.
+
+- The average expression (over both condition and treatment samples) is represented on the x-axis.
+    + Plot points should be symmetrical around the x-axis.
+    + We can see that many genes are expressed at a low level, and some are highly expressed.
+- The fold change is represented on the y axis.
+    + If expression is significantly different between batch and chem, the dots are red. If not, they are blue. (In Degust, significant means FDR <0.05).
+    + At low levels of gene expression (low values of the x axis), fold changes are less likely to be significant.
+
+Click on the dot to see the gene name.
+
+## Parallel coordinates and heatmap
+
+![](media/degust_parallel_heatmap.png)
+
+Each line shows the change in expression in one gene, between control and treatment.
+
+- Go to Options at the right.
+    + For FDR cut-off set at 0.001.
+    + This is a significance level (an adjusted p value). We will set it quite low in this example, to ensure we only examine key differences.
+- Look at the Parallel Coordinates plot. There are two axes:
+    + Left: Control: Gene expression in the control samples. All values are set at zero.
+    + Right: Treatment Gene expression in the treatment samples, relative to expression in the control.
+- The blocks of blue and red underneath the plot are called a heatmap.
+    + Each block is a gene. Click on a block to see its line in the plot above.
+    + Look at the row for the chem. Relative to batch, genes expressed more are red; genes expressed less are blue.
+
+## Table of genes
+
+![](media/degust_gene_table.png)
+
+Table of genes
+- gene_id: names of genes. Note that gene names are sometimes specific to a species, or they may be only named as a locus ID (a chromosomal location specified in the genome annotation).
+- FDR: False Discovery Rate. This is an adjusted p value to show the significance of the difference in gene expression between two conditions. Click on column headings to sort. By default, this table is sorted by FDR.
+- batch and chem: log2(Fold Change) of gene expression. The default display is of fold change in the treatment relative to the control. Therefore, values in the batch column are zero. This can be changed in the Options panel at the top right.
+- In some cases, a large fold change will be meaningful but in others, even a small fold change can be important biologically.
+Table of genes and expression:
+
+<div class="alert alert-warning">
+
+You can search for particular genes by typing the name of the gene in the top box to the top right of the gene table.
+Try searching for genes at the top of the gene list from Galaxy. Do these seem to be significant using Degust?
+
+</div>
+
+
+## Download and R code
+
+Above the genes table is the option to download the results of the current analysis to a csv file. You can also download the *R* code required to reproduce the analysis by clicking the *Show R code* box underneath the Options box.
+
+<div class="alert alert-warning">
+
+Download the Degust results now for use in the next exercise
+
+</div>
+
+
+## Overlapping Gene Lists
+
+![](https://upload.wikimedia.org/wikipedia/en/e/e4/Venn_stained_glass.jpg)
+
+We might sometimes want to compare the lists of genes that we identify using different methods, or genes identified from more than one contrast. In our example dataset we have one contrast (batch vs chem), but we can however compare genes identified by DESeq2 and Degust.
+
+The website *venny* provides a really nice interface for doing this.
+
+- Open both your DESeq2 and Degust results files in Excel
+- Go to the venny website
+    + http://bioinfogp.cnb.csic.es/tools/venny/
+- Copy the names of genes with adjusted p-value less than 0.05 in the DESeq2 analysis into the top-left box on the venny website
+- Copy the names of genes with adjusted p-value less than 0.05 in the Degust analysis into the rop-right box on the venny website
+- venny should now report the number of genes found in each list, the size of the intersection, and genes unique to each method
+- clicking on a particular part of the venn diagram to display the list of genes
+
+
+
+
+
 
 ## References
 
