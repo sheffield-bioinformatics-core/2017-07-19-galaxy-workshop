@@ -263,11 +263,6 @@ Try searching for genes at the top of the gene list from Galaxy. Do these seem t
 
 Above the genes table is the option to download the results of the current analysis to a csv file. You can also download the *R* code required to reproduce the analysis by clicking the *Show R code* box underneath the Options box.
 
-<div class="alert alert-warning">
-
-Download the Degust results now for use in the next exercise
-
-</div>
 
 
 ## Overlapping Gene Lists
@@ -288,8 +283,20 @@ The website *venny* provides a really nice interface for doing this.
 
 
 
+# Exercise
 
+We are going to use some more realistic data to practice running a differential expression analysis. In the next section we will use these same results to perform a gene set enrichment and pathways analysis.
 
+The data are from the The Cancer Genome Atlas (TCGA) project and comprise the RNA-seq counts from 5 breast cancer patients and 5 normals.
+
+<div class="alert alert-warning">
+Exercise: Upload the file `tcga_raw_counts,csv` to degust and perform a differential expression analysis
+
+**Make sure that edgeR is selected as the Method to perform the analysis**
+
+Download the csv results file
+
+</div>
 
 ## References
 
