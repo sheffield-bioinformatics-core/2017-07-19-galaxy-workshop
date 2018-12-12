@@ -57,57 +57,52 @@ Now, lets select a number (say, 12) of the balls at random without seeing into t
 ![](media/picked-balls.png)
 
 
-We have picked, at random, 8 grey balls. Using simulations, we can repeat the process and look at how many grey we get. 
+We have picked, at random, 8 grey balls. 
 
-The distribution of the data shows what the most-likely values are
+Using simulations, we can repeat the process and look at how many grey we get. The distribution of the data shows what the most-likely values are
 
-```{r}
+```{r echo=FALSE}
 #see ?rhyper for argument definition
 trials <- rhyper(10000,40,10,12)
-hist(trials)
+hist(trials,xlab = "Number of grey balls")
 ```
 
 We can count how many times each value is observed
 
-```{r}
+```{r echo=FALSE}
 table(trials)
 ```
 
 Dividing by the number of trials gives a probability of sorts
 
-```{r}
+```{r echo=FALSE}
 table(trials)/10000
 
 ```
 
 The probability of getting *at least* a certain number can also be computed
 
-```{r}
+```{r echo=FALSE}
 cumsum(table(trials)/10000)
 
 ```
 
-```{r}
-1-cumsum(table(trials)/10000)
-```
-
-
-Back to our example, the distribution of balls can be expressed as a contingency table, on which we can use a Fisher's exact test
+Back to our example, the distribution of balls (both grey and red) can be expressed as a contingency table, on which we can use a "*Fisher's exact test*".
 
 Total grey balls: 10
 Total in subset: 12
 
-```{r}
-df <- data.frame(Selection_in = c(8,4), Selection_out = c(2,26))
-rownames(df) <- c("Grey_in", "Grey_out")
+```{r echo=FALSE} 
+df <- data.frame(Selected = c(8,4), NotSelected = c(2,26))
+rownames(df) <- c("Grey", "Red")
 df
 ```
 
 
 
-```{r}
-df <- data.frame(Selection_in = c("a","c","a+c"), Selection_out = c("b","d","b+d"), RowTotal = c("a +b","c+d","a+b+c+d (=n)"))
-rownames(df) <- c("Grey_in", "Grey_out","Column Total")
+```{r echo=FALSE}
+df <- data.frame(Selected = c("a","c","a+c"), NotSelected = c("b","d","b+d"), RowTotal = c("a +b","c+d","a+b+c+d (=n)"))
+rownames(df) <- c("Grey", "Red","Column Total")
 df
 ```
 
@@ -120,19 +115,11 @@ or less formally;
 *P = (ways of choosing grey balls) X (ways of non-grey balls amongst subset) / ways of choosing subset*
 
 
-**Be careful of how you define the universe**
+The general procedure for performing an over-representation can be summarised as follows:-
 
-What genes were candidates for selection as universe?
-
-- All possible genes
-- All genes represented on the chip
-- All genes that have a GO annotation
-
-Just changing the size of the universe alone can have a massive effect on the p-value
-
-- In the formula, we have to divide by the universe size
-    + so the probability will become very small as this increases
-    + even if all the other numbers stay the same
+- defining the *statistically-significant* genes in your dataset
+    + we can be a bit more relaxed when assessing this. sometimes we want as many genes as feasible to be included
+- defining the *background* genes; this is the list of all possible genes that could have been identified
 
 
 ## Worked Example: 
@@ -165,11 +152,15 @@ Question: Look back at the instructions to filter the DESeq2 results from the pr
 - use the **Text Manipulation** -> **Cut** command to create a table containing just the names of the differentially-expressed genes. 
 - download the table to `de_genes.txt`
 
-## Preparing the data for GOrilla
+
+
+## Using GOrilla
+
+There are several popular online tools for performing enrichment analysis
 
 We will be using the online tool [GOrilla](http://cbl-gorilla.cs.technion.ac.il/) to perform the pathways analysis. It has two modes; the first of which accepts a list of *background* and *target* genes
 
-## Using GOrilla
+
 1. Go to http://cbl-gorilla.cs.technion.ac.il/
 2. Read the “Running Example”
 
@@ -191,13 +182,14 @@ Below the figure is the results table. This links to more information about each
 - n, total number of genes that were found in the list you uploaded (same for all rows)
 - b, number of genes in the list you uploaded that intersect with this GO term
 
+If you have time, you can also experiment uploading the same genes lists to the online tools [DAVID](https://david.ncifcrf.gov/tools.jsp) and [GeneTrail](https://genetrail2.bioinf.uni-sb.de/)
+
 
 ## Theory Part II: Threshold-free
 
 For these tests, we don't have to specify a statistical threshold and use the test statistics (log fold-change) from *all* genes as the input to the test. The popular *Gene Set Enrichment Analysis (GSEA)* uses this approach. These tests can be used to detect differential expression for a group of genes, even when the effects are too small or there is too little data to detect the genes individually.
 
 ![](media/overexpressed-gsea.png)
-![](media/underexpressed-gsea.png)
 
 
 The Broad institute provides [a version of GSEA](http://software.broadinstitute.org/gsea/index.jsp) that can be run via a java application. 
