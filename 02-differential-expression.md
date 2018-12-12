@@ -294,9 +294,16 @@ Exercise: Upload the file `tcga_raw_counts,csv` to degust and perform a differen
 
 **Make sure that edgeR is selected as the Method to perform the analysis**
 
-Download the csv results file
+</div>
+
+Take some time to understand the various parts of the report
+
+<div class="alert alert-warning">
+Question Check out the results for genes `C4orf7` and `SULT1C3`. You should find that both have extreme fold-change values, but are not particularly significant. Why do you think this might be?
 
 </div>
+
+Download the Degust results file as a **tsv** file. You will need to click the down arrow next to *Download csv*.
 
 ## References
 

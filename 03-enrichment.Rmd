@@ -84,9 +84,12 @@ The probability of getting *at least* a certain number can also be computed
 
 ```{r}
 cumsum(table(trials)/10000)
-1-cumsum(table(trials)/10000)
+
 ```
 
+```{r}
+1-cumsum(table(trials)/10000)
+```
 
 
 Back to our example, the distribution of balls can be expressed as a contingency table, on which we can use a Fisher's exact test
@@ -124,7 +127,6 @@ What genes were candidates for selection as universe?
 - All possible genes
 - All genes represented on the chip
 - All genes that have a GO annotation
-- All genes from the chip that pass a **non-specific** filter
 
 Just changing the size of the universe alone can have a massive effect on the p-value
 
@@ -135,37 +137,37 @@ Just changing the size of the universe alone can have a massive effect on the p-
 
 ## Worked Example: 
 
-## Data
+We will use the example of 5 breast cancer patients and 5 normals that we performed differential expression on using the degust tool.
+
+The first step is to create a list of *background* genes for the test.
+
+<div class="alert alert-info">
+**Text Manipulation** -> **Cut**
+</div>
+
+- Download the results file from Degust as a ***tsv*** file, and upload them to Galaxy
+- Select the Type of data as *Tabular* when uploading the file
+- Cut the column c1 from `Degust.tsv` in your Galaxy history
+- Download the resulting object and rename to `background.txt`
 
 
-## Exercise
+Now use the tool **Filter and Sort** -> **Filter:** to select only the significant genes
 
-- Download the files from the zenodo link, and upload them to Galaxy
+<div class="alert alert-info">
+**Filter and Sort** -> **Filter**
+</div>
 
-- **Filter:** `Degust file`
-- **With following condition:** `c4 < 0.05 and (c3 > 1.0 or c3 < -1.0)`
-- **Number of header lines to skip:** 1
+<div class="alert alert-warning">
+Question: Look back at the instructions to filter the DESeq2 results from the previous section. How would you modify
+
+</div>
+
+- use the **Text Manipulation** -> **Cut** command to create a table containing just the names of the differentially-expressed genes. 
+- download the table to `de_genes.txt`
 
 ## Preparing the data for GOrilla
 
-We will be using the online tool [GOrilla](http://cbl-gorilla.cs.technion.ac.il/)
-
-1. Select the table that you have filtered and sorted
-2. Operation: Keep
-3. Select only column 1 (Gene IDs) from List of Fields
-4. Save the outputted dataset as “DE_Genes.txt”
-
-
-##Make a background list of genes:
-
-This is the list of all the genes you tested in your RNAseq pipeline. 
-
-1. Filter and Sort -> Filter
-2. Select the DESeq2 results from the previous step *prior to p-value and fold-change filtering*
-3. Text Manipulation -> Cut
-4. Keep the first column
-5. Download and save the resulting file of gene names as
-“Background.txt”
+We will be using the online tool [GOrilla](http://cbl-gorilla.cs.technion.ac.il/) to perform the pathways analysis. It has two modes; the first of which accepts a list of *background* and *target* genes
 
 ## Using GOrilla
 1. Go to http://cbl-gorilla.cs.technion.ac.il/
@@ -173,44 +175,60 @@ This is the list of all the genes you tested in your RNAseq pipeline.
 
 ![](media/gorilla-example.png)
 
-3. Choose Organism: `Drosophila melanogaster`
+3. Choose Organism: `Homo sapiens`
 4. Choose running mode: `Two unranked lists of genes`
-5. Upload `DE_Genes.txt` as the Target set.
-6. Upload `Background.txt` as the Background set.
+5. Upload `de_genes.txt` as the Target set.
+6. Upload `background.txt` as the Background set.
 7. Choose an Ontology: `Process`
 8. `Search Enriched GO terms`
+
+You should be presented with a graph of enriched GO terms showing the relationship between the terms. Each GO term is coloured according to its statistical significance.
+
+Below the figure is the results table. This links to more information about each GO term, and lists each gene in the category that was found in your list. The enrichment column gives 4 numbers that are used to determine enrichment (similar to the Fisher exact test we saw earlier)
+
+- N, total number of genes (should be the same in all rows)
+- B, total number of genes annotated with the GO term
+- n, total number of genes that were found in the list you uploaded (same for all rows)
+- b, number of genes in the list you uploaded that intersect with this GO term
+
 
 ## Theory Part II: Threshold-free
 
 For these tests, we don't have to specify a statistical threshold and use the test statistics (log fold-change) from *all* genes as the input to the test. The popular *Gene Set Enrichment Analysis (GSEA)* uses this approach. These tests can be used to detect differential expression for a group of genes, even when the effects are too small or there is too little data to detect the genes individually.
 
-![gsea](media/GSEA.png)
-
-*Subramanian et al, PNAS 2005*
-
-The Broad institute provides [a version of GSEA](http://software.broadinstitute.org/gsea/index.jsp) that can be run via a java application. Another option is [***GeneTrail***](http://genetrail.bioinf.uni-sb.de/enrichment_analysis.php?js=1&cc=1) which has the option to do a GSEA-style analysis.
-
-- Upload Degust 
-- Sort on column 3
-- Cut columns 1 and 3
+![](media/overexpressed-gsea.png)
+![](media/underexpressed-gsea.png)
 
 
+The Broad institute provides [a version of GSEA](http://software.broadinstitute.org/gsea/index.jsp) that can be run via a java application. 
 
+Remember that this method requires a sorted list of genes, so we will use a tool within Galaxy to sort our Degust results by log fold change
 
-## Preparing data for GeneTrail
+<div class="alert alert-info">
+**Filter and Sort** -> **Sort**
+</div>
 
-1. **Text Maniupulation -> Filter** with condition `c3 != 'NA'`
-   + select `DESeq2 result file...` as input
-2. **Text Manipulation -> Cut** 
-   + selecting columns `c1 c3` as the columns to cut
-3. Download the filtered, cut, table as a file (e.g. `gsea-input.txt`)
+- Use **Filter and Sort** -> **Sort** to sort the `degust.tsv` 
+- The use the **Text Manipulation** -> **Cut** tool to cut columns `c1` and `c3` from the output.
+- Download the resulting table, and once downloaded **rename to `gsea_input.rnk`**
 
-## Running GeneTrail
+## Run the GSEAPreranked tool
 
-Go to the [GeneTrail website](https://genetrail2.bioinf.uni-sb.de/)
+You should have already downloaded the gsea java tool from the Broad website. Double-clicking on the file `gsea-3.0.jar` should load the tool
 
-1. Under Transcriptome, select **Start Analysis**
-2. Under **Upload Data** select the data source to be *a text file* and browse to where you downloaded the file `gsea-input.txt`
-3. Keep the default categories and **Start Analysis**
-4. Explore the results to see what pathways are reported
+- Load the file you have just created into the tool by clicking the *Load data* button
+- Select the *GSEAPreranked* option from tools
+- You will need to choose what set of genes to use in the analysis. There are many curated gene sets available through [msigDB](http://software.broadinstitute.org/gsea/msigdb)
+- We will use the Hallmark gene sets, but feel free to experiment with others
+
+> hallmark gene sets are coherently expressed signatures derived by aggregating many MSigDB gene sets to represent well-defined biological states or processes.
+
+- Click the *Run* icon at the bottom of the screen
+- The bottom-left panel of the GSEA screen should show the progress of the tool as it runs. Once *success** is displayed, you will be able to view the results
+- The files `gsea_report_for_..._neg_.....` and `gsea_report_for_...._pos_....` show reports for gene sets that are under- and over-expressed in the study (according to the direction of the log fold-change).
+
+<div class="alert alert-warning">
+Question: What are the most enriched pathways? Locate their enrichment plots in the results folder. Make sure that you can understand the plots.
+
+</div>
 
