@@ -80,7 +80,7 @@ For this tutorial, we will assume that the *wet-lab* stages of the experiment ha
 #### 1.  Register as a new user on one of the public Galaxy servers
 
 
-- https://usegalaxy.org.au
+**- https://usegalaxy.org.au** 
 - https://usegalaxy.org/
 - https://usegalaxy.eu
 
@@ -218,7 +218,7 @@ Search for the text *trim* and *adapter* in the Galaxy tool search box (top-righ
 
 How many tools are available for the task of trimming and removing adapter contamination?
 
-If time allows, use the trim galore tool to trim one of the `fastq` files and repeat the QC.
+If time allows, use the *trim galore* tool to trim one of the `fastq` files and repeat the QC.
 
 N.B. the `fastq` files that we are starting from have already undergone some processing, so you may not see much effect.
 </div>

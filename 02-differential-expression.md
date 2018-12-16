@@ -289,6 +289,8 @@ We are going to use some more realistic data to practice running a differential 
 
 The data are from the The Cancer Genome Atlas (TCGA) project and comprise the RNA-seq counts from 5 breast cancer patients and 5 normals.
 
+The data for this exercise can be downloaded using [this link](https://raw.githubusercontent.com/sheffield-bioinformatics-core/rna-seq-in-galaxy/gh-pages/tcga_raw_counts.csv)
+
 <div class="alert alert-warning">
 Exercise: Upload the file `tcga_raw_counts,csv` to degust and perform a differential expression analysis
 
@@ -303,7 +305,7 @@ Question Check out the results for genes `C4orf7` and `SULT1C3`. You should find
 
 </div>
 
-Download the Degust results file as a **tsv** file. You will need to click the down arrow next to *Download csv*.
+Download the Degust results file as a **tsv** file. You will need to click the down arrow next to *Download csv* to change the output type from csv to tsv (tab-separated).
 
 ## References
 

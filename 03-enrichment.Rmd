@@ -134,7 +134,7 @@ The first step is to create a list of *background* genes for the test.
 
 - Download the results file from Degust as a ***tsv*** file, and upload them to Galaxy
 - Select the Type of data as *Tabular* when uploading the file
-- Cut the column c1 from `Degust.tsv` in your Galaxy history
+- Cut the column c1 from `degust.tsv` in your Galaxy history
 - Download the resulting object and rename to `background.txt`
 
 
@@ -145,7 +145,7 @@ Now use the tool **Filter and Sort** -> **Filter:** to select only the significa
 </div>
 
 <div class="alert alert-warning">
-Question: Look back at the instructions to filter the DESeq2 results from the previous section. How would you modify
+Question: Look back at the instructions to filter the DESeq2 results from the previous section. How would you modify the filtering condition to filter the file `degust.tsv`.
 
 </div>
 
