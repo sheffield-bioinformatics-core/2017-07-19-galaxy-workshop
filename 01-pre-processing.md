@@ -80,7 +80,7 @@ For this tutorial, we will assume that the *wet-lab* stages of the experiment ha
 #### 1.  Register as a new user on one of the public Galaxy servers
 
 
-**- https://usegalaxy.org.au** 
+- https://usegalaxy.org.au (**use this one**)
 - https://usegalaxy.org/
 - https://usegalaxy.eu
 
