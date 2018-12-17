@@ -45,4 +45,4 @@ This tutorial is split into three sections
 
 - [Pre-processing of RNA-seq data](01-pre-processing.nb.html)
 - [Differential expression](02-differential-expression.nb.html)
-- [Enrichment and pathways analysis](03-enrichment-analysis.nb.html)
+- [Enrichment and pathways analysis](03-enrichment.nb.html)
