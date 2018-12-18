@@ -164,6 +164,8 @@ The output should look something like this...
 
 - Download to your computer
 
+**If the "Generate Count Matrix" tool is not available in your galaxy server, you can use a pre-prepared csv file for the next section. Download the file using [this link](sacCer2_counts.csv)**
+
 ### Uploading the count matrix to Degust
 
 N.B. Degust claims to accept a *csv* (comma-separated) file, but is in fact happy with a tabular file like the one we have just created.
