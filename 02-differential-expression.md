@@ -153,11 +153,11 @@ The input file is a count matrix where each row is a measured gene, and each col
 The htseq tool is designed to produce a separate table of counts for each sample. This is not particularly useful for other tools such as Degust which require the counts to be presented in a data matrix where each row is a gene and each column is a particular sample in the dataset.
 
 <div class="alert alert-info">
-*RNA Analysis -> Generate count matrix*
+*Collection Operations -> Column Join* on Collections
 </div>
 
-- Select the count files from your history *batch1.htseq*, *batch2.htseq*, etc...
-- Keep *Column containing gene IDs* and *Column containing gene counts* to 1 and 2 respectively. 
+- In the *Tabular Files* section, select the count files from your history *batch1.htseq*, *batch2.htseq*, etc... Holding the CTRL key allows multiple files to be selected
+- Keep *Identifier column* as `1`
 
 The output should look something like this...
 ![](media/count_matrix.png)
@@ -172,7 +172,7 @@ N.B. Degust claims to accept a *csv* (comma-separated) file, but is in fact happ
 
 - From the main degust page, click *Upload your counts file*
 - Click on Browse
-- Select the *count matrix* that you previously downloaded to your computer from Galaxy, and click *Open*.
+- Select the file containing the *count matrix* that you previously downloaded to your computer from Galaxy, and click *Open*.
 - Click *Upload*
 - A Configuation page will appear.
 
