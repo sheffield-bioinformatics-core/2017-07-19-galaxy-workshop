@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Differential Expression Tutorial"
 author: "Mark Dunning"
 output:
   html_notebook:
@@ -127,7 +127,7 @@ Under Basic Tools, click on **Filter and Sort > Filter**:
 - Execute
 
 This will keep the genes that have an adjusted p-value (column 7 in the table) of less
-or equal to 0.05 and have a fold change of greater than 1 or less than -1. There should be 22 genes in this file.
+or equal to 0.05 and have a fold change of greater than 1 or less than -1. There should be 20 genes in this file.
 Rename this file by clicking on the **pencil icon** of and change the name
 from "Filter on data x" to `DESeq2_Significant_DE_Genes`
 
@@ -156,7 +156,7 @@ The htseq tool is designed to produce a separate table of counts for each sample
 *Collection Operations -> Column Join* on Collections
 </div>
 
-- In the *Tabular Files* section, select the count files from your history *batch1.htseq*, *batch2.htseq*, etc... Holding the CTRL key allows multiple files to be selected
+- In the *Tabular Files* section, select the `ht-seq` count files from your history *batch1.htseq*, *batch2.htseq*, etc... Holding the CTRL key allows multiple files to be selected
 - Keep *Identifier column* as `1`
 
 The output should look something like this...
@@ -164,7 +164,6 @@ The output should look something like this...
 
 - Download to your computer
 
-**If the "Generate Count Matrix" tool is not available in your galaxy server, you can use a pre-prepared csv file for the next section. Download the file using [this link](sacCer2_counts.csv)**
 
 ### Uploading the count matrix to Degust
 
@@ -179,12 +178,13 @@ N.B. Degust claims to accept a *csv* (comma-separated) file, but is in fact happ
 ![](media/degust_config.png)
 
 - For Name type "*DGE in SaCer3*" (or whatever you want to call the analysis)
-- For Info columns select "gene_id"
+- For Info columns select "#KEY"
 - For Analyze server side leave box checked.
 - Click Add condition
     + Add a condition called “Batch” and select the `batch` columns.
     + Add a condition called “Chem” and select the `chem` columns.
-    
+- Save the settings and then View the results
+
 ## Overview of Degust sections
 - Top black panel with Configure settings at right.
 - Left: Conditions: Control and Treatment.
@@ -247,11 +247,13 @@ Each line shows the change in expression in one gene, between control and treatm
 ![](media/degust_gene_table.png)
 
 Table of genes
+
 - gene_id: names of genes. Note that gene names are sometimes specific to a species, or they may be only named as a locus ID (a chromosomal location specified in the genome annotation).
 - FDR: False Discovery Rate. This is an adjusted p value to show the significance of the difference in gene expression between two conditions. Click on column headings to sort. By default, this table is sorted by FDR.
 - batch and chem: log2(Fold Change) of gene expression. The default display is of fold change in the treatment relative to the control. Therefore, values in the batch column are zero. This can be changed in the Options panel at the top right.
-- In some cases, a large fold change will be meaningful but in others, even a small fold change can be important biologically.
-Table of genes and expression:
+    + In some cases, a large fold change will be meaningful but in others, even a small fold change can be important biologically.
+
+The table can be sorted according to any of the columns (e.g. fold-change or p-value)
 
 <div class="alert alert-warning">
 

@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "RNA-seq Pre-processing tutorial"
 author: "Mark Dunning"
 output:
   html_notebook:
@@ -77,11 +77,9 @@ For this tutorial, we will assume that the *wet-lab* stages of the experiment ha
 
 
 ## Section 1: Preparation
-#### 1.  Register as a new user on one of the public Galaxy servers
+#### 1. Sign-up to the European Galaxy server
 
 
-- https://usegalaxy.org.au (**use this one**)
-- https://usegalaxy.org/
 - https://usegalaxy.eu
 
 
@@ -127,18 +125,12 @@ You can import the data by:
     https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/chem2_chrI_1.fastq
     <br>
     </div>
-    Then, upload this file of gene definitions. You do not need to specify
-    the type for this file as Galaxy will auto-detect the file as a GTF
-    file.
-    <div class="code">
-    https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/genes.gtf
-    </div>
-3.  You should now have these 5 files in your history:
+
+3.  You should now have these 4 files in your history:
     - `batch1_chrI_1.fastq`
     - `batch2_chrI_1.fastq`
     - `chem1_chrI_1.fastq`
     - `chem2_chrI_1.fastq`
-    - `genes.gtf`
 
     These files can be renamed by clicking the **pen icon** if you wish.
 
@@ -193,9 +185,11 @@ Question:
 
 <div class="alert alert-info">
 
-#### *NGS ANALYSIS* > *NGS: QC and manipulation* -> *FastQC*
+#### *FastQ Quality Control* -> *FastQC Read Quality reports*
 
 </div>
+
+**Make sure you select this tool. There is another version of FastQC present, which does not produce some of the output we need for a later step**
 
 - Select one of the FASTQ files as input and *Execute* the tool.
 - When the tool finishes running, you should have an HTML file in your History. Click on the eye icon to view the various quality metrics.
@@ -214,7 +208,7 @@ You can use the [documentation](https://www.bioinformatics.babraham.ac.uk/projec
 If poor quality reads towards the ends of reads are considered to be a problem, or there is considerable adapter contamination, we can employ various tools to *trim* our data.
 
 <div class="alert alert-warning">
-Search for the text *trim* and *adapter* in the Galaxy tool search box (top-right)
+Search for the text *trim* and *adapter* in the Galaxy tool search box (top-left)
 
 How many tools are available for the task of trimming and removing adapter contamination?
 
@@ -234,7 +228,7 @@ The [multiqc](https://multiqc.info/) tool has been designed for the tasks of agg
 
 <div class="alert alert-info">
 
-#### *NGS ANALYSIS* > *NGS: QC and manipulation* -> *Multiqc*
+*FASTQ Quality Control* -> *Multiqc*
 
 </div>
 
@@ -243,7 +237,7 @@ Under *Which tool was used generate logs?* Choose *fastqc* and select the RawDat
 
 <div class="alert alert-warning">
 
-Question: do the fastq files seem to have consistently high-quality?
+Question: Repeat the FastQC analysis for the remaining fastq files (`batch2.fastq`, `chem1.fastq`, `chem2.fastq`) and combine the reports with `multiQC`. Do the fastq files seem to have consistently high-quality?
 </div>
 
 
@@ -256,29 +250,32 @@ mapper for RNA-seq reads that is based on Bowtie. It uses the mapping results
 from Bowtie to identify splice junctions between exons. More information on
 HISAT2 can be found [here](https://ccb.jhu.edu/software/hisat2/index.shtml).
 
+<img src="media/HISAT-options.png" height=700px>
 
 <div class="alert alert-info">
 
-NGS: RNA Analysis > HISAT2
+Mapping -> HISAT2
 
 </div>
 
+
+
 #### 1.  Map/align the reads with HISAT2 to the S. cerevisiae reference
 In the left tool panel menu, under NGS Analysis, select
-**NGS: RNA Analysis > HISAT2** and set the parameters as follows:  
+**Mapping > HISAT2** and set the parameters as follows:  
 
 - **Is this single-end or paired-end data?** Single-end (as individual datasets)  
-- **RNA-Seq FASTQ file, forward reads:**  
-(Click on the **multiple datasets icon** and select all four of the
+- **FASTQ file**  
+(Click on the multiple datasets icon and select all four of the
 FASTQ files)
     - `batch1_chrI_1.fastq`
     - `batch2_chrI_1.fastq`
     - `chem1_chrI_1.fastq`
     - `chem2_chrI_1.fastq`
 
-- **Use a built in reference genome or own from your history:** Use
+- **Source for the reference genome** Use
 built-in genome
-- **Select a reference genome:** S. cerevisiae June 2008 (SGD/SacCer3)
+- **Select a reference genome:** S. cerevisiae Apr. 2011 (SaccCer_Apr2011/sacCer3)
 (sacCer3)
 - Use defaults for the other fields
 - Execute
@@ -301,40 +298,27 @@ It will be helpful to rename these to something shorter for the next steps.
 - `chem2.bam`
 
 
-## About the `bam` file format
+## About the aligned read format
 
 Unlike most of Bioinfomatics, a *single standard* file format has emerged for aligned reads. Moreoever, this file format is consistent regardless of whether you have DNA-seq, RNA-seq, ChIP-seq... data. 
 
-The `bam` file is a compressed, binary, version of a `sam` file.
 
-### The `.sam` file
-
-- **S**equence **A**lignment/**M**ap (sam) 
-- The output from an aligner such as `bwa`
-- Same format regardless of sequencing protocol (i.e. RNA-seq, ChIP-seq, DNA-seq etc)
-- May contain un-mapped reads
-- Potentially large size on disk; ~100s of Gb
-    + Can be manipulated with standard unix tools; e.g. *cat*, *head*, *grep*, *more*, *less*....
-- Official specification can be [obtained online](http://samtools.github.io/hts-specs/SAMv1.pdf): -
-- We normally work on a compressed version called a `.bam` file. See later.
-- *Header* lines starting with an `@` character, followed by tab-delimited lines
-    + Header gives information about the alignment and references sequences used
-
-
-The first part of the header lists the names (`SN`) of the sequences (chromosomes) used in alignment, their length (`LN`) and a *md5sum* "[digital fingerprint](https://en.wikipedia.org/wiki/Md5sum)" of the `.fasta` file used for alignment (`M5`).
+The first part of the header lists the names (`SN`) of the sequences (chromosomes) used in alignment, their length (`LN`). Sometimes,  a *md5sum* "[digital fingerprint](https://en.wikipedia.org/wiki/Md5sum)" of the `.fasta` file used for alignment (`M5`) is shown.
 
 ```
-@HD	VN:1.5	SO:coordinate	GO:none
-@SQ	SN:1	LN:249250621	M5:1b22b98cdeb4a9304cb5d48026a85128
-@SQ	SN:2	LN:243199373	M5:a0d9851da00400dec1098a9255ac712e
-@SQ	SN:3	LN:198022430	M5:fdfd811849cc2fadebc929bb925902e5
-@SQ	SN:4	LN:191154276	M5:23dccd106897542ad87d2765d28a19a1
+@HD VN:1.0 SO:coordinate
+@SQ SN:chrI LN:230218
+@SQ SN:chrII LN:813184
+@SQ SN:chrIII LN:316620
+@SQ SN:chrIV LN:1531933
 .....
 .....
 
 ```
 
-Next we can define the *read groups* present in the file which we can use to identify which sequencing library, sequencing centre, Lane, sample name etc.
+If mutliple samples were present in the file (i.e. the samples have been *multiplexed*), *read groups* can be used to identify which sequencing library, sequencing centre, Lane, sample name etc.
+
+(**not present for the example data in this course**)
 
 ```
 @RG	ID:SRR077850	CN:bi	LB:Solexa-42057	PL:illumina	PU:ILLUMINA	SM:NA06984
@@ -347,9 +331,9 @@ Next we can define the *read groups* present in the file which we can use to ide
 
 ```
 
-Finally, we have a section where we can record the processing steps used to derive the file
+Finally, we have a section where we can record the processing steps used to derive the file. This is 
 ```
-@PG	ID:MosaikAligner	CL:/share/home/wardag/programs/MOSAIK/bin/MosaikAligner -in /scratch/wardag/NA06984.SRR077850.mapped.illumina.mosaik.CEU.SINGLE.20111114/NA06984.SRR077850.mapped.illumina.mosaik.CEU.SINGLE.20111114.mkb -out
+@PG ID:hisat2 PN:hisat2 VN:2.1.0 CL:"/usr/local/tools/_conda/envs/mulled-v1-e7321ba46fa5ea4c6b9a06b78e6cd5182b33c0a47c2c86b5d610e1361f8b1686/bin/hisat2-align-s --wrapper basic-0 -p 1 -x /data/db/data_managers/sacCer3/hisat2_index/sacCer3/sacCer3 -U input_f.fastq"
 ....
 ....
 
@@ -358,11 +342,11 @@ Finally, we have a section where we can record the processing steps used to deri
 Next is a *tab-delimited* section that describes the alignment of each sequence in detail. 
 
 ```
-SRR081708.237649	163	1	10003	6	1S67M	=	10041	105	GACCCTGACCCTAACCCTGACCCTGACCCTAACCCTGACCCTGACCCTAACCCTGACCCTAACCCTAA	S=<====<<>=><?=?=?>==@??;?>@@@=??@@????@??@?>?@@<@>@'@=?=??=<=>?>?=Q	ZA:Z:<&;0;0;;308;68M;68><@;0;0;;27;;>MD:Z:5A11A5A11A5A11A13	RG:Z:SRR081708	NM:i:6	OQ:Z:GEGFFFEGGGDGDGGGDGA?DCDD:GGGDGDCFGFDDFFFCCCBEBFDABDD-D:EEEE=D=DDDDC:
-
+SRR453566.14193/1	272	chrI	12258	1	101M	*	0	0	TGTGGTTTGCTCTGTTGTCCCCTTGGTTTGCTTTGTTGTCTCCGTAGTTTGCTTTGTTATCTCTGTGGTAGAAATAGGGCACCATGTGGTATACTCTGTTG	DDDDBCDDDDDDDDDDDDDDDCDDDFFFFHHGHHJJIJIJJJJJJJIJJJJJJJJJJJJJJJJJJIJJJJJJJJIJJJIIHJJJJJJJHHHHHFFFFFCCC	AS:i:0 ZS:i:0 XN:i:0 XM:i:0 XO:i:0 XG:i:0 NM:i:0 MD:Z:101 YT:Z:UU NH:i:2
+SRR453566.3957305/1	16	chrI	12374	1	1S100M	*	0	0	ATAACGGTGGCCGTGGAAACAATCGCAGAGGAGATGGATTCAGTGCACACATGAGATTCGCAGGATGTCACGGTAACCAAAGTGGTTTGTTCGCTCGTTTT	A?<858(5@<5(>DCCCCC??9DBCCCCDDDDDDDDCECEEEFFFEFFEHHHHHHJJJJJJJJJJIJJJJJJJJJJJJJJJJJJJJJJHHHHHFFFFFCCC	AS:i:-6 ZS:i:-6 XN:i:0 XM:i:1 XO:i:0 XG:i:0 NM:i:1 MD:Z:22T77 YT:Z:UU NH:i:2
 ```
 
-![](media/sam-entry-explained.png)
+The first 11 columns of each line have an official specification
 
 Column | Official Name | Brief
 ------ | -------------- | -----------
@@ -390,13 +374,7 @@ The *"flags"* in the sam file can represent useful QC information
   + Read failed QC
   + Read is a PCR duplicate (see later)
 
-The combination of any of these properties is used to derive a numeric value
-
-
-For instance, a particular read has a flag of 163
-
-![](media/flag-highlight.png)
-
+The combination of any of these properties is used to derive a numeric value. For instance, a particular read might have a flag of 163
 
 ### Derivation
 
@@ -430,8 +408,6 @@ See also
 ### Have a CIGAR!
 
 
-![](media/cigar-highlight.png)
-
 The ***CIGAR*** (**C**ompact **I**diosyncratic **G**apped **Alignment** **R**eport) string is a way of encoding the match between a given sequence and the position it has been assigned in the genome. It is comprised by a series of letters and numbers to indicate how many consecutive bases have that mapping.
 
 
@@ -448,15 +424,18 @@ H  | hard-clipping
 
 e.g.
 
-- `68M`
-    + 68 bases matching the reference
-- `1S67M`
-    + 1 soft-clipped read followed by 67 matches
+- `101M`
+    + 101 bases matching the reference
+- `1S100M`
+    + 1 soft-clipped read followed by 100 matches
 - `15M87N70M90N16M`
     + 15 matches following by 87 bases skipped followed by 70 matches etc.
 
-Rather than dealing with `.sam` files, we usually analyse a `.bam` file.
+### `sam` or `bam?`
 
+Alignment algorithms such as `HISAT2` tend to produce a `sam` file as their raw output, whereas we usually analyse a `.bam` file. The contents of both files are *exactly the same*. Whereas a `sam` file is designed to be *human-readable*, a `bam` file can be processed *more efficiently by a computer* as it is compressed and indexed. 
+
+The reads in a `sam` file tend to be arranged in the order that they were generated by the sequencer. On the other hand, the `bam` file that you see in Galaxy has been sorted according to the position that the reads map. If you run your own alignments using command line software, you will need to use a tool to *sort and index* the data before analysis.
 
 -----
 
@@ -578,7 +557,7 @@ In order to test for differential expression, we need to count up how many times
 ![](media/counts.png)
 
 HTSeq-count creates a count matrix using the number of the reads from each bam
-file that map to the genomic features in the genes.gtf. For each feature (a
+file that map to the genomic features. For each feature (a
 gene for example) a count matrix shows how many reads were mapped to this
 feature.
 
@@ -586,21 +565,50 @@ Various rules can be used to assign counts to features
 
 ![](media/htseq.png)
 
+To obtain the coordinates of each gene, we can use the UCSC genome browser which is integrated into Galaxy.
+
+### Obtaining gene coordinates
+
+
+
 <div class="alert alert-info">
-**NGS Analysis > htseq-count**
+
+**Get Data** -> **UCSC Main** table browser
+
+</div>
+
+
+![](media/ucsc_browser.png)
+
+Selecting the **UCSC Main** tool from Galaxy will take you to the UCSC table browser. From here we can extract gene coordinates for our genome of interest (`sacCer3`) in `gtf` format for processing with galaxy.
+
+- Set *clade* to **Other**
+- Set *genome* to **S. cerevisiae**
+- *assembly* **Apr. 2011**
+- *group* **Genes and Gene Prediction**
+- *track* **NCBI RefSeq**
+- *region* **genome**
+- *output format* **GTF - gene transfer format (limited)** and *send output to* **Galaxy**
+
+Click *get output* and *send query to Galaxy* to be returned to Galaxy. A new job will be submitted to retrieve the coordinates from UCSC
+
+
+
+<div class="alert alert-info">
+**RNA Analysis > htseq-count**
 </div>
 
 1.  Use HTSeq-count to count the number of reads for each feature.  
     In the left tool panel menu, under NGS Analysis, select
     **NGS Analysis > htseq-count** and set the parameters as follows:  
-    - **Gene model (GFF) file to count reads over from your current history:** genes.gtf
-    - **bam/sam file from your history:**  
-      (Select one of six bam files)
+    - **Aligned SAM/BAM file**  
+      (Select one of four bam files, or all four using the multiple datasets option)
         - `batch1.bam`
+    - **GFF file** UCSC Main on S. cerevisiae:ncbiRefSeq (genome)
     - Use defaults for the other fields
     - Execute
-
-2.  Repeat for the remaining bam files
+2.  Repeat for the remaining bam files if running on each bam separately.
+3.  Rename the ht-seq output for each sample. **Do not rename the outputs that have "(no feature) in their name"**
 
 **You are now ready to follow the next tutorial on [Differential Expression](02-differential-expression.nb.html)**
 
