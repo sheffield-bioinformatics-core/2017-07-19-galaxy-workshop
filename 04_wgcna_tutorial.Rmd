@@ -1,5 +1,5 @@
 ---
-title: "Course Setup"
+title: "WGCNA Tutorial"
 author: "Mark Dunning"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output:
@@ -14,9 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Setup for the WGCNA tutorial
 
-In this course we will demonstrate how the R programming language can manipulate data that might arise from an NGS study to identify DNA mutations.
-
-The length of the workshop is quite short, so we can setup some computing resources that you can use to access the materials. Please follow the instructions below at your soonest convenience on 4th March.
+In this course we will demonstrate the running of the WGCNA R pacakge. We take advantage of an WGNCA app developed by the European Institute for Systems Biology and Medicine, but this still requires a working version of R and some packages. To faciliate this process, we have installed everything on the Amazon cloud to use during the practical
 
 ## 1. Create an account at InstanceHub
 
@@ -27,17 +25,17 @@ The length of the workshop is quite short, so we can setup some computing resour
 
 Choose the menu option *View my labs* on the left-hand menu. The lab **WGCNA Tutorial** should be visible. Click the *Participate* button.
 
-![](images/instance-hub1.png)
+![](media/instance-hub1.png)
 
 ## 3. Connect to the lab
 
 Press the *Start Lab* (green) button and wait whilst the lab loads...
 
-![](images/instance-hub2.png)
+![](media/instance-hub2.png)
 
 Once *Start Lab* has been replaced by *Disconnect*, the *Connection Information* tab will be updated with an IP address etc.
 
-![](images/instance-hub3.png)
+![](media/instance-hub3.png)
 
 Enter the following address in your web browser 
 
@@ -57,10 +55,21 @@ http://3.8.183.247:8787
 
 ## 4. Click the file `OPEN_ME.Rmd`
 
-You should now have a version of the RStudio interface open in your web browser with all the R code and packages that we are going to need. 
+You should now have a version of the RStudio interface open in your web browser with all the R code and packages that we are going to need. Click on the file `OPEN_ME.Rmd` in the right-hand panel to display a document with a few lines of R code.
 
-![](images/rstudio-welcome.png)
+![](media/rstudio-welcome.png)
 
+## 5. Open the WGCNA app
+
+![](media/run_app.png)
+
+The WGCNA app can be opened by running R code from the left-hand panel. Click the green triangles indicated to first load some required libraries and then launch the app. You will probably get a message saying that a *pop-up has been blocked*. Click try again and a new browser tab should open
+
+## 6. Success!
+
+![](media/WGCNA_app.png)
+
+You should now be able to access the interface to the WGCNA app and play with some example data.
 
 ## Installation on your own machine after the workshop
 
