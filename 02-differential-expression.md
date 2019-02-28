@@ -104,7 +104,7 @@ In the Galaxy tool panel, under NGS Analysis, select
 - **Select columns containing control:**  
     - `chem1-htseq`
     - `chem2-htseq`
-- Use defaults for the other fields
+- For **Output normalized counts table** select **Yes**
 - Execute
 
 #### 2.  Examine the outputs from the previous step
