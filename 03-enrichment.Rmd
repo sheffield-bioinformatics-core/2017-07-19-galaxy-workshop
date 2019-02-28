@@ -33,15 +33,38 @@ There are two different approaches one might use, and we will cover the theory b
 ## Theory Part I: Over-representation analysis
 
 - "Threshold-based": require defintion of a statistical threshold to define list of genes to test (e.g. FDR < 0.01)
-- Hypergeometric test or Fisher's Exact test generally used.
+- Then a *hypergeometric* test or *Fisher's Exact* test generally used.
 
 The question we are asking here is;
 
 > ***"Are the number of DE genes associated with Theme X significantly greater than what we might expect by chance alone?"***
 
-Where Theme X could be genes belonging to a particular GO (Gene Onotology) term.
+We can answer this question by knowing
 
-Let's imagine that we have a bag full of balls. Each balls represents a gene in the *gene universe*. 
+- the total number of DE genes
+- the number of genes in the gene set (pathway or process)
+- the number of genes in the gene set that are found to be DE
+- the total number of tested genes (background)
+
+The formula for Fishers exact test is;
+
+$$ p = \frac{\binom{a + b}{a}\binom{c +d}{c}}{\binom{n}{a +c}} = \frac{(a+b)!(c+d)!(a+c)!(b+d)!}{a!b!c!d!n!} $$
+
+with:-
+
+```{r echo=FALSE}
+df <- data.frame(`In DE List`  = c("a","c","a+c"), `Not in DE list` = c("b","d","b+d"), RowTotal = c("a +b","c+d","a+b+c+d (=n)"))
+rownames(df) <- c("In Gene Set", "Not in Gene Set","Column Total")
+df
+```
+
+In this first test, our genes will be grouped together according to their Gene Ontology (GO) terms:- http://www.geneontology.org/
+
+
+### Abstract example
+
+
+To illustrate the process we will use an abstract example. Let's imagine that we have a bag full of balls. Each balls represents a gene in the *gene universe*. 
 - Paint the balls representing our selected list grey, and paint the rest red.
 
 
@@ -115,14 +138,10 @@ or less formally;
 *P = (ways of choosing grey balls) X (ways of non-grey balls amongst subset) / ways of choosing subset*
 
 
-The general procedure for performing an over-representation can be summarised as follows:-
-
-- defining the *statistically-significant* genes in your dataset
-    + we can be a bit more relaxed when assessing this. sometimes we want as many genes as feasible to be included
-- defining the *background* genes; this is the list of all possible genes that could have been identified
 
 
-## Worked Example: 
+
+## Practical Example: 
 
 We will use the example of 5 breast cancer patients and 5 normals that we performed differential expression on using the degust tool.
 
