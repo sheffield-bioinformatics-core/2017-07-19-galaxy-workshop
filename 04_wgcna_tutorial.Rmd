@@ -22,6 +22,12 @@ This document is a useful reference for the terminology used in a WGCNA analysis
 
 We take advantage of an "WGNCA app" developed by the European Institute for Systems Biology and Medicine, but this still requires a working version of R and some packages. To faciliate this process, we have installed everything on the Amazon cloud for use during the practical. To run this tutorial on your own laptop after the course, you will need to install R and the relevant packages as described below.
 
+There are various tutorial for running available for running WGCNA available online. 
+
+- https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/
+
+However, they are R-based rather than using the online interface that we will present. 
+
 ## 1. Create an account at InstanceHub
 
 *InstanceHub* is a tool created at The University of Sheffield for creating cloud resources for computing practicals. You will need to go to [instancehub.com](https://www.instancehub.com) and create an account. **Make sure that you specify the same email address that you signed-up to the course**.
@@ -95,10 +101,38 @@ Clicking *Data Tables of Input Data* allows the data to be inspected. Underneath
 
 ## Network Construction
 
-This tab presents the results of WGCNA's network construction step. Sections a) and b)
+(from the WGCNA tutorial [here](https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-02-networkConstr-auto.pdf))
+
+![](media/wgcna_2.png)
+
+> Constructing a weighted gene network entails the choice of the soft thresholding power β to which co-expression
+similarity is raised to calculate adjacency [1]. The authors of [1] have proposed to choose the soft thresholding power
+based on the criterion of approximate scale-free topology. We refer the reader to that work for more details; here
+we illustrate the use of the function `pickSoftThreshold` that performs the analysis of network topology and aids the
+user in choosing a proper soft-thresholding power. The user chooses a set of candidate powers (the function provides
+suitable default values), and the function returns a set of network indices that should be inspected, 
+
+The 4 plots in section b) of the *Network construction* tab show the plots that can be used to select the *soft-power* threshold.  We choose the power 6, which is the lowest power for which the scale-free topology fit index curve flattens out upon reaching a high value (in this case, roughly 0.90).
+
+The user can alter the value of soft-power (or stick with the value automatically chosen) and use this to construct the network. Automatic is the easier option. This splits the genes into different *modules*. The clustering dendrogram illustrates module membership (each module is represented by a different colour) and the module assignments can be downloaded along with a report.
+
+**N.B. The module assignments could be used as an input to an online gene-set enrichment tool, such as GOrilla.**
+
+## Module - Trait Relationship
+
+> We quantify associations of individual genes with our trait of interest (weight) by defining Gene Significance GS as
+(the absolute value of) the correlation between the gene and the trait. For each module, we also define a quantitative
+measure of module membership MM as the correlation of the module eigengene and the gene expression profile. This
+allows us to quantify the similarity of all genes on the array to every module.
+
+The first plot in this tab allows the user to assess how the various modules that have been identified are related to different clinical traits. Modules are in the rows of the plot, traits in columns. Darker colour shades indicate greater correlation and red / blue indicate positive and negative correlation respectively. The values presented in the table can also be downloaded using the *Download Module Trait Association* button.
+
+The Gene-Trait analysis allows the user to drill further down into the modules and discover which genes are most influential for each module, and whether modules might be driven by only one or two samples. We can download the values for a particular module - trait pairing using the *Download Gene Significance and Module Membership*.
+
+The links between genes in a module can be visualised in the section *c. Network of Modules*. A specific module (named according to colour) can be selected in the *Modules* box and clicking the *Plot Network* button creates an interactive visualisation. The network can be zoomed and names of genes will appear if a particular node is clicked on.
 
 
-## Analysis in R
+### Analysis in R
 
 For those familiar with R, the steps that we have just performed via the app can also be performed in R by following the following tutorials
 
@@ -107,6 +141,10 @@ For those familiar with R, the steps that we have just performed via the app can
 - https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-03-relateModsToExt.pdf
 - https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-04-Interfacing.pdf
 - https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-05-Visualization.pdf
+
+## Analysis on the TCGA dataset
+
+WGCNA can also be applied to RNA-seq data provided they are transformed into the correct format. The counts for the TCGA breast cancer dataset have been transformed onto a log$_2$ scale and are available [here](tcga_wgcna_counts.csv) along with a file containing the [clinical assignments](tcga_clinical.tsv). A subset of genes was taken to reduce the computational requirements. Using the WGCNA app, these data can be uploaded via the *Data Input* tab. Repeat the steps from above to compute gene networks from this dataset. Some of the plots may not work, but you should still be able to create a network.
 
 ## Installation on your own machine after the workshop
 
@@ -154,3 +192,8 @@ The app itself can be downloading from google drive [https://drive.google.com/dr
 install.packages("path_where_you_downloaded_the_package/WGCNAapp_1.0.tar.gz",
 repos=NULL, type="source")
 ```
+
+# References
+
+[1] B. Zhang and S. Horvath. A general framework for weighted gene co-expression network analysis. Statistical
+Applications in Genetics and Molecular Biology, 4(1):Article 17, 2005.
