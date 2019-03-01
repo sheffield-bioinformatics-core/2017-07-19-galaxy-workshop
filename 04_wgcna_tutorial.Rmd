@@ -12,9 +12,15 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# WGCNA Analysis
+
+**W**eighted **G**ene **C**o-expression **N**etwork **A**nalysis is a highly-popular method for identifying de-novo networks of connecting genes from expression data. 
+
+This document is a useful reference for the terminology used in a WGCNA analysis [https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/Simulated-00-Background.pdf](https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/Simulated-00-Background.pdf).
+
 # Setup for the WGCNA tutorial
 
-In this course we will demonstrate the running of the WGCNA R pacakge. We take advantage of an WGNCA app developed by the European Institute for Systems Biology and Medicine, but this still requires a working version of R and some packages. To faciliate this process, we have installed everything on the Amazon cloud to use during the practical
+We take advantage of an "WGNCA app" developed by the European Institute for Systems Biology and Medicine, but this still requires a working version of R and some packages. To faciliate this process, we have installed everything on the Amazon cloud for use during the practical. To run this tutorial on your own laptop after the course, you will need to install R and the relevant packages as described below.
 
 ## 1. Create an account at InstanceHub
 
@@ -71,6 +77,37 @@ The WGCNA app can be opened by running R code from the left-hand panel. Click th
 
 You should now be able to access the interface to the WGCNA app and play with some example data.
 
+# Tutorial instructions
+
+## Background to WGNA
+
+Familiarise yourself with some of the terminology used in WGCNA looking at this document
+
+[https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/Simulated-00-Background.pdf](https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/Simulated-00-Background.pdf)
+
+## Load example Female Mice Liver dataset
+
+The *Data Input* tab allows the user to select from a couple of pre-processed datasets, or input their own data. Clicking the *Female Mice Liver* checkbox loads the dataset from *Ghazalpour et al., Integrating Genetic and Network Analysis to Characterise Genes Related to Mouse Weight, PLoS Genetics, 2006* comprising 135 female mice and a subset of 3,500 microarray probes. 
+
+Clicking *Data Tables of Input Data* allows the data to be inspected. Underneath is a clustering dendrogram
+
+![](media/wgcna_1.png)
+
+## Network Construction
+
+This tab presents the results of WGCNA's network construction step. Sections a) and b)
+
+
+## Analysis in R
+
+For those familiar with R, the steps that we have just performed via the app can also be performed in R by following the following tutorials
+
+- https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-01-dataInput.pdf
+- https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-02-networkConstr-auto.pdf
+- https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-03-relateModsToExt.pdf
+- https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-04-Interfacing.pdf
+- https://horvath.genetics.ucla.edu/html/CoexpressionNetwork/Rpackages/WGCNA/Tutorials/FemaleLiver-05-Visualization.pdf
+
 ## Installation on your own machine after the workshop
 
 ### Windows
@@ -81,13 +118,19 @@ Then open RStudio and paste the following lines of R code into a console and pre
 
 ```{r eval=FALSE}
 install.packages("BiocManager")
-BiocManager::install("tidyverse")
-BiocManager::install("VariantAnnotation", version = "3.8")
-BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene", version = "3.8")
-BiocManager::install("org.Hs.eg.db", version = "3.8")
-BiocManager::install("BSgenome.Hsapiens.UCSC.hg19", version = "3.8")
+BiocManager::install("preprocessCore")
+BiocManager::install("impute")
+BiocManager::install("AnnotationDbi")
+BiocManager::install("GO.db")
+install.packages(c("shiny", "WGCNA", "stringr", "DT", "networkD3", "gplots","plotly", "rmarkdown"))
 ```
 
+The app itself can be downloading from google drive [https://drive.google.com/drive/folders/1UJK8yfYmR0vB5BTYiBtzxDWJ2Pp2y4Z6?usp=sharing](https://drive.google.com/drive/folders/1UJK8yfYmR0vB5BTYiBtzxDWJ2Pp2y4Z6?usp=sharing). Once downloaded, it can be installed in R with the following command (replacing *path_where_you_downloaded_the_pacakge* with the path to the directory containing the file downloaded from google drive)
+
+```{r eval=FALSE}
+install.packages("path_where_you_downloaded_the_package/WGCNAapp_1.0.tar.gz",
+repos=NULL, type="source")
+```
 
 
 ### Mac
@@ -98,10 +141,16 @@ Then open RStudio and paste the following lines of R code into a console and pre
 
 ```{r eval=FALSE}
 install.packages("BiocManager")
-BiocManager::install("tidyverse")
-BiocManager::install("VariantAnnotation", version = "3.8")
-BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene", version = "3.8")
-BiocManager::install("org.Hs.eg.db", version = "3.8")
-BiocManager::install("BSgenome.Hsapiens.UCSC.hg19", version = "3.8")
+BiocManager::install("preprocessCore")
+BiocManager::install("impute")
+BiocManager::install("AnnotationDbi")
+BiocManager::install("GO.db")
+install.packages(c("shiny", "WGCNA", "stringr", "DT", "networkD3", "gplots","plotly", "rmarkdown"))
 ```
 
+The app itself can be downloading from google drive [https://drive.google.com/drive/folders/1UJK8yfYmR0vB5BTYiBtzxDWJ2Pp2y4Z6?usp=sharing](https://drive.google.com/drive/folders/1UJK8yfYmR0vB5BTYiBtzxDWJ2Pp2y4Z6?usp=sharing). Once downloaded, it can be installed in R with the following command (replacing *path_where_you_downloaded_the_pacakge* with the path to the directory containing the file downloaded from google drive)
+
+```{r eval=FALSE}
+install.packages("path_where_you_downloaded_the_package/WGCNAapp_1.0.tar.gz",
+repos=NULL, type="source")
+```
