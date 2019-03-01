@@ -39,3 +39,24 @@ out_mat <- BRCAMatrix %>% data.frame() %>% tibble::rownames_to_column("GeneID") 
   dplyr::select(-Version) %>% 
   filter(!duplicated(Gene))
 colnames(out_mat) <- c(paste(rep("Normal",5),1:5,sep="-"),paste(rep("Tumour",5),1:5,sep="-"))
+
+
+library(limma)
+
+
+raw <- read.csv("tcga_raw_counts.csv")
+voom_mat <- voom(raw[,-1])$E
+voom_mat[1:4,1:4]
+
+## Try and filter to top 1000 genes by IQR
+
+iqrs <- apply(voom_mat,1,IQR)
+picked_rows <- order(iqrs, decreasing = TRUE)[1:3000]
+colnames(voom_mat) <- gsub(".","_",colnames(voom_mat),fixed=TRUE)
+voom_out <- t(voom_mat[picked_rows,])
+colnames(voom_out) <- raw[picked_rows,1]
+voom_out <- data.frame(Subject = colnames(voom_mat), voom_out)
+write.csv(voom_out,file="tcga_wgcna_counts.csv",row.names = FALSE,quote=FALSE)
+
+clin <- data.frame(Subject=colnames(voom_mat),Group = c(rep(1,5),rep(2,5)))
+readr::write_tsv(clin, path = "tcga_clinical.tsv")
