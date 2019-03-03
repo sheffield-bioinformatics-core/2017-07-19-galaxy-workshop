@@ -164,7 +164,7 @@ Now use the tool **Filter and Sort** -> **Filter:** to select only the significa
 </div>
 
 <div class="alert alert-warning">
-Question: Look back at the instructions to filter the DESeq2 results from the previous section. How would you modify the filtering condition to filter the file `degust.tsv`.
+**Question:** Look back at the instructions to filter the DESeq2 results from the previous section. How would you modify the filtering condition to filter the file `degust.tsv`.
 
 </div>
 
@@ -204,6 +204,13 @@ Below the figure is the results table. This links to more information about each
 If you have time, you can also experiment uploading the same genes lists to the online tools [DAVID](https://david.ncifcrf.gov/tools.jsp) and [GeneTrail](https://genetrail2.bioinf.uni-sb.de/)
 
 
+## Using EnrichR
+
+<div class="alert alert-warning">
+**Question:** [EnrichR](http://amp.pharm.mssm.edu/Enrichr/) is another online tool for performing enrichment analysis against a large collection of databases. Go to the website, and paste-in your list of differentially-expressed genes. Explore the results that EnrichR provides
+
+</div>
+
 ## Theory Part II: Threshold-free
 
 For these tests, we don't have to specify a statistical threshold and use the test statistics (log fold-change) from *all* genes as the input to the test. The popular *Gene Set Enrichment Analysis (GSEA)* uses this approach. These tests can be used to detect differential expression for a group of genes, even when the effects are too small or there is too little data to detect the genes individually.
@@ -219,13 +226,19 @@ Remember that this method requires a sorted list of genes, so we will use a tool
 **Filter and Sort** -> **Sort**
 </div>
 
-- Use **Filter and Sort** -> **Sort** to sort the `degust.tsv` 
+- Use **Filter and Sort** -> **Sort** to sort the `degust.tsv` on the column containing the log fold change
 - The use the **Text Manipulation** -> **Cut** tool to cut columns `c1` and `c3` from the output.
 - Download the resulting table, and once downloaded **rename to `gsea_input.rnk`**
 
 ## Run the GSEAPreranked tool
 
 You should have already downloaded the gsea java tool from the Broad website. Double-clicking on the file `gsea-3.0.jar` should load the tool
+
+<div class="alert alert-info">
+If you have problems importing the file `gsea_input.rnk`, check (by loading the file into a text editor) that the 2nd column does not contain the Word `Tumour` in it. If so, delete this row of data
+
+You can download [this file](gsea_input.rnk) if you get into difficulties
+</div>
 
 - Load the file you have just created into the tool by clicking the *Load data* button
 - Select the *GSEAPreranked* option from tools
@@ -236,10 +249,12 @@ You should have already downloaded the gsea java tool from the Broad website. Do
 
 - Click the *Run* icon at the bottom of the screen
 - The bottom-left panel of the GSEA screen should show the progress of the tool as it runs. Once *success** is displayed, you will be able to view the results
+    + these should be stored in your home directory, or via the *Analysis History* button on the left of the main screen
 - The files `gsea_report_for_..._neg_.....` and `gsea_report_for_...._pos_....` show reports for gene sets that are under- and over-expressed in the study (according to the direction of the log fold-change).
 
 <div class="alert alert-warning">
-Question: What are the most enriched pathways? Locate their enrichment plots in the results folder. Make sure that you can understand the plots.
+**Question:** What are the most enriched pathways? Locate their enrichment plots in the results folder. Make sure that you can understand the plots.
 
+Re-run for other gene sets that you think could be of interest
 </div>
 
