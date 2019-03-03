@@ -81,7 +81,8 @@ For this tutorial, we will assume that the *wet-lab* stages of the experiment ha
 
 
 - https://usegalaxy.eu
-
+- Use this link to access the special queue created for this course
+  + https://usegalaxy.eu/join-training/sbc-rnaseq-2019-03-04
 
 
 **Make sure you check your email to activate your account**
