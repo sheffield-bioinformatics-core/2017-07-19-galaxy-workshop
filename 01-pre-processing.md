@@ -460,11 +460,6 @@ Download the bam files you have created in the previous step by clicking the dis
 
 <img src="media/download_bam.png">
 
-- http://software.broadinstitute.org/software/igv/
-- Go to *Downloads*
-- Launch with 1.2Gb
-- Click on igv24_mm.jnlp file that is downloaded
-
 
 ### Introducing the IGV Browser
 
@@ -478,7 +473,6 @@ Whilst tools like R are very powerful and allow you to perform statistical analy
     + whole-genome resequencing
     + shRNA
 - It is a *Java* desktop application and can be run either locally of from the Broad website
-    + You have a link to IGV on the taskbar on the left the screen in-front of you
 - To run IGV yourself you will need to agree to the license and [download the version for your OS](http://www.broadinstitute.org/software/igv/download)
 
 ### A quick tour of IGV
@@ -511,15 +505,15 @@ For more details
 
 Go to ***File*** -> ***Load from file*** and select the aligned `bam` files from `HISAT2`. Note that the index files `.bai` need to be present in the same directory. However, you only need to click on the `.bam`
 
+<div class="alert alert-info">
+Make sure that the genome selected is `sacCer3`. The default wil be human hg19
+</div>
+
 - The black dotted vertical lines indicates the centre of the view
 - Each of the grey pointed rectangles represents a sequencing reads
     + whether the pointed bit is on the left or right indicates if the read is forward or reverse.
 - A coverage track is also generated
 - You should see the read that we described in detail in the previous section by *hover*ing over the reads to display the information from the `.bam` file
-
-
-![](media/read-select.png)
-
 
 The view in IGV is not static and we can scroll-along the genome by holding-down the left mouse in the data panel and dragging left and right
 
@@ -540,16 +534,15 @@ The reads themselves can also be coloured according to
   - insert size
   - read strand
   - sample
+
+Enter the genomic location `chrI:17,214-25,769` in the genome navigation box. You should see a region at the start of chromosome `I`. 
   
-## Additional data tracks
+![](media/genome_nav.png)
 
-Additional data tracks are also available on the IGV server. These include useful genome annotation tracks, such as:-
 
-- GC percentage
-- CpG islands
-- Repeat regions
-- dbSNP calls
-
+<div class="alert alert-warning">
+**Question:** Scroll along the chromosome and inspect the coverage of various genes. Do you see any genes that might be up/downregulated in `batch` samples?
+</div>
 
 ## Section 5. Quantification (Counting reads in features)
 
@@ -587,7 +580,7 @@ Selecting the **UCSC Main** tool from Galaxy will take you to the UCSC table bro
 - Set *genome* to **S. cerevisiae**
 - *assembly* **Apr. 2011**
 - *group* **Genes and Gene Prediction**
-- *track* **NCBI RefSeq**
+- *track* **SGD Genes**
 - *region* **genome**
 - *output format* **GTF - gene transfer format (limited)** and *send output to* **Galaxy**
 
