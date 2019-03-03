@@ -257,8 +257,8 @@ The table can be sorted according to any of the columns (e.g. fold-change or p-v
 
 <div class="alert alert-warning">
 
-You can search for particular genes by typing the name of the gene in the top box to the top right of the gene table.
-Try searching for genes at the top of the gene list from Galaxy. Do these seem to be significant using Degust?
+**Question**: You can search for particular genes by typing the name of the gene in the top box to the top right of the gene table.
+Try searching for genes at the top of the gene list from `DESeq2` in Galaxy. Do these seem to be significant using Degust?
 
 </div>
 
@@ -273,7 +273,7 @@ Above the genes table is the option to download the results of the current analy
 
 ![](https://upload.wikimedia.org/wikipedia/en/e/e4/Venn_stained_glass.jpg)
 
-We might sometimes want to compare the lists of genes that we identify using different methods, or genes identified from more than one contrast. In our example dataset we have one contrast (batch vs chem), but we can however compare genes identified by DESeq2 and Degust.
+We might sometimes want to compare the lists of genes that we identify using different methods, or genes identified from more than one contrast. In our example dataset we have one contrast (batch vs chem), but we can however compare genes identified by DESeq2 and Degust (voom).
 
 The website *venny* provides a really nice interface for doing this.
 
@@ -287,16 +287,16 @@ The website *venny* provides a really nice interface for doing this.
 
 
 
-# Exercise
+# Practice on larger dataset (breast cancer)
 
 We are going to use some more realistic data to practice running a differential expression analysis. In the next section we will use these same results to perform a gene set enrichment and pathways analysis.
 
-The data are from the The Cancer Genome Atlas (TCGA) project and comprise the RNA-seq counts from 5 breast cancer patients and 5 normals.
+The data are from the The Cancer Genome Atlas (TCGA) project and comprise the RNA-seq counts from 5 breast cancer patients and 5 healthy individuals.
 
 The data for this exercise can be downloaded using [this link](https://raw.githubusercontent.com/sheffield-bioinformatics-core/rna-seq-in-galaxy/gh-pages/tcga_raw_counts.csv)
 
 <div class="alert alert-warning">
-Exercise: Upload the file `tcga_raw_counts,csv` to degust and perform a differential expression analysis
+**Question**: Upload the file `tcga_raw_counts,csv` to degust and perform a differential expression analysis
 
 **Make sure that edgeR is selected as the Method to perform the analysis**
 
@@ -305,7 +305,7 @@ Exercise: Upload the file `tcga_raw_counts,csv` to degust and perform a differen
 Take some time to understand the various parts of the report
 
 <div class="alert alert-warning">
-Question Check out the results for genes `C4orf7` and `SULT1C3`. You should find that both have extreme fold-change values, but are not particularly significant. Why do you think this might be?
+**Question:** Check out the results for genes `C4orf7` and `SULT1C3`. You should find that both have extreme fold-change values, but are not particularly significant. Why do you think this might be?
 
 </div>
 
