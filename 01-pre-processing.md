@@ -475,6 +475,13 @@ Whilst tools like R are very powerful and allow you to perform statistical analy
 - It is a *Java* desktop application and can be run either locally of from the Broad website
 - To run IGV yourself you will need to agree to the license and [download the version for your OS](http://www.broadinstitute.org/software/igv/download)
 
+<div class="alert alert-info">
+If you have problems running IGV, you may need to download an updated version of Java
+
+https://java.com/download
+
+</div>
+
 ### A quick tour of IGV
 For more details
 

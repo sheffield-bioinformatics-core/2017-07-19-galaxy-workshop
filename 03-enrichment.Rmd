@@ -235,6 +235,14 @@ Remember that this method requires a sorted list of genes, so we will use a tool
 You should have already downloaded the gsea java tool from the Broad website. Double-clicking on the file `gsea-3.0.jar` should load the tool
 
 <div class="alert alert-info">
+If you have problems running GSEA.jar, you may need to download an updated version of Java
+
+https://java.com/download
+
+</div>
+
+
+<div class="alert alert-info">
 If you have problems importing the file `gsea_input.rnk`, check (by loading the file into a text editor) that the 2nd column does not contain the Word `Tumour` in it. If so, delete this row of data
 
 You can download [this file](gsea_input.rnk) if you get into difficulties
