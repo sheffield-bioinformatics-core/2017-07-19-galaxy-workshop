@@ -19,6 +19,8 @@ library(limma)
 
 # Gene-Ontologies and Annotation
 
+This file uses the output of the previous analysis of breast cancer in Degust. If you didn't manage to create these results, you can download them [from here](degust.tsv)
+
 ## Gene-Ontology Analysis
 
 In the early days of microarray analysis, people were happy if they got a handful of differentially-expressed genes that they could validate or follow-up. However, with later technologies (and depending on the experimental setup) we might have thousands of statistically-significant results, which no-one has the time to follow-up. Also, we might be interested in pathways / mechanisms that are altered and not just individual genes.
