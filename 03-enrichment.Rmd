@@ -230,7 +230,14 @@ Remember that this method requires a sorted list of genes, so we will use a tool
 
 - Use **Filter and Sort** -> **Sort** to sort the `degust.tsv` on the column containing the log fold change
 - The use the **Text Manipulation** -> **Cut** tool to cut columns `c1` and `c3` from the output.
+- Use the **Filter and Sort** -> **Filter** tool to remove the first line of the table. GSEA expects the second column to contain only *numeric* data, so will have problems if we leave this row in the input file. Use the following as the condition to filter
+    + `c1 != 'Gene'`
 - Download the resulting table, and once downloaded **rename to `gsea_input.rnk`**
+
+<div class="alert alert-info">
+It may seem tedious at first to apply these operations in Galaxy when we could do them in Excel. However, the advantage of Galaxy is that we have an audit trail of the operations that we applied to a file. Moreover, some of the advanced features of Galaxy allow us to create workflows from a chain of tools. These workflows can be applied to other files in the future.
+</div>
+
 
 ## Run the GSEAPreranked tool
 
@@ -245,7 +252,7 @@ https://java.com/download
 
 
 <div class="alert alert-info">
-If you have problems importing the file `gsea_input.rnk`, check (by loading the file into a text editor) that the 2nd column does not contain the Word `Tumour` in it. If so, delete this row of data
+If you have problems importing the file `gsea_input.rnk`, check (by loading the file into a text editor or Excel) that the 2nd column does not contain the Word `Tumour` or `Normal` in it. If so, delete this row of data and re-save the file.
 
 You can download [this file](gsea_input.rnk) if you get into difficulties
 </div>
