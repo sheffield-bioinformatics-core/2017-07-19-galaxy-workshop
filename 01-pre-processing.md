@@ -106,8 +106,7 @@ You can import the data by:
 2.  Upload the sequence data by pasting the following links into the text
     input area.
     These two files are single-end samples from the batch condition
-    (glucose-excess). Make sure the type is specified as 'fastqsanger'
-    when uploading.
+    (glucose-excess). 
 
     <div class="code">
     https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/batch1_chrI_1.fastq
@@ -117,8 +116,7 @@ You can import the data by:
     </div>
 
     These two files are single-end samples from the chem condition
-    (glucose-limited). Make sure the type is specified as 'fastqsanger'
-    when uploading.
+    (glucose-limited). 
 
     <div class="code">
     https://swift.rc.nectar.org.au:8888/v1/AUTH_a3929895f9e94089ad042c9900e1ee82/RNAseqDGE_ADVNCD/chem1_chrI_1.fastq
@@ -170,14 +168,7 @@ $$ p = 10^{-Q/10} $$
 
 In practice, we don't have to convert the values as we have software that will do this automatically
 
-<div class="alert alert-warning">
-Question: 
 
-- How many lines of data are present in the file `batch1_chrI_1.fastq`
-  + use the tool *Text Manipulation -> Line/Word/Character count* to find out
-- How many reads does this correspond to?
-
-</div>
 -----
 
 ## Section 2: Quality assessment with FastQC
@@ -208,16 +199,25 @@ You can use the [documentation](https://www.bioinformatics.babraham.ac.uk/projec
 
 If poor quality reads towards the ends of reads are considered to be a problem, or there is considerable adapter contamination, we can employ various tools to *trim* our data.
 
-<div class="alert alert-warning">
-Search for the text *trim* and *adapter* in the Galaxy tool search box (top-left)
+<div class="alert alert-info">
 
-How many tools are available for the task of trimming and removing adapter contamination?
+If you suspect contamination from adapter sequence or unacceptable quality scores towards the ends of reads various trimming options are supported by the *Trimmomatic* tool (amongst others)
 
-If time allows, use the *trim galore* tool to trim one of the `fastq` files and repeat the QC.
+#### *FASTA/FASTQ* -> *Trimmomatic*
 
-N.B. the `fastq` files that we are starting from have already undergone some processing, so you may not see much effect.
+The operations supported by trimmomatic will probably not be very informative on our example data (as it has already been processed), but you can try several operations if you get time:-
+
+- Removing Illumina adapter sequences by setting *Perform initial ILLUMINACLIP* to *Yes* and selecting the appropriate adapter type
+- Remove poor quality bases at the end of reads by choosing *Cut bases off the end of a read, if below a threshold quality (TRAILING)* under *Select Trimmomatic operation to perform*
+- Remove poor quality bases at the start of reads by choosing *Cut bases off the start of a read, if below a threshold quality (LEADING)* under *Select Trimmomatic operation to perform*
+- You can apply multiple operations in turn by clicking *Insert Trimmomatic Operation*
+
 </div>
 
+<div class="alert alert-info">
+
+If you also suspect contamination by another organism, or rRNA present in your data, you can use the sortMeRNA tool to remove this artefact.
+</div>
 
 
 ## Combining QC reports
@@ -298,6 +298,20 @@ It will be helpful to rename these to something shorter for the next steps.
 - `chem1.bam`
 - `chem2.bam`
 
+
+<div class="alert alert-info">
+
+*STAR* is also another popular option for aligned RNA-seq reads. We won't cover this today, or the relative merits of different methods. If you want to try STAR in your own time you can find it under.
+
+
+
+<div class="alert alert-info">
+
+Mapping -> RNA STAR
+
+</div>
+
+N.B. at the moment the STAR tool will only work with certain genomes (saCer11 is not one of them) without having to upload a reference genome and reference gtf file.
 
 ## About the aligned read format
 
