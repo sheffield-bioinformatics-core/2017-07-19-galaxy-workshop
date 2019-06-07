@@ -82,7 +82,7 @@ For this tutorial, we will assume that the *wet-lab* stages of the experiment ha
 
 - https://usegalaxy.eu
 - Use this link to access the special queue created for this course
-  + https://usegalaxy.eu/join-training/sbc-rnaseq-2019-03-04
+  + https://usegalaxy.eu/join-training/sbc-rnaseq-2019-06-10
 
 
 **Make sure you check your email to activate your account**
@@ -562,7 +562,7 @@ Enter the genomic location `chrI:17,214-25,769` in the genome navigation box. Yo
 
 
 <div class="alert alert-warning">
-**Question:** Scroll along the chromosome and inspect the coverage of various genes. Do you see any genes that might be up/downregulated in `batch` samples?
+**Question:** Inspect the coverage of genes `YAL054C` and `YAR028W`. Do you see any evidence for them being up- or down-regulated in the experiment?
 </div>
 
 ## Section 5. Quantification (Counting reads in features)

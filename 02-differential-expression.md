@@ -59,7 +59,7 @@ Previous sections have illustrated how to
 - [visualise the reads in IGV](01-pre-processing.nb.html#section_4_visualise_the_aligned_reads_with_igv)
 - [count against a set of reference transcripts](01-pre-processing.nb.html#section_5_quantification_(counting_reads_in_features))
 
-We will now use the counts as the input for a differential expression analysis.
+We will now use the counts as the input for a differential expression analysis. **We will use two different methods for assessing differential expression; one implemented in Galaxy, and one implemented in an interactive web tool. We will then compare the results. In practice, you only need use one of these methods. Both should perform equally well**.
 
 ## Differential expression
 
@@ -188,7 +188,7 @@ N.B. Degust claims to accept a *csv* (comma-separated) file, but is in fact happ
 ## Overview of Degust sections
 - Top black panel with Configure settings at right.
 - Left: Conditions: Control and Treatment.
-- Left: Method selection for DGE.
+- Left: Method selection for DGE. **Select edgeR for your method**
 - Top centre: Plots, with options at right.
 - When either of the expression plots are selected, a heatmap appears below.
 - A table of genes (or features); expression in treatment relative to control (Treatment column); and significance (FDR column).

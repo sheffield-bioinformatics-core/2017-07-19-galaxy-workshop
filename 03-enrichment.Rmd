@@ -66,7 +66,7 @@ In this first test, our genes will be grouped together according to their Gene O
 ### Abstract example
 
 
-To illustrate the process we will use an abstract example. Let's imagine that we have a bag full of balls. Each balls represents a gene in the *gene universe*. 
+To illustrate the process we will use an abstract example. Let's imagine that we have a bag full of balls. Each ball represents a gene in the *gene universe*. 
 - Paint the balls representing our selected list grey, and paint the rest red.
 
 
