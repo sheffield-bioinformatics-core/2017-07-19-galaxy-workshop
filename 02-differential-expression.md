@@ -70,73 +70,6 @@ The term *differential expression* was first used to refer to the process of fin
 
 Such methods were developed on the premise that microarray expression values are approximately *normally-distributed* when appropriately transformed (e.g. by using a log$_2$ transformation) so that a modified version of the standard *t-test* can be used. The same test is applied to each gene under investigation yielding a *test statistic*, *fold-change* and *p-value*. Similar methods have been adapted to RNA-seq data to account for the fact that the data are *count-based* and do not follow a normal distribution.
 
-There are several sensible and respected choices for performing a differential expression analysis on RNA-seq data. We will concentrate initally on the `DESeq2` method because it is readily available through Galaxy. 
-
-<div class="alert alert-info">
-
-**NGS: RNA Analysis > DESeq2**
-</div>
-
-
-[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
-is an R package, that is used for analysing differential expression of RNA-Seq data and can either use exact statistical methods or generalised 
-linear models.
-
-`DESeq2` takes an input the counts that we generated in the previous step. Reads counts have to be normalised first prior to differential expression testing. There are two main biases that need to be accounted for:-
-
-- size of gene
-    + *longer* genes will have more reads assigned to them
-- library size
-    + a sample that is sequenced to a higher depth will receive more reads
-  
-`DESeq2` has its' own method of normalising counts. You will probably encounter other methods of normalising RNA-seq reads such as *RPKM*, *CPM*, *TPM* etc. [This blog](https://www.rna-seqblog.com/rpkm-fpkm-and-tpm-clearly-explained/) provides a nice explanation of the current thinking. As part of the `DESeq` output, you have the option of downloading normalised counts in various formats. Some other online visualisation tools require normalised counts as input, so it is good to have these to-hand.
-
-
-In the Galaxy tool panel, under NGS Analysis, select
-**NGS: RNA Analysis > DESeq2** and set the parameters as follows:
-
-
-- **1. Factor level** Batch
-- **Count files**  
-    - `batch1-htseq`
-    - `batch2-htseq`
-- **2. Factor level:** Chem
-- **Select columns containing control:**  
-    - `chem1-htseq`
-    - `chem2-htseq`
-- For **Output normalized counts table** select **Yes**
-- Execute
-
-#### 2.  Examine the outputs from the previous step
-1.  Examine the `DeSeq2 result file`by
-    clicking on the **eye icon**.
-    This file is a list of genes sorted by p-value from using DESeq2 to
-    perform differential expression analysis.
-2.  Examine the `DeSeq2 plots` file. This file has some
-    plots from running DESeq2, including [PCA](http://setosa.io/ev/principal-component-analysis/) and clustering.
-    
-
-`DESeq2` reports, for each gene that is being tested, some information that we can use to determine if the gene is different between our conditions of interest. We will do more exploration of differential expression analysis in the next section using a tool that is not included in Galaxy. For now we will concentrate on the task on finding out which genes have *sufficient statistical evidence* for being differentially expressed between our two conditions.
-
-#### 3.  Extract the significant differentially expressed genes.  
-Under Basic Tools, click on **Filter and Sort > Filter**:
-
-- **Filter:** `DESeq2 results file`
-- **With following condition:** `c7 < 0.05 and (c3 > 1.0 or c3 < -1.0)`
-- **Number of header lines to skip:** 1
-- Execute
-
-This will keep the genes that have an adjusted p-value (column 7 in the table) of less
-or equal to 0.05 and have a fold change of greater than 1 or less than -1. There should be 20 genes in this file.
-Rename this file by clicking on the **pencil icon** of and change the name
-from "Filter on data x" to `DESeq2_Significant_DE_Genes`
-
-<div class="alert alert-warning">
-Question: 
-
-Why do you think it is important to use the *adjusted* p-value to select which genes are differentially-expressed. Why might you also want to specify a fold-change cutoff? Discuss with your neighbours
-
-</div>
 
 ## Interactive exploration of the results with *DEGUST*
 
@@ -255,35 +188,12 @@ Table of genes
 
 The table can be sorted according to any of the columns (e.g. fold-change or p-value)
 
-<div class="alert alert-warning">
-
-**Question**: You can search for particular genes by typing the name of the gene in the top box to the top right of the gene table.
-Try searching for genes at the top of the gene list from `DESeq2` in Galaxy. Do these seem to be significant using Degust?
-
-</div>
-
 
 ## Download and R code
 
 Above the genes table is the option to download the results of the current analysis to a csv file. You can also download the *R* code required to reproduce the analysis by clicking the *Show R code* box underneath the Options box.
 
 
-
-## Overlapping Gene Lists
-
-![](https://upload.wikimedia.org/wikipedia/en/e/e4/Venn_stained_glass.jpg)
-
-We might sometimes want to compare the lists of genes that we identify using different methods, or genes identified from more than one contrast. In our example dataset we have one contrast (batch vs chem), but we can however compare genes identified by DESeq2 and Degust (voom).
-
-The website *venny* provides a really nice interface for doing this.
-
-- Open both your DESeq2 and Degust results files in Excel
-- Go to the venny website
-    + http://bioinfogp.cnb.csic.es/tools/venny/
-- Copy the names of genes with adjusted p-value less than 0.05 in the DESeq2 analysis into the top-left box on the venny website
-- Copy the names of genes with adjusted p-value less than 0.05 in the Degust analysis into the rop-right box on the venny website
-- venny should now report the number of genes found in each list, the size of the intersection, and genes unique to each method
-- clicking on a particular part of the venn diagram to display the list of genes
 
 
 
@@ -310,6 +220,94 @@ Take some time to understand the various parts of the report
 </div>
 
 Download the Degust results file as a **tsv** file. You will need to click the down arrow next to *Download csv* to change the output type from csv to tsv (tab-separated).
+
+
+## (Optional) Assessing Differential Expression with *DESeq2*
+
+There are several sensible and respected choices for performing a differential expression analysis on RNA-seq data. Here, we  will illustrate the `DESeq2` method because it is readily available through Galaxy. 
+
+<div class="alert alert-info">
+
+**NGS: RNA Analysis > DESeq2**
+</div>
+
+
+[DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
+is an R package, that is used for analysing differential expression of RNA-Seq data and can either use exact statistical methods or generalised 
+linear models.
+
+`DESeq2` takes an input the counts that we generated in the previous step. Reads counts have to be normalised first prior to differential expression testing. There are two main biases that need to be accounted for:-
+
+- size of gene
+    + *longer* genes will have more reads assigned to them
+- library size
+    + a sample that is sequenced to a higher depth will receive more reads
+  
+`DESeq2` has its' own method of normalising counts. You will probably encounter other methods of normalising RNA-seq reads such as *RPKM*, *CPM*, *TPM* etc. [This blog](https://www.rna-seqblog.com/rpkm-fpkm-and-tpm-clearly-explained/) provides a nice explanation of the current thinking. As part of the `DESeq` output, you have the option of downloading normalised counts in various formats. Some other online visualisation tools require normalised counts as input, so it is good to have these to-hand.
+
+
+In the Galaxy tool panel, under NGS Analysis, select
+**NGS: RNA Analysis > DESeq2** and set the parameters as follows:
+
+
+- **1. Factor level** Batch
+- **Count files**  
+    - `batch1-htseq`
+    - `batch2-htseq`
+- **2. Factor level:** Chem
+- **Select columns containing control:**  
+    - `chem1-htseq`
+    - `chem2-htseq`
+- For **Output normalized counts table** select **Yes**
+- Execute
+
+#### 2.  Examine the outputs from the previous step
+1.  Examine the `DeSeq2 result file`by
+    clicking on the **eye icon**.
+    This file is a list of genes sorted by p-value from using DESeq2 to
+    perform differential expression analysis.
+2.  Examine the `DeSeq2 plots` file. This file has some
+    plots from running DESeq2, including [PCA](http://setosa.io/ev/principal-component-analysis/) and clustering.
+    
+
+`DESeq2` reports, for each gene that is being tested, some information that we can use to determine if the gene is different between our conditions of interest. We will do more exploration of differential expression analysis in the next section using a tool that is not included in Galaxy. For now we will concentrate on the task on finding out which genes have *sufficient statistical evidence* for being differentially expressed between our two conditions.
+
+#### 3.  Extract the significant differentially expressed genes.  
+Under Basic Tools, click on **Filter and Sort > Filter**:
+
+- **Filter:** `DESeq2 results file`
+- **With following condition:** `c7 < 0.05 and (c3 > 1.0 or c3 < -1.0)`
+- **Number of header lines to skip:** 1
+- Execute
+
+This will keep the genes that have an adjusted p-value (column 7 in the table) of less
+or equal to 0.05 and have a fold change of greater than 1 or less than -1. There should be 20 genes in this file.
+Rename this file by clicking on the **pencil icon** of and change the name
+from "Filter on data x" to `DESeq2_Significant_DE_Genes`
+
+<div class="alert alert-warning">
+Question: 
+
+Why do you think it is important to use the *adjusted* p-value to select which genes are differentially-expressed. Why might you also want to specify a fold-change cutoff? Discuss with your neighbours
+
+</div>
+
+## Overlapping Gene Lists
+
+![](https://upload.wikimedia.org/wikipedia/en/e/e4/Venn_stained_glass.jpg)
+
+We might sometimes want to compare the lists of genes that we identify using different methods, or genes identified from more than one contrast. In our example dataset we have one contrast (batch vs chem), but we can however compare genes identified by DESeq2 and Degust (voom).
+
+The website *venny* provides a really nice interface for doing this.
+
+- Open both your DESeq2 and Degust results files in Excel
+- Go to the venny website
+    + http://bioinfogp.cnb.csic.es/tools/venny/
+- Copy the names of genes with adjusted p-value less than 0.05 in the DESeq2 analysis into the top-left box on the venny website
+- Copy the names of genes with adjusted p-value less than 0.05 in the Degust analysis into the rop-right box on the venny website
+- venny should now report the number of genes found in each list, the size of the intersection, and genes unique to each method
+- clicking on a particular part of the venn diagram to display the list of genes
+
 
 ## References
 

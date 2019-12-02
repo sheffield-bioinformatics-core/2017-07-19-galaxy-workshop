@@ -199,6 +199,8 @@ You can use the [documentation](https://www.bioinformatics.babraham.ac.uk/projec
 
 If poor quality reads towards the ends of reads are considered to be a problem, or there is considerable adapter contamination, we can employ various tools to *trim* our data.
 
+However, a recent paper demonstrated that read trimming is no longer required prior to alignment:- https://www.biorxiv.org/content/10.1101/833962v1
+
 <div class="alert alert-info">
 
 If you suspect contamination from adapter sequence or unacceptable quality scores towards the ends of reads various trimming options are supported by the *Trimmomatic* tool (amongst others)
@@ -456,15 +458,17 @@ The reads in a `sam` file tend to be arranged in the order that they were genera
 
 ## Quality assessment of the aligned reads
 
-*flagstat* will calculate the *flag* for each read in the bam file and tabulate the results.
+*samtools* will calculate QC statistics for a set of aligned reads in *bam* format
 
 <div class="alert alert-info">
-*Sam Tools -> Flagstat*
+*SAM/BAM -> Samtools stats*
 </div>
 
-*idxstats* will report the number of reads mapping to each reference sequence (i.e. chromosome)
+If you view the output you will see that it is not very easy to interpret. 
 <div class="alert alert-info">
-*Sam Tools -> IdxStats*
+*FASTQ Quality Control* -> *Multiqc*
+
+make sure **Which tool was used to generate logs** is set to **Samtools** and select the Samtools stats.... files that were produced in the previous step
 </div>
 
 
@@ -623,9 +627,19 @@ Click *get output* and *send query to Galaxy* to be returned to Galaxy. A new jo
     - Use defaults for the other fields
     - Execute
 2.  Repeat for the remaining bam files if running on each bam separately.
-3.  Rename the ht-seq output for each sample. **Do not rename the outputs that have "(no feature) in their name"**
+3.  Rename the ht-seq output for each sample. **Do not rename the outputs that have "(no feature)" in their name**
+
+## Further QC on the aligned reads
+
+Additional QC of the aligned reads can be obtained with the Qualimap tool. This also uses information from the genome transcript file to calculate how many reads are counted in exonic, intronic and intergenic regions. For RNA-seq this percentage should be *high*; at least 80 to 90%.
+
+<div class="alert alert-info">
+**RNA-Seq > Qualimap RNA-Seq QC**
+</div>
 
 **You are now ready to follow the next tutorial on [Differential Expression](02-differential-expression.nb.html)**
+
+
 
 ## References
 

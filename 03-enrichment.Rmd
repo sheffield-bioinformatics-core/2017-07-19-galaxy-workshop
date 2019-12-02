@@ -150,7 +150,8 @@ We will use the example of 5 breast cancer patients and 5 normals that we perfor
 The first step is to create a list of *background* genes for the test.
 
 <div class="alert alert-info">
-**Text Manipulation** -> **Cut**
+**Text Manipulation** -> **Cut columns from a table**
+Type `c1` only in the Cut columns text box
 </div>
 
 - Download the results file from Degust as a ***tsv*** file, and upload them to Galaxy
@@ -161,14 +162,15 @@ The first step is to create a list of *background* genes for the test.
 
 Now use the tool **Filter and Sort** -> **Filter:** to select only the significant genes
 
+
 <div class="alert alert-info">
-**Filter and Sort** -> **Filter**
+    Filter: Your Degust results file
+    With following condition: c4 < 0.05 and (c3 > 1.0 or c3 < -1.0)
+    Number of header lines to skip: 1
+    Execute
 </div>
 
-<div class="alert alert-warning">
-**Question:** Look back at the instructions to filter the DESeq2 results from the previous section. How would you modify the filtering condition to filter the file `degust.tsv`.
 
-</div>
 
 - use the **Text Manipulation** -> **Cut** command to create a table containing just the names of the differentially-expressed genes. 
 - download the table to `de_genes.txt`
