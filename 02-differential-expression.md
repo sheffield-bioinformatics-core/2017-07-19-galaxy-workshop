@@ -75,7 +75,7 @@ Such methods were developed on the premise that microarray expression values are
 
 ![](media/rna_advanced_degust_1.png)
 
-- [Degust](http://degust.erc.monash.edu/)
+<font size="8">[http://degust.erc.monash.edu/](http://degust.erc.monash.edu/)</font>
 
 `Degust` is a web tool that can analyse the counts files produced in the step above, to test for differential gene expression. It offers and interactive view of the differential expression results
 
@@ -221,8 +221,14 @@ Take some time to understand the various parts of the report
 
 Download the Degust results file as a **tsv** file. You will need to click the down arrow next to *Download csv* to change the output type from csv to tsv (tab-separated).
 
+You are now ready to complete the file section on [pathways and enrichment analysis](03-enrichment.nb.html)
 
-## (Optional) Assessing Differential Expression with *DESeq2*
+<br>
+<br>
+
+<font size="4">***We will not go through the following section in the workshop, but feel free to work through in your own time***</font>
+
+# (Optional) Assessing Differential Expression with *DESeq2*
 
 There are several sensible and respected choices for performing a differential expression analysis on RNA-seq data. Here, we  will illustrate the `DESeq2` method because it is readily available through Galaxy. 
 
