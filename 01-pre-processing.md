@@ -382,7 +382,7 @@ Column | Official Name | Brief
 There can also be all manner of optional tags as extra columns introduce by an aligner or downstream analysis tool. A common use is the `RG` tag which refers back to the read groups in the header.
 
 
-### Dr Mark Dunning presents....Fun with flags!
+### Quality Control Flags
 
 The *"flags"* in the sam file can represent useful QC information
 

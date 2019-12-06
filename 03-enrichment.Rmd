@@ -147,7 +147,7 @@ or less formally;
 
 We will use the example of 5 breast cancer patients and 5 normals that we performed differential expression on using the degust tool.
 
-The first step is to create a list of *background* genes for the test.
+The first step is to create a list of *background* genes for the test. ***You can do this step in Excel if you find it easier***. Below are the instructions for Galaxy.
 
 <div class="alert alert-info">
 **Text Manipulation** -> **Cut columns from a table**
@@ -160,17 +160,20 @@ Type `c1` only in the Cut columns text box
 - Download the resulting object and rename to `background.txt`
 
 
+<div class="alert alert-info">
+**Filter and Sort** -> **Filter:** 
+</div>
+
 Now use the tool **Filter and Sort** -> **Filter:** to select only the significant genes
 
 
+- Filter: Your Degust results file
+- With following condition: c4 < 0.05 and (c3 > 1.0 or c3 < -1.0)
+- Number of header lines to skip: 1
+
 <div class="alert alert-info">
-    Filter: Your Degust results file
-    With following condition: c4 < 0.05 and (c3 > 1.0 or c3 < -1.0)
-    Number of header lines to skip: 1
-    Execute
+**Text Manipulation** -> **Cut**
 </div>
-
-
 
 - use the **Text Manipulation** -> **Cut** command to create a table containing just the names of the differentially-expressed genes. 
 - download the table to `de_genes.txt`
