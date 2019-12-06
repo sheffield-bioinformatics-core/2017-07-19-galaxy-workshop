@@ -280,3 +280,29 @@ You can download [this file](gsea_input.rnk) if you get into difficulties
 Re-run for other gene sets that you think could be of interest
 </div>
 
+## Other Useful Tools
+
+## Adding extra annotation to results
+
+The results from degust have gene symbols in the first column, but no other useful annotation. Sometimes we might want other IDs to be added in order to interpret our results. Individual queries can be made online (e.g. Ensembl, biomart) but tedious for large numbers of genes. The Galaxy tool **annotateMyIDs** is a simple tool for annotating a file containing a column of IDs.
+
+<div class="alert alert-info">
+**Annotation** -> **annotateMyIDs**
+</div>
+
+- File with IDs: degust.tsv
+- Organism: Human
+- ID Type: Gene Symbol
+
+The output can then be *joined* to the original results file to produce a more detailed result
+
+<div class="alert alert-info">
+**Text Manipulation** -> **Join two files**
+</div>
+
+- 1st file: degust.tsv
+- Column to use from 1st file: Column 1
+- 2nd file: result from *annotateMyIDs*
+- Column to use from 2nd file: Column 1
+
+
