@@ -81,21 +81,8 @@ Such methods were developed on the premise that microarray expression values are
 
 The input file is a count matrix where each row is a measured gene, and each column is a different biological sample. Within the tool we can configure which samples belong to the different biological groups of interest.
 
-### Create a count matrix
 
-The htseq tool is designed to produce a separate table of counts for each sample. This is not particularly useful for other tools such as Degust which require the counts to be presented in a data matrix where each row is a gene and each column is a particular sample in the dataset.
-
-<div class="alert alert-info">
-*Collection Operations -> Column Join* on Collections
-</div>
-
-- In the *Tabular Files* section, select the `ht-seq` count files from your history *batch1.htseq*, *batch2.htseq*, etc... Holding the CTRL key allows multiple files to be selected
-- Keep *Identifier column* as `1`
-
-The output should look something like this...
-![](media/count_matrix.png)
-
-- Download to your computer
+***To make this a more-realistic example, we will use the published count matrix for this dataset. This was downloaded from the Gene Expression Omnibus (GEO) under the accession number [GSE60450](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE60450). Note that we have shortened the column headings to help with visualisation***
 
 
 ### Uploading the count matrix to Degust
@@ -104,19 +91,33 @@ N.B. Degust claims to accept a *csv* (comma-separated) file, but is in fact happ
 
 - From the main degust page, click *Upload your counts file*
 - Click on Browse
-- Select the file containing the *count matrix* that you previously downloaded to your computer from Galaxy, and click *Open*.
+- Select the location of the file `GSE60450_Lactation-GenewiseCounts_rename.txt`, and click *Open*.
 - Click *Upload*
 - A Configuation page will appear.
 
 ![](media/degust_config.png)
 
-- For Name type "*DGE in SaCer3*" (or whatever you want to call the analysis)
-- For Info columns select "#KEY"
-- For Analyze server side leave box checked.
+- For Name type "*GSE60450*" (or whatever you want to call the analysis)
+- For Info columns select *EntrezGeneID* and *Length* 
 - Click Add condition
-    + Add a condition called “Batch” and select the `batch` columns.
-    + Add a condition called “Chem” and select the `chem` columns.
+    + Refering to the experiment design (below), select the Basal samples and call the condition Basal
+    + Repeat for the Luminal samples
 - Save the settings and then View the results
+
+Run  | Name | CellType | Status
+------------- | ------------- | ------------- | -------------  
+SRR1552444 | MCL1-LA | basal | virgin
+SRR1552445 | MCL1-LB | luminal | virgin
+SRR1552446 | MCL1-LC | Luminal | pregnancy
+SRR1552447 | MCL1-LD | Luminal | pregnancy
+SRR1552448 | MCL1-LE | luminal | lactation
+SRR1552449 | MCL1-LF | luminal | lactation
+SRR1552450 | MCL1-DG | basal | virgin
+SRR1552451 | MCL1-DH | luminal | virgin
+SRR1552452 | MCL1-DI | basal | pregnancy
+SRR1552453 | MCL1-DJ | basal | pregnancy
+SRR1552454 | MCL1-DK | basal | lactation
+SRR1552455 | MCL1-DL | basal | lactation
 
 ## Overview of Degust sections
 - Top black panel with Configure settings at right.
@@ -132,17 +133,11 @@ N.B. Degust claims to accept a *csv* (comma-separated) file, but is in fact happ
 
 ## MDS plot
 
+
+
+This is a multidimensional scaling plot which represents the variation between samples. It is a similar concept to a Principal Components Analysis (PCA) plot. The x-axis is the dimension with the highest magnitude. In a standard control/treatment setup, samples should be split along this axis. A desirable plot is shown below:-
+
 ![](media/degust_mds.png)
-
-This is a multidimensional scaling plot which represents the variation between samples.
-Ideally:
-- All the batch samples would be close to each other
-- All the chem samples would be close to each other
-- The batch and chem groups would be far apart
-
-The x-axis is the dimension with the highest magnitude. The control/treatment samples should be split along this axis.
-
-Here, our batch samples are on the left and the chem samples are on the right, which means they are well separated on their major MDS dimension, which looks correct. It is important to retain as much metadata about the samples as possible (e.g. batch, date of sequencing, gender, age etc). This can help diagnose situations when the first dimension is not associated with your main contrast of interest.
 
 ## MA-plot
 
@@ -183,7 +178,7 @@ Table of genes
 
 - gene_id: names of genes. Note that gene names are sometimes specific to a species, or they may be only named as a locus ID (a chromosomal location specified in the genome annotation).
 - FDR: False Discovery Rate. This is an adjusted p value to show the significance of the difference in gene expression between two conditions. Click on column headings to sort. By default, this table is sorted by FDR.
-- batch and chem: log2(Fold Change) of gene expression. The default display is of fold change in the treatment relative to the control. Therefore, values in the batch column are zero. This can be changed in the Options panel at the top right.
+- basal and luminal: log2(Fold Change) of gene expression. The default display is of fold change in the treatment relative to the control. Therefore, values in the batch column are zero. This can be changed in the Options panel at the top right.
     + In some cases, a large fold change will be meaningful but in others, even a small fold change can be important biologically.
 
 The table can be sorted according to any of the columns (e.g. fold-change or p-value)
@@ -195,33 +190,59 @@ Above the genes table is the option to download the results of the current analy
 
 
 
-
-
-# Practice on larger dataset (breast cancer)
-
-We are going to use some more realistic data to practice running a differential expression analysis. In the next section we will use these same results to perform a gene set enrichment and pathways analysis.
-
-The data are from the The Cancer Genome Atlas (TCGA) project and comprise the RNA-seq counts from 5 breast cancer patients and 5 healthy individuals.
-
-The data for this exercise can be downloaded using [this link](https://raw.githubusercontent.com/sheffield-bioinformatics-core/rna-seq-in-galaxy/gh-pages/tcga_raw_counts.csv)
+<div class="alert alert-warning">
+**Question:** How many genes are differentially-expressed in this analysis? Is this lower than you would expect? Look more closely at the MDS and QC plots. 
+</div>
 
 <div class="alert alert-warning">
-**Question**: Upload the file `tcga_raw_counts,csv` to degust and perform a differential expression analysis
-
-**Make sure that edgeR is selected as the Method to perform the analysis**
-
+**Question:** Having identified the problem with the analysis, modify the configuration and repeat. How many genes are differentially expressed this time?
 </div>
+
+# Analysing a different contrast
+
+Comparing Basal vs Luminal wasn't really the main question of interest in the dataset, but it serves to illustrate the importance of checking QC plots. 
+
+- Create conditions *Basal.Pregnant*, *Basal.Lactation*, etc using the corrected experimental design
+- Make sure that *Basal.Pregnant* and *Basal.Lactation* are both ticked as initial select
+
+![](media/degust-correct-config.png)
 
 Take some time to understand the various parts of the report
 
 <div class="alert alert-warning">
-**Question:** Check out the results for genes `C4orf7` and `SULT1C3`. You should find that both have extreme fold-change values, but are not particularly significant. Why do you think this might be?
-
+**Question:** Make sure the FDR cut-off and abs LogFC cutoffs are set to default and *download* the file and rename to `background.tsv`. We will use this later.
 </div>
 
-Download the Degust results file as a **tsv** file. You will need to click the down arrow next to *Download csv* to change the output type from csv to tsv (tab-separated).
+<div class="alert alert-warning">
+**Question**: How many genes are differentially-expressed with an FDR < 0.05 and abs logFC > 1. Download this file and rename it to `B.preg_vs_lactation.tsv`.
+</div>
 
-You are now ready to complete the file section on [pathways and enrichment analysis](03-enrichment.nb.html)
+
+<div class="alert alert-warning">
+**Question**: Repeat the analysis for Luminal.Pregnant vs Luminal.Lactation and download the table of differentially-expressed results (same FDR and log fold-change). 
+</div>
+
+
+## Overlapping Gene Lists
+
+![](https://upload.wikimedia.org/wikipedia/en/e/e4/Venn_stained_glass.jpg)
+
+We might sometimes want to compare the lists of genes that we identify using different methods, or genes identified from more than one contrast. In our example dataset we can compare the genes in the contrast of pregnant vs luminal in basal and luminal cells
+
+The website *venny* provides a really nice interface for doing this.
+
+![](media/venny-config.png)
+
+- Open both your *Basal Pregnant vs Basal Lactation* and *Luminal Pregnant vs Luminal Lactation* results files in Excel
+- Go to the venny website
+    + http://bioinfogp.cnb.csic.es/tools/venny/
+- Copy the names of genes with adjusted p-value less than 0.05 in the Basal analysis into the **List 1** box on the venny website. **List 1** can be renamed to *Basal*
+- Copy the names of genes with adjusted p-value less than 0.05 in the Luminal analysis into the **List 2** box on the venny website. **List 2** can be renamed to **Luminal**
+- venny should now report the number of genes found in each list, the size of the intersection, and genes unique to each method
+- clicking on a particular overlap part of the venn diagram to display the list of genes common to both cell types. Paste this list of genes into a new Excel worksheet and save as a file `gene_overlap.csv`.
+
+
+You are now ready to complete the file section on [annotation and enrichment analysis](03-enrichment.nb.html)
 
 <br>
 <br>
@@ -297,22 +318,6 @@ Question:
 Why do you think it is important to use the *adjusted* p-value to select which genes are differentially-expressed. Why might you also want to specify a fold-change cutoff? Discuss with your neighbours
 
 </div>
-
-## Overlapping Gene Lists
-
-![](https://upload.wikimedia.org/wikipedia/en/e/e4/Venn_stained_glass.jpg)
-
-We might sometimes want to compare the lists of genes that we identify using different methods, or genes identified from more than one contrast. In our example dataset we have one contrast (batch vs chem), but we can however compare genes identified by DESeq2 and Degust (voom).
-
-The website *venny* provides a really nice interface for doing this.
-
-- Open both your DESeq2 and Degust results files in Excel
-- Go to the venny website
-    + http://bioinfogp.cnb.csic.es/tools/venny/
-- Copy the names of genes with adjusted p-value less than 0.05 in the DESeq2 analysis into the top-left box on the venny website
-- Copy the names of genes with adjusted p-value less than 0.05 in the Degust analysis into the rop-right box on the venny website
-- venny should now report the number of genes found in each list, the size of the intersection, and genes unique to each method
-- clicking on a particular part of the venn diagram to display the list of genes
 
 
 ## References

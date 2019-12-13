@@ -17,25 +17,108 @@ knitr::opts_chunk$set(echo = FALSE)
 library(limma)
 ```
 
+# Recap
+
+In this section we will use the following three files
+
+- `background.tsv` containing one row for each gene in the comparison Basal.pregnant vs Basal.lactation (27,179 rows).
+- `B.preg_vs_lactation.tsv` containing one row for each found to be DE in the contrast Basal.pregnant vs Basal.Lactation.
+- `overlap-genes.tsv` the genes we identified using *venny* as being DE in both Basal and Luminal cell types.
+
+<div class="alert alert-info">
+These files are available from the google drive if you have problems.
+</div>
+
+
+# Adding extra annotation to results
+
+The results from degust have *Entrez ID* in the first column, but no other useful annotation. Sometimes we might want other IDs to be added in order to interpret our results. Individual queries can be made online (e.g. Ensembl, biomart) but tedious for large numbers of genes. The Galaxy tool **annotateMyIDs** is a simple tool for annotating a file containing a column of IDs.
+
+We are going to use this to get more information on the genes we identified as being in common between Basal and Luminal cells in the contrast pregnant vs lactation
+
+
+
+<div class="alert alert-info">
+**Annotation** -> **annotateMyIDs**
+</div>
+
+- File with IDs: gene-overlap.csv
+- Organism: Mouse
+- ID Type: EntrezID
+- Keep all other defaults
+
+This should produce an output table containing the original ID, and the equivlent Gene Symbol, Ensembl ID.
+
+<div class="alert alert-warning">
+**Question**: Use the Get Data tool to upload the file `background.tsv` to Galaxy and produce an annotation table.
+</div>
+
+
+The output can then be *joined* to the original results file to produce a more detailed result
+
+<div class="alert alert-info">
+**Text Manipulation** -> **Join two files**
+</div>
+
+- 1st file: background.tsv
+- Column to use from 1st file: Column 1
+- 2nd file: result from *annotateMyIDs*
+- Column to use from 2nd file: Column 1
+
+<div class="alert alert-info">
+The step of annotating your results may need modifying (or may not be necessary) depending on what IDs you have used in the counting. Make sure you choose the options carefully when using this tool.
+</div>
+
 # Gene-Ontologies and Annotation
 
-This file uses the output of the previous analysis of breast cancer in Degust. If you didn't manage to create these results, you can download them [from here](degust.tsv)
-
-## Gene-Ontology Analysis
 
 In the early days of microarray analysis, people were happy if they got a handful of differentially-expressed genes that they could validate or follow-up. However, with later technologies (and depending on the experimental setup) we might have thousands of statistically-significant results, which no-one has the time to follow-up. Also, we might be interested in pathways / mechanisms that are altered and not just individual genes.
 
 In this section we move towards discovering if our results are ***biologically significant***. Are the genes that we have picked statistical flukes, or are there some commonalities. 
 
-There are two different approaches one might use, and we will cover the theory behind both
+There are two different approaches one might use, and we will cover the theory behind both. The distinction is whether you are happy to use a hard (and arbitrary) threshold to identify DE genes.
+
+## Threshold-free analysis
+
+This type of analyis is popular for datasets where differential expression analysis does not reveal many genes that are differentially-expressed on their own. Instead, it seeks to identify genes that as a group have a tendancy to be near the extremes of the log-fold changes.
+
+The Broad institute has made this analyis method popular and provides [a version of GSEA](http://software.broadinstitute.org/gsea/index.jsp) that can be run via a java application. 
+
+![](media/overexpressed-gsea.png)
+
+However, we are going to use an open-source version of the algorithm (fgsea) that is implmented through Galaxy. 
+
+This method requires a sorted list of genes, so we will use a tool within Galaxy to sort our ` background.tsv` Degust results by log fold change
+
+<div class="alert alert-info">
+**Filter and Sort** -> **Sort**
+**Text Manipulation** -> **Cut**
+</div>
+
+- Use **Filter and Sort** -> **Sort** to sort the `background.tsv` on the column containing the log fold change. *Make sure the number of header lines is set to 1*.
+- The use the **Text Manipulation** -> **Cut** tool to cut columns `c1` and `c3` from the output.
+
+You will also need a set of pre-defined gene-sets to apply this method. These can be obtained from the [MSigDB website](http://software.broadinstitute.org/gsea/msigdb/index.jsp) for Human. Alternatively, the WEHI has made Human and Mouse versions available on [their website](http://bioinf.wehi.edu.au/software/MSigDB/). If you are using a different organism, you may have to search around for equivalent files or create your own.
 
 
-    
+<div class="alert alert-info">
+Go to the [WEHI website](http://bioinf.wehi.edu.au/software/MSigDB/) and download the `H hallmark gene sets (rdata file) for Mouse`. Upload this to Galaxy using the **Get Data -> Upload File** tool.
+</div>
 
-## Theory Part I: Over-representation analysis
+The `fgsea` tool can now be run as follows:-
 
-- "Threshold-based": require defintion of a statistical threshold to define list of genes to test (e.g. FDR < 0.01)
-- Then a *hypergeometric* test or *Fisher's Exact* test generally used.
+<div class="alert alert-info">
+**Annotation** -> **fgsea - fast preranked gene set**
+</div>
+
+- Ranked Genes:- Your sorted and filtered file
+- Genes sets:- The rdata file you Downloaded from the WEHI.
+- Output plots:- Yes
+
+
+## Over-representation analysis
+
+"Threshold-based" methods require defintion of a statistical threshold to define list of genes to test (e.g. FDR < 0.01). Then a *hypergeometric* test or *Fisher's Exact* test generally used. They are typically used in situations where plenty of DE genes have been identified, and people often use quite relaxed criteria for identifying DE genes (e.g. raw rather than adjusted p-values or FDR value)
 
 The question we are asking here is;
 
@@ -63,120 +146,7 @@ df
 In this first test, our genes will be grouped together according to their Gene Ontology (GO) terms:- http://www.geneontology.org/
 
 
-### Abstract example
-
-
-To illustrate the process we will use an abstract example. Let's imagine that we have a bag full of balls. Each ball represents a gene in the *gene universe*. 
-- Paint the balls representing our selected list grey, and paint the rest red.
-
-
-![](media/bag-and-balls.png)
-
-In this small example, we can define;
-
-- Total number of balls: 40
-- Total number of interesting (grey) balls: 10
-
-Now, lets select a number (say, 12) of the balls at random without seeing into the bag and look at what we get
-
-![](media/picked-balls.png)
-
-
-We have picked, at random, 8 grey balls. 
-
-Using simulations, we can repeat the process and look at how many grey we get. The distribution of the data shows what the most-likely values are
-
-```{r echo=FALSE}
-#see ?rhyper for argument definition
-trials <- rhyper(10000,40,10,12)
-hist(trials,xlab = "Number of grey balls")
-```
-
-We can count how many times each value is observed
-
-```{r echo=FALSE}
-table(trials)
-```
-
-Dividing by the number of trials gives a probability of sorts
-
-```{r echo=FALSE}
-table(trials)/10000
-
-```
-
-The probability of getting *at least* a certain number can also be computed
-
-```{r echo=FALSE}
-cumsum(table(trials)/10000)
-
-```
-
-Back to our example, the distribution of balls (both grey and red) can be expressed as a contingency table, on which we can use a "*Fisher's exact test*".
-
-Total grey balls: 10
-Total in subset: 12
-
-```{r echo=FALSE} 
-df <- data.frame(Selected = c(8,4), NotSelected = c(2,26))
-rownames(df) <- c("Grey", "Red")
-df
-```
-
-
-
-```{r echo=FALSE}
-df <- data.frame(Selected = c("a","c","a+c"), NotSelected = c("b","d","b+d"), RowTotal = c("a +b","c+d","a+b+c+d (=n)"))
-rownames(df) <- c("Grey", "Red","Column Total")
-df
-```
-
-The formula for Fishers exact test is;
-
-$$ p = \frac{\binom{a + b}{a}\binom{c +d}{c}}{\binom{n}{a +c}} = \frac{(a+b)!(c+d)!(a+c)!(b+d)!}{a!b!c!d!n!} $$
-
-or less formally;
-
-*P = (ways of choosing grey balls) X (ways of non-grey balls amongst subset) / ways of choosing subset*
-
-
-
-
-
-## Practical Example: 
-
-We will use the example of 5 breast cancer patients and 5 normals that we performed differential expression on using the degust tool.
-
-The first step is to create a list of *background* genes for the test. ***You can do this step in Excel if you find it easier***. Below are the instructions for Galaxy.
-
-<div class="alert alert-info">
-**Text Manipulation** -> **Cut columns from a table**
-Type `c1` only in the Cut columns text box
-</div>
-
-- Download the results file from Degust as a ***tsv*** file, and upload them to Galaxy
-- Select the Type of data as *Tabular* when uploading the file
-- Cut the column c1 from `degust.tsv` in your Galaxy history
-- Download the resulting object and rename to `background.txt`
-
-
-<div class="alert alert-info">
-**Filter and Sort** -> **Filter:** 
-</div>
-
-Now use the tool **Filter and Sort** -> **Filter:** to select only the significant genes
-
-
-- Filter: Your Degust results file
-- With following condition: c4 < 0.05 and (c3 > 1.0 or c3 < -1.0)
-- Number of header lines to skip: 1
-
-<div class="alert alert-info">
-**Text Manipulation** -> **Cut**
-</div>
-
-- use the **Text Manipulation** -> **Cut** command to create a table containing just the names of the differentially-expressed genes. 
-- download the table to `de_genes.txt`
+## goseq
 
 
 
@@ -184,18 +154,22 @@ Now use the tool **Filter and Sort** -> **Filter:** to select only the significa
 
 There are several popular online tools for performing enrichment analysis
 
-We will be using the online tool [GOrilla](http://cbl-gorilla.cs.technion.ac.il/) to perform the pathways analysis. It has two modes; the first of which accepts a list of *background* and *target* genes
+We will be using the online tool [GOrilla](http://cbl-gorilla.cs.technion.ac.il/) to perform the pathways analysis. It has two modes; the first of which accepts a list of *background* and *target* genes. ***However, the input IDs need to be Gene Symbols***.
 
+<div class="alert alert-warning">
+**Exercise:** Download your annotated background.tsv file. This will act as the background list for the analysis. Now use the *annotateMyIDs* to convert the Entrez IDs in the file `B.preg_vs_lactation.tsv` into gene symbols and download the result.
+
+</div>
 
 1. Go to http://cbl-gorilla.cs.technion.ac.il/
 2. Read the “Running Example”
 
 ![](media/gorilla-example.png)
 
-3. Choose Organism: `Homo sapiens`
+3. Choose Organism: `Mus Musculus`
 4. Choose running mode: `Two unranked lists of genes`
-5. Upload `de_genes.txt` as the Target set.
-6. Upload `background.txt` as the Background set.
+5. Paste the gene symbols corresponding to DE genes into the Target set.
+6. Paste the gene symbols from the Background set into the other box.
 7. Choose an Ontology: `Process`
 8. `Search Enriched GO terms`
 
@@ -218,91 +192,6 @@ If you have time, you can also experiment uploading the same genes lists to the 
 
 </div>
 
-## Theory Part II: Threshold-free
 
-For these tests, we don't have to specify a statistical threshold and use the test statistics (log fold-change) from *all* genes as the input to the test. The popular *Gene Set Enrichment Analysis (GSEA)* uses this approach. These tests can be used to detect differential expression for a group of genes, even when the effects are too small or there is too little data to detect the genes individually.
-
-![](media/overexpressed-gsea.png)
-
-
-The Broad institute provides [a version of GSEA](http://software.broadinstitute.org/gsea/index.jsp) that can be run via a java application. 
-
-Remember that this method requires a sorted list of genes, so we will use a tool within Galaxy to sort our Degust results by log fold change
-
-<div class="alert alert-info">
-**Filter and Sort** -> **Sort**
-</div>
-
-- Use **Filter and Sort** -> **Sort** to sort the `degust.tsv` on the column containing the log fold change
-- The use the **Text Manipulation** -> **Cut** tool to cut columns `c1` and `c3` from the output.
-- Use the **Filter and Sort** -> **Filter** tool to remove the first line of the table. GSEA expects the second column to contain only *numeric* data, so will have problems if we leave this row in the input file. Use the following as the condition to filter
-    + `c1 != 'Gene'`
-- Download the resulting table, and once downloaded **rename to `gsea_input.rnk`**
-
-<div class="alert alert-info">
-It may seem tedious at first to apply these operations in Galaxy when we could do them in Excel. However, the advantage of Galaxy is that we have an audit trail of the operations that we applied to a file. Moreover, some of the advanced features of Galaxy allow us to create workflows from a chain of tools. These workflows can be applied to other files in the future.
-</div>
-
-
-## Run the GSEAPreranked tool
-
-You should have already downloaded the gsea java tool from the Broad website. Double-clicking on the file `gsea-3.0.jar` should load the tool
-
-<div class="alert alert-info">
-If you have problems running GSEA.jar, you may need to download an updated version of Java
-
-https://java.com/download
-
-</div>
-
-
-<div class="alert alert-info">
-If you have problems importing the file `gsea_input.rnk`, check (by loading the file into a text editor or Excel) that the 2nd column does not contain the Word `Tumour` or `Normal` in it. If so, delete this row of data and re-save the file.
-
-You can download [this file](gsea_input.rnk) if you get into difficulties
-</div>
-
-- Load the file you have just created into the tool by clicking the *Load data* button
-- Select the *GSEAPreranked* option from tools
-- You will need to choose what set of genes to use in the analysis. There are many curated gene sets available through [msigDB](http://software.broadinstitute.org/gsea/msigdb)
-- We will use the Hallmark gene sets, but feel free to experiment with others
-
-> hallmark gene sets are coherently expressed signatures derived by aggregating many MSigDB gene sets to represent well-defined biological states or processes.
-
-- Click the *Run* icon at the bottom of the screen
-- The bottom-left panel of the GSEA screen should show the progress of the tool as it runs. Once *success** is displayed, you will be able to view the results
-    + these should be stored in your home directory, or via the *Analysis History* button on the left of the main screen
-- The files `gsea_report_for_..._neg_.....` and `gsea_report_for_...._pos_....` show reports for gene sets that are under- and over-expressed in the study (according to the direction of the log fold-change).
-
-<div class="alert alert-warning">
-**Question:** What are the most enriched pathways? Locate their enrichment plots in the results folder. Make sure that you can understand the plots.
-
-Re-run for other gene sets that you think could be of interest
-</div>
-
-## Other Useful Tools
-
-## Adding extra annotation to results
-
-The results from degust have gene symbols in the first column, but no other useful annotation. Sometimes we might want other IDs to be added in order to interpret our results. Individual queries can be made online (e.g. Ensembl, biomart) but tedious for large numbers of genes. The Galaxy tool **annotateMyIDs** is a simple tool for annotating a file containing a column of IDs.
-
-<div class="alert alert-info">
-**Annotation** -> **annotateMyIDs**
-</div>
-
-- File with IDs: degust.tsv
-- Organism: Human
-- ID Type: Gene Symbol
-
-The output can then be *joined* to the original results file to produce a more detailed result
-
-<div class="alert alert-info">
-**Text Manipulation** -> **Join two files**
-</div>
-
-- 1st file: degust.tsv
-- Column to use from 1st file: Column 1
-- 2nd file: result from *annotateMyIDs*
-- Column to use from 2nd file: Column 1
 
 
