@@ -59,7 +59,8 @@ Previous sections have illustrated how to
 - [visualise the reads in IGV](01-pre-processing.nb.html#section_4_visualise_the_aligned_reads_with_igv)
 - [count against a set of reference transcripts](01-pre-processing.nb.html#section_5_quantification_(counting_reads_in_features))
 
-We will now use the counts as the input for a differential expression analysis. **We will use two different methods for assessing differential expression; one implemented in Galaxy, and one implemented in an interactive web tool. We will then compare the results. In practice, you only need use one of these methods. Both should perform equally well**.
+We will now use the published counts as the input for a differential expression analysis.
+
 
 ## Differential expression
 
@@ -83,6 +84,8 @@ The input file is a count matrix where each row is a measured gene, and each col
 
 
 ***To make this a more-realistic example, we will use the published count matrix for this dataset. This was downloaded from the Gene Expression Omnibus (GEO) under the accession number [GSE60450](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE60450). Note that we have shortened the column headings to help with visualisation***
+
+Download the counts from [this link](GSE60450_Lactation-GenewiseCounts_rename.txt)
 
 
 ### Uploading the count matrix to Degust
